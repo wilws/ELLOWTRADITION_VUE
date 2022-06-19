@@ -1,4 +1,18 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router.js';
+import store from './store/index.js';
+// import { useCookies } from "vue3-cookies";
+// import VueCookies from 'vue-cookies'
 
-createApp(App).mount('#app')
+// import { VueCookieNext } from 'vue-cookie-next'
+
+
+
+
+const app = createApp(App);
+app.use(router);
+app.use(store);
+// app.use(VueCookies);
+
+app.mount('#app');
