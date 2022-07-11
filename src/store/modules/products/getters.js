@@ -1,7 +1,10 @@
 export default {
 
-    products(stats){
-        return stats.products;
+    products(state){
+
+     
+
+        return state.products
     }
 
 

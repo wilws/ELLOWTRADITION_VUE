@@ -8,6 +8,8 @@ import checkoutPage from './pages/checkout/CheckoutPage';
 import indexPage from './pages/index/IndexPage';
 import policyPage from './pages/policy/PolicyPage';
 import productsPage from './pages/products/ProductsPage';
+import invoiceDetails from './pages/invoice/InvoiceDetails';
+import invoicesPage from './pages/invoice/InvoicesPage'
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -21,6 +23,11 @@ const router = createRouter({
         { path:'/cart',component:cartPage },
         { path:'/policy',component:policyPage },
         { path:'/products',component:productsPage },
+        { path:'/invoices',component:invoicesPage },
+        { 
+            path:'/invoice/:invoiceId',
+            component:invoiceDetails,
+        },
         { path: '/:notFound(.*)', component: NotFound }
     ],
     // mode: 'abstract'

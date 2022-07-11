@@ -21,12 +21,15 @@ export default {
 
             const products = [];
             res.products.forEach(product => {
+
+               
+
                 products.push(product);
             });
 
-            context.commit('setProducts', {                     
-                ...products,
-            });
+      
+
+            context.commit('setProducts', products);
 
 
         } catch(err){

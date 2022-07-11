@@ -4,9 +4,9 @@ export default {
         state.isLogin = payload
     },
 
-    userLogin(state, payload){
+    updateStatus(state, payload){
 
-        console.log('in userLogin')
+        console.log('in updateStatus')
         console.log(payload)
         state.username = payload.username,
         state.email = payload.email,
