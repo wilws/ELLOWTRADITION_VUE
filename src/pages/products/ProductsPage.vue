@@ -1,10 +1,11 @@
 <template>
     <section class="section-3">
+        <div class="cart-diamond"><i class="fa-solid fa-gem"></i></div>
         
         <!-- roll (left part) -->
         <div class="roll">
             <ul>
-                <li v-for="(product,index) in products" :key="product._id" class="product" @click="viewProduct(index, $event)">
+                <li v-for="(product,index) in products" :key="product._id" class="product" @click="viewProduct(index, $event)" :ref="'li'+ index">
                     <img :src="require(`@/assets/products/${product.imageUrl1}`)" alt=""/>
                     <h3>{{ product.name }}</h3>
                 </li>
@@ -37,8 +38,8 @@
             
                 <!-- images-wrapper -->
                 <div class="images-wrapper">
-                    <div class="picture-frame">
-                       
+
+                    <div class="picture-frame">    
                         <div class="img-1-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[0].scale}` }"><img v-bind:style="{ left: imagesStyle[0].left}" class="img-1" :src="require(`@/assets/products/${clickedProduct.imageUrl1}`)" alt=""/></div>
                         <div class="img-2-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[1].scale}` }"><img v-bind:style="{ left: imagesStyle[1].left }" class="img-2" :src="require(`@/assets/products/${clickedProduct.imageUrl2}`)" alt=""/></div>
                         <div class="img-3-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[2].scale}` }"><img v-bind:style="{ left: imagesStyle[2].left }" class="img-3" :src="require(`@/assets/products/${clickedProduct.imageUrl3}`)" alt=""/></div>
@@ -46,19 +47,20 @@
                         <div class="img-5-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[4].scale}` }"><img v-bind:style="{ left: imagesStyle[4].left }" class="img-5" :src="require(`@/assets/products/${clickedProduct.imageUrl5}`)" alt=""/></div>
                     </div>
 
-                    <button class="backward-btn" @click="showPreviousImage"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button class="forward-btn" @click="showNextImage"><i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn backward-btn" @click="showPreviousImage"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button class="btn forward-btn" @click="showNextImage"><i class="fa-solid fa-arrow-right"></i></button>
+
+                    <button @click="addtoCart(clickedProduct._id)" class="cart-btn">add to cart</button>
                     
-                    <!-- <button class="add-to-card">add to card</button> -->
                     <div class="progress-wrapper">
-                        <h2 class="progress"></h2>
-                        <div class="circles-wrapper">
+                        <!-- <h2 class="progress"></h2> -->
+                        <!-- <div class="circles-wrapper"> -->
                             <span class="circle-1"></span>
                             <span class="circle-2"></span>
                             <span class="circle-3"></span>
                             <span class="circle-4"></span>
                             <span class="circle-5"></span>
-                        </div>
+                        <!-- </div> -->
                     </div>
 
                     <div class="price-tag-wrapper">
@@ -136,6 +138,7 @@ export default {
             clickedProduct : {
                 isSet : false,
                 name : String,
+                id:String,
                 price : Number,
                 description : String,
                 imageUrl1 : String,
@@ -171,8 +174,15 @@ export default {
                     left:"0vw"
                 }
                 
-            ]
+            ],
+
+            cartAnimationinProgress : false
         }
+    },
+
+    mounted(){
+        // Pre set the landing page
+        this.viewProduct(1,false);
     },
 
 
@@ -182,19 +192,7 @@ export default {
         // await this.$store.dispatch('auth/LoginValidation')          // check if login valid. If not valid. will reset user data in veux 
         // await this.loadProducts()                                   // Load Products from database and store in veux
         this.products = this.$store.getters['products/products'];   // Get products from veux
-
-
-        // For dev use:
-        // this.viewProduct(0);
-        
-        
-
-
         this.checkIndexPage();
-
-        
-
-    
     },
 
     methods:{
@@ -206,27 +204,35 @@ export default {
             }
         },
 
-    
 
-        viewProduct(i, event){
-  
+        async viewProduct(i, event){
 
-            const products = document.querySelectorAll(".product");
-            console.log(products)
+            // When click the pic in roll area, show product in the right hand side.
+            // If event is "False" meaning this function is not triggered by clicking but during mounted 
+
+            const products = await document.querySelectorAll(".product");   
             products.forEach((product)=>{
-                if (product.classList.contains("clicked")){
+                if (product.classList.contains("clicked")){                 // remove all ".clicked" class, so as to un-select the image
                     product.classList.remove("clicked")
                 }
             });
+            if (!event){                                                    
+                products[0].classList.add("clicked");               
+            }else{
+                event.target.parentNode.classList.add("clicked");           // Add ".clicked" to the selected product in the roll area
+            }
+        
 
-            const clickedParent = event.target.parentNode
-            clickedParent.classList.add("clicked")
-            this.reSetStyle(); 
-            this.imgNo = 0;
-            
+            this.imagesStyle.forEach((style)=>{                             // Reset the images's div and img  style 
+                style.scale = 1.5;
+                style.left = "0vw";
+            })
+
+            this.imgNo = 0;                                                 // Set the current display image as 0 (ready to show the first img)
             this.clickedProduct = {
                     isSet:true,
                     name : this.products[i].name,
+                    id : this.products[i]._id,
                     price : this.products[i].price.$numberDecimal,
                     description : this.products[i].description,
                     imageUrl1 : this.products[i].imageUrl1,
@@ -235,96 +241,50 @@ export default {
                     imageUrl4 : this.products[i].imageUrl4,
                     imageUrl5 : this.products[i].imageUrl5,
             },
-
-
-            setTimeout(()=>{
-                this.imagesStyle[0].scale = 1;
-
-            },1000)
-
-
-
-    
+              
             
-            // style.animation = "swing 1s forwards"
+            this.$nextTick(() => {                                                  // After setting the clicked product :
+                this.progressCircleController(0);                                   // Animation : Fill the first progress circle
 
-
-
-               
-            this.$nextTick(() => {
-
-                const img1 = document.querySelector(".img-1-wrapper");
+                const img1 = document.querySelector(".img-1-wrapper");              // Animation : Rescale the first image
                 img1.style.transition = "transform 1s";
                 this.imagesStyle[0].scale = 1;
 
-
-                const priceTag = document.querySelector(".price-tag-wrapper");
-                if (!priceTag.classList.contains("animated")){
-                    priceTag.classList.add("animated");
+                
+                const priceTag = document.querySelector(".price-tag-wrapper");      // Animation : swing the price tag
+                if (!priceTag.classList.contains("animated")){                      // if class "animated" not attached
+                    priceTag.classList.add("animated");                             // add it
                 } 
-
-                setTimeout(()=>{
+                setTimeout(()=>{                                                    // Remove class "animated" after .31s
                     priceTag.classList.remove("animated");
                 },3100)
-
-
-
             })    
         },
 
-        reSetStyle(){
-            this.imagesStyle=[
-                {
-                    scale:1.5,
-                    left:"0vw"
-                },
-                {
-                    scale:1.5,
-                    left:"0vw"
-                },
-                {
-                    scale:1.5,
-                    left:"0vw"
-                },
-                {
-                    scale:1.5,
-                    left:"0vw"
-                },
-                {
-                    scale:1.5,
-                    left:"0vw"
-                }
-                
-            ]
+        progressCircleController(i){
+            // Coloring the circle representating the current image
+            document.querySelectorAll(".progress-wrapper span").forEach((circle)=>{
+                circle.style.backgroundColor ="transparent";
+            });
+            document.querySelector(`.circle-${i+1}`).style.backgroundColor =  "#000";
         },
 
 
-        // Images display function
-
         showPreviousImage(){
-
-            console.log('from imgNo:', this.imgNo);
-            
             this.imgNo--;
-            console.log('back to imgNo:', this.imgNo);
             if(!this.firstAndlastImageControl(this.imgNo)){
-                console.log('this is not backwarding from 0 to -1 imgNo:', this.imgNo);
-                this.imagesStyle[this.imgNo].left = "0vw";                              // display in-coming section
+                this.imagesStyle[this.imgNo].left = "0vw";       // display in-coming section
                 this.imagesStyle[this.imgNo].scale =1;           // scale back in-coming section
                 this.imagesStyle[this.imgNo + 1].scale =1.5;     // scale up the out-going section
             }
         },
 
-
         showNextImage(){
-            console.log('from imgNo:', this.imgNo);
             this.imgNo++;
-            console.log('go to imgNo:', this.imgNo);
             if(!this.firstAndlastImageControl(this.imgNo)){
-                console.log('this is not forwarding from 4 to 5 imgNo:', this.imgNo);
-                this.imagesStyle[this.imgNo - 1].left = "-100vw";                   // remove out-going section
-                this.imagesStyle[this.imgNo].scale = 1;      // Scale back in-coming section
-                this.imagesStyle[this.imgNo - 1].scale = 1.5;  // Re - Scale back out-going section
+                this.imagesStyle[this.imgNo - 1].left = "-100vw";   // remove out-going section
+                this.imagesStyle[this.imgNo].scale = 1;             // Scale back in-coming section
+                this.imagesStyle[this.imgNo - 1].scale = 1.5;       // Re - Scale back out-going section
             }
         },
 
@@ -336,9 +296,7 @@ export default {
 
             let bool = false;
             
-            if (i<0) {
-                console.log('this is backwarding from 0 to -1 imgNo:', this.imgNo);
-        
+            if (i<0) {        
                 let counter = 0
                 this.imagesStyle.forEach((image)=>{
                     counter++;
@@ -348,18 +306,12 @@ export default {
                     }
                     image.left="-100vw";
                 });
-                
                 this.imgNo = 4;
-                 console.log('reset imgNo:', this.imgNo);
-                
                 this.imagesStyle[0].scale = 1.5;
                 this.imagesStyle[4].scale = 1;
                 bool = true;
             }
-
             if (i>4) {
-                console.log('this is forwarding from 4 to 5 imgNo:', this.imgNo);
-                
                 this.imagesStyle.forEach((image)=>{
                     image.left="0vw";
                 });
@@ -369,12 +321,69 @@ export default {
                 this.imagesStyle[0].scale = 1;
                 bool = true;
             } 
-
+            this.progressCircleController(this.imgNo);
             return bool
             
         },
 
+        addtoCartAnimation(){
+
+            this.cartAnimationinProgress = true;                        // Prevent over trigger the function while the function is still in progress
+
+            // Add rotation effect on "add to cart" button
+            const cartBtn = document.querySelector(".cart-btn");
+            cartBtn.classList.add("clicked");
+
+
+            // Get cart icon's viewport
+            const cartIcon = document.querySelector(".cart-icon");
+            const cartIcon_viewport = cartIcon.getBoundingClientRect();
+            const cartIcon_top = cartIcon_viewport.top;
+            const cartIcon_left = cartIcon_viewport.left;
+   
+   
+            // Get cart button's viewport
+            const cartBtn_Viewport = cartBtn.getBoundingClientRect();
+            const cartBtn_left = cartBtn_Viewport.left;
+            const cartBtn_top = cartBtn_Viewport.top;
+
+
+            // Set diamond moving path
+            const originTop = `${cartBtn_top}px`;
+            const originLeft =  `${cartBtn_left}px`;
+            const distTop = `${cartIcon_top}px`;
+            const distLeft =  `${cartIcon_left - 80}px`;
+    
+            document.documentElement.style.setProperty('--diamond-origin-top', originTop);
+            document.documentElement.style.setProperty('--diamond-origin-left', originLeft);
+            document.documentElement.style.setProperty('--diamond-dist-top', distTop);
+            document.documentElement.style.setProperty('--diamond-dist-left', distLeft);
+
+            // Add diamond effect 
+            const diamond = document.querySelector(".cart-diamond");
+            diamond.classList.add('move');
+            cartIcon.classList.add('addCart');
+
+            setTimeout(()=>{                                            // Finish all animation
+                diamond.classList.remove('move');
+                cartBtn.classList.remove("clicked");
+                this.cartAnimationinProgress = false;
+            },2000);
+            setTimeout(()=>{
+                cartIcon.classList.remove("addCart");
+            },4000);
+        },
+
+
         async addtoCart(p){
+
+            if (this.cartAnimationinProgress){                           // If animation is still in progress, quite the function to stop further triggering
+                return
+            } 
+
+            this.addtoCartAnimation()
+
+
             const a = this.$store.getters['cart/getCart']
             console.log("before add",JSON.parse(JSON.stringify(a)))
             try {
@@ -384,6 +393,9 @@ export default {
 
                 const b = this.$store.getters['cart/getCart']
                 console.log("after add",JSON.parse(JSON.stringify(b)))
+
+              
+                
 
             }catch(err){
 
@@ -772,7 +784,7 @@ export default {
     z-index:96;
 }
 
-.display-product .images-wrapper button{
+.display-product .images-wrapper .btn{
     position: absolute;
     width: 4rem;
     height: 4rem;
@@ -787,27 +799,172 @@ export default {
     align-items: center;
     justify-content: center;
     transition: all .5s;
+    margin: 0 1.5rem;
 }
 
-.display-product .images-wrapper button:hover{
+
+
+.display-product .images-wrapper .btn:hover{
     background-color:black;
     color:white
 }
 
+.display-product .images-wrapper .cart-btn{
+position: absolute;
+    bottom: -1.5rem;
+    color: #fff;
+    left: 2rem;
+    width: 16.4rem;
+    height: 5rem;
+    background-color: #3f638c;
+    font-size: 2rem;
+    border-radius: 7px;
+    border: #868282 0.2rem solid;
+    z-index: 101;
+    text-transform: uppercase;
+    box-shadow: 0.2rem 0.4rem 0.5rem rgb(106 106 106);
+    cursor: pointer;
+    font-weight: 100;
+    transition: transform .5s;
+    overflow: hidden;
+    FONT-SIZE: 1.2rem;
+    letter-spacing: 0.6rem;
+    padding-left: 0.5rem;
+}
+
+.display-product .images-wrapper .cart-btn::before{
+    content:"";
+    width: 10rem;
+    height: 5rem;
+    position: absolute;
+    top:0;
+    left:-11%;
+        background: 
+  linear-gradient(
+        to right, 
+        rgba(255, 255, 255, 0.13) 0%,
+        rgba(255, 255, 255, 0.13) 77%,
+        rgba(255, 255, 255, 0.5) 92%,
+        rgba(255, 255, 255, 0.0) 100%
+    );
+    opacity: 0.6;
+    transform:skewX(20deg);
+    /* transition: transform .5s; */
+    /* animation: shinning 3s infinite; */
+}
+
+
+
+.cart-btn:hover{
+    transform:scale(1.2);
+}
+.cart-btn:hover:before {
+    animation: shinning 4s infinite;
+}
+
+.cart-btn.clicked{
+    transform: scale(1.2);
+    animation: cartBtnRotate 2s ;
+}
+
+.cart-diamond{
+    position:fixed;
+    visibility: hidden;
+    z-index:101;
+    width:10rem;
+    height:10rem;
+    left:var(--diamond-origin-left);
+    top: var(--diamond-origin-top);
+}
+
+.cart-diamond i{
+    position: absolute;
+    top: 0;
+    left:0;
+    font-size: 3rem;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient( to left, rgb(248 0 0) 0%, rgb(252 9 9 / 13%) 77%, rgb(170 0 0 / 50%) 92%, rgb(162 18 18 / 0%) 100% );
+    animation: diamondRotate 2s infinite;
+}
+
+.cart-diamond.move {
+    visibility: visible;
+    animation: x 2s linear forwards,y 2s forwards cubic-bezier(0,-1.7,1,-1.7);
+}
+
+
+:root {
+    --diamond-origin-top: 0;
+    --diamond-origin-left: 0;
+    --diamond-dist-top: 0;
+    --diamond-dist-left: 0;
+}
+
+@keyframes x {
+   to {
+     left: var(--diamond-dist-left);
+   }
+}
+@keyframes y {
+   to {
+     top:var(--diamond-dist-top);
+   }
+}
+
+
+@keyframes diamondRotate {
+    0%{
+        transform:rotate(0) scale(1);
+    }
+    50%{
+         transform:rotate(360deg) scale(1);
+    }
+    100%{
+         transform:rotate(720deg) scale(1);
+    }
+}
+
+
+
+@keyframes cartBtnRotate {
+    0%{
+        transform:rotate(0) scale(1.2);
+    }
+    50%{
+         transform:rotate(720deg) scale(1.2);
+    }
+    70%{
+         transform:rotate(720deg) scale(1.2);
+    }
+    100%{
+         transform:rotate(720deg) scale(1.2);
+    }
+}
+
+@keyframes shinning {
+    0%{
+        transform:skewX(20deg) translate(-11rem) ;
+    }
+    90%{
+        transform:skewX(20deg) translate(200rem);
+    }
+    100%{
+        transform:skewX(20deg) translate(200rem);
+    }
+}
+
+
 .display-product .images-wrapper button.backward-btn {
     left:0;
 }
-/* button.backward-btn i {
-    transform:rotate(45deg);
-} */
+
 
 
 .display-product .images-wrapper button.forward-btn {
     right:0;
 }
-/* button.forward-btn i{
-    transform:rotate(-45deg);
-} */
+
 
 .display-product .images-wrapper .picture-frame img.img-1.resize {
      transform: scale(1);
@@ -828,7 +985,7 @@ export default {
     width: 12rem;
     height: 13rem;
     z-index: 100;
-    transform: rotate(-5deg);
+    transform: rotate(0deg);
     transform-origin: top;
     /* animation: swing 3s 2s forwards; */
 }
@@ -837,11 +994,38 @@ export default {
     animation: swing 3s forwards;
 }
 
+.price-tag-wrapper:hover{
+    animation: swing 3s forwards;
+}
 
+.display-product .images-wrapper .progress-wrapper{
+    position:absolute;
+    top:2rem;
+    left:2rem;;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width:2rem;
+    height: 13rem;
+    /* background-color: royalblue; */
+    z-index: 101;
+}
+
+.progress-wrapper span{
+    border: thin solid #707070;
+    border-radius: 50%;
+    width:1rem;
+    height:1rem;
+    /* margin-top:1rem; */
+}
 
 
 @keyframes swing {
     0%{
+        transform: rotate(0deg);
+    }
+    10%{
         transform: rotate(-20deg);
     }
     25%{
@@ -854,7 +1038,7 @@ export default {
         transform: rotate(10deg);
     }
     100%{
-        transform: rotate(-5deg);
+        transform: rotate(0deg);
     }
 }
 

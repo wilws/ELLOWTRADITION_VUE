@@ -398,7 +398,7 @@ left:-50vw;
   /* background-color: rosybrown; */
 }
 .short-cut i{
-  color: #feffff;
+  /* color: #feffff; */
   margin-top:3rem;
   opacity: 0.6;
   cursor: pointer;
@@ -414,15 +414,25 @@ left:-50vw;
 }
 
 .short-cut .login-icon{
+
   font-size: 3.5rem;
 }
 
 .short-cut .cart-icon{
+
   font-size: 3rem;
   margin-left:-0.2rem;
 }
 
+.notIdx .left-bar .short-cut i.cart-icon.addCart,
+.cart-icon.addCart{
+  opacity: 1;
+  color: #ff00a3;
+  transition: all 1s 2s;
+}
+
 .short-cut .account-icon{
+
   font-size: 3.5rem;
   margin-left:0.2rem;
 }
