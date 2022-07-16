@@ -15,7 +15,10 @@
             <h3>Total :</h3>
             <div class=total-amount>$ 10,423</div>
         </div>
-        <button class="checkout-btn"  @click="checkout">Checkout</button>
+        <button class="checkout-btn"  @click="checkout">
+            <!-- div<i class="fa-solid fa-money-check-dollar"></i> -->
+            <p>Checkout ></p>
+        </button>
     </div>
     <!-- End of cart-summary -->
 
@@ -46,20 +49,6 @@
     <!-- End of cart-items -->
 
 </section>
-
-    <!-- <h1>This is Cart page</h1>
-
-
-    <ul v-for="item in cart" :key="item.productId">
-        <li>{{item.productId}}</li>
-        <li>{{item.name}}</li>
-        <li>{{item.quantity}}</li>
-        <li>{{item.subtotal}}</li>
-    </ul>
-
-    <p>Total Price : {{ totalPrice}}</p>
-
-    <button @click="checkout">Checkout</button> -->
 </template>
 
 
@@ -68,21 +57,19 @@
 <script>
 
 
-import checkIndexPage from '../../mixins/checkIndexPage';
 export default {
-    mixins: [checkIndexPage],
+ 
     data() {
         return {
             cart:[],
             products:[],
-            
         }
     },
    
     async created(){
         await this.loadProducts()
         this.cartInfoConstruction();  
-        this.checkIndexPage();
+
     },
 
     computed:{
@@ -91,9 +78,6 @@ export default {
             this.cart.forEach(item =>{
                 i += item.subtotal;
             })
-            console.log(this.cart)
-
-            console.log(i)
             return i
         }
     },
@@ -120,8 +104,7 @@ export default {
                         product : a,
                         subtotal: +c.quantity * +a.price.$numberDecimal
                     }
-            });
-            console.log(this.cart)       
+            });       
         },
 
         checkout(){
@@ -162,10 +145,11 @@ export default {
     box-shadow: .2rem .2rem 1rem #000000;
     border-radius: 1rem;
     padding: 2rem;
+    perspective: 100rem;
 }
 
 .cart-summary h1{
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: 200;
     letter-spacing: 1rem;
     margin: 1rem auto;
@@ -180,11 +164,12 @@ export default {
 .cart-summary ul li{
     width:100%;
     color:#FFFCFC;
-    font-size: 1.3rem;
+    font-size: 2rem;
     font-weight: 100;
     margin:3rem 0rem;
     text-align: left;
     letter-spacing: 0.8rem;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .cart-summary ul li span{
@@ -210,23 +195,23 @@ export default {
 
 .cart-summary .total-amount-wrapper h3{
     color:#FFFCFC;
-    font-size: 3rem;
+    font-size: 2rem;
     margin:4rem 0rem;
     text-align: left;
     font-weight:200;
-    letter-spacing: .4rem;
+    letter-spacing: 0.8rem;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .cart-summary .total-amount-wrapper .total-amount{
     position: relative;
-    padding-top: 3rem;
+    padding-top: 5rem;
     width:100%;
     height: 100%;
     font-family: 'Srisakdi', cursive;
-    font-size: 4rem;
     font-weight:500;
     text-align: center;
-    font-size: 6rem;
+    font-size: 4rem;
     color: azure;
 }
 
@@ -252,35 +237,58 @@ export default {
 .total-amount::before{}
 
 .cart-summary .checkout-btn{
-    /* position: absolute;
-    bottom: 1rem; */
     position: relative;
-    margin-top:10rem;
+    margin-top: 13rem;
     width: 100%;
-    height: 5.6rem;
-    letter-spacing: 2rem;
-    font-weight: 500;
-    font-size: 2rem;
-    color: rgb(250, 250, 250);
-    background-color: lightsteelblue;
+    height: 6rem;
+    letter-spacing: 1rem;
+    font-weight: 300;
+    font-size: 1.8rem;
+    color: gray;
+      background-color: ivory;
     box-shadow: 0.2rem 0.4rem 0.5rem rgb(106 106 106);
     cursor: pointer;
-    border-radius: 5rem;
+    border-radius: 1rem;
     border: #868282 0.2rem solid;
     transition: transform .5s;
     overflow: hidden;
-    text-align: center;
-    line-height: 5.6rem;
     text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 2%;
+    transition: transform 1s;
+    
+}
+
+/* .cart-summary .checkout-btn p{
+    position:absolute;
+    width:100%;
+    height: 100%;
+    text-align: left;  
+    z-index: 1;
+    background-color: ivory;
+} */
+
+.cart-summary .checkout-btn i{
+    position:absolute;
+    width:100%;
+    height: 100%;
+    font-size: 5rem;
+    color: gray;
+    text-align: center;
+    z-index: 3;
+    background-color: ivory;
+   
 }
 
 
 
 .cart-summary .checkout-btn::before{
     content:"";
-    width: 95%;
-    height: 5rem;
-    height:5.6rem;
+    width: 33rem;
+    height: 6rem;
     position: absolute;
     top:0;
     left:-11%;
@@ -294,26 +302,28 @@ export default {
     );
     opacity: 0.6;
     transform:skewX(20deg);
-    /* transition: transform .5s; */
-    /* animation: shinning 3s infinite; */
 }
 
+.checkout-btn:hover {
+    background-color: black;
+    color:ivory
+}
 
 .checkout-btn:hover:before {
-    animation: shinningCheckoutBtn 4s infinite;
+    animation:checkouthover 2s infinite;
 }
 
-@keyframes shinningCheckoutBtn {
+@keyframes checkouthover {
     0%{
-        transform:skewX(20deg) translate(-11rem) ;
-    }
-    90%{
-        transform:skewX(20deg) translate(200rem);
+        transform:translateX(-15rem) skewX(20deg);
     }
     100%{
-        transform:skewX(20deg) translate(200rem);
+        transform:translateX(100rem) skewX(20deg);
     }
 }
+
+
+
 
 /* End of cart-sumary */
 
@@ -393,8 +403,9 @@ export default {
     width:8rem;
     height:8rem;
     min-width: 8rem;
-    border: solid .05rem #707070;
-    border-radius: 5rem 5rem;
+    margin: 0 1rem;
+    border: solid .2rem #80835f;
+    border-radius: 1rem 1rem;
     overflow: hidden;
     cursor: pointer;
 }
@@ -477,4 +488,102 @@ export default {
 
 /* End of Section 4 */
 
+
+@media(max-width: 1080px){
+    .cart-item .name{
+        width: 14rem;
+        margin-right: 5rem;
+    }
+}
+
+@media(max-width: 1000px){
+    .cart-item .name{
+        width: 8rem;
+    }
+}
+
+@media(max-width: 940px){
+    .cart-item .name{
+        width: 0rem;
+    }
+}
+
+@media(max-width: 900px){
+    .section-4{
+        flex-direction: column-reverse;
+        overflow: scroll;
+    }
+    .cart-items {
+        width: 100%;
+        margin-left:0;
+        padding: 0.7rem 2rem 2rem 1rem;
+        overflow: unset;
+        height: unset;
+    }
+    .cart-item .name{
+        width: 33rem;
+        margin-right: 5rem;
+    }
+    .cart-summary{
+        width: 95%;
+        height: 99vh;
+        margin-bottom: 21px;
+    }
+}
+
+@media(max-width: 700px){
+    .cart-item .name{
+        width: 7rem;
+    }
+    .cart-item .subtotal{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-weight: bold;
+    }
+}
+
+@media(max-width: 520px){
+    .cart-item .name{
+        position: absolute;
+        top: 0.7rem;
+        width: 79%;
+        left: 1.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cart-item .subtotal{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-weight: bold;
+    }
+    .cart-item .img{
+        margin-top: 2rem;
+    }
+    .cart-item{
+        height:12rem;
+    }
+    .cart-item .qtyController{
+        margin-right: 0.2rem;
+    }
+
+    .cart-summary ul li{
+        font-size: 1rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .cart-summary .total-amount-wrapper .total-amount{
+        font-size:3rem;
+    }
+}
+
+@media(max-height:800px){
+    .cart-summary .checkout-btn{
+        margin-top: 6rem;
+        width: 100%;
+        height: 6rem;
+    }
+}
 </style>

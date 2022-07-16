@@ -51,25 +51,24 @@ export default {
 
 .start{
     position: relative;
-
-            width:100%;
-        height:100vh;
-
+    width:100%;
+    height:100vh;
     z-index: 20;
-    animation: AppStart2 3s 6s forwards;
+    animation: startingScreenDisappear 3s 4s forwards;
 }
 
 .start .logo{
     position:absolute;
     opacity: 0;
     transform: translateX(-50%) translateY(-50%); 
-    animation: AppStart1 5s forwards;
+    animation: startingLogoAnimation 4s forwards;
 }
 
-@keyframes AppStart1{
 
-    0%{
-        
+
+@keyframes startingLogoAnimation{
+
+    0%{   
         top:50%;
         right:50%;
         opacity: 0;
@@ -87,7 +86,7 @@ export default {
         right:50%;
         transform: translateX(50%) translateY(-50%); 
     }
-    90%{
+    /* 90%{
         top:2.5rem;
         right:2.5rem;
         opacity: 1; 
@@ -99,11 +98,17 @@ export default {
         right:2.5rem;
         opacity: 0; 
         transform: translateX(0) translateY(0); 
+    } */
+    100%{
+        top:50%;
+        right:50%;
+        opacity: 0;
+        transform: translateX(50%) translateY(-50%); 
     }
 }
 
 
-@keyframes AppStart2{
+@keyframes startingScreenDisappear{
     0%{
         width:100%;
         height:100vh;
@@ -114,7 +119,6 @@ export default {
         width:0%;
         height:0vh;
         opacity: 0;
- 
     }
 }
 
@@ -123,8 +127,19 @@ export default {
     position: absolute;
     width:30rem;
     top:2.5rem;
-    right:2.5rem;
+    /* right:2.5rem; */
+    right:-200rem;
     z-index: 10;
+    animation: whiteLogoMove 2s 11s forwards;
+}
+
+@keyframes whiteLogoMove {
+    0%{
+        right:-100rem;
+    }
+    100%{
+        right:2.5rem;
+    }
 }
 
 
@@ -279,5 +294,198 @@ export default {
 }
 
 /* End of Index Page */
+
+
+
+/* Responsive */
+@media (max-width:860px){
+    img.logo{
+        width: 16rem;
+        top: 1.1rem;
+    }
+
+    .banner{
+        position: absolute;
+        right:unset;
+        bottom:-30rem; 
+        left:50%;
+        transform:translateX(-50%);
+        width: 42rem;
+        height: 24.5rem;
+        /* animation: BannerDisplay 2s 9s forwards; */
+        animation: BannerDisplay 5s 9s forwards;
+        transform-origin:left;
+    }
+
+    .banner h3{
+        font-family: 'Mukta Vaani', sans-serif;
+        width: 100%;
+        font-weight: 200;
+        font-size: 3.1rem;
+        letter-spacing: 0.5rem;
+        text-align: justify;
+        margin-bottom: 0rem;
+        margin-top: 2rem;
+        margin-left: 0.5rem;
+    }
+
+    .banner p {
+        font-family: 'Mukta Vaani', sans-serif;
+        width: 100%;
+        font-weight: 500;
+        font-size: 6.5rem;
+        letter-spacing: 1.2rem;
+        text-align: center;
+        line-height: 6.5rem;
+    }
+
+    @keyframes BannerDisplay{
+        0%{
+        bottom: -30rem;
+        left:50%;
+        transform: rotateY(360deg) translateX(-50%);
+        }
+        100%{
+            bottom: 50%;
+            left:50%;
+            transform: rotateY(0deg) translateX(-50%) translateY(50%);
+        }
+    }
+}
+
+
+@media (max-width:510px){
+    img.logo{
+        width: 10rem;
+        top: 1.1rem;
+    }
+
+    .banner{
+        width: 36rem;
+        height: 21.5rem;
+    }
+
+    .banner h3 {
+        font-size: 2.4rem;
+        margin-top: 3.2rem;
+        margin-left: 0.0rem;
+    }
+
+    .banner p {
+        font-weight: 500;
+        font-size: 5rem;
+        line-height: 4.5rem;
+    }
+}
+@media (max-width:400px){
+    
+
+
+    .banner{
+        width: 26rem;
+        height: 15.5rem;
+    }
+
+    .banner h3 {
+        font-size: 1.3rem;
+        margin-top: 3.2rem;
+        margin-left: 0.0rem;
+    }
+
+    .banner p {
+        font-weight: 500;
+        font-size: 2.7rem;
+        line-height: 2.8rem;
+    }
+
+}
+
+
+@media (max-height:550px){
+    img.logo{
+        width: 10rem;
+        top: 1.1rem;
+    }
+
+    .banner{
+        position: absolute;
+        right:unset;
+        bottom:-30rem; 
+        left:50%;
+        transform:translateX(-50%);
+        width: 42rem;
+        height: 24.5rem;
+        animation: BannerDisplay 5s 9s forwards;
+        transform-origin:left;
+    }
+
+    .banner h3{
+        font-family: 'Mukta Vaani', sans-serif;
+        width: 100%;
+        font-weight: 200;
+        font-size: 3.1rem;
+        letter-spacing: 0.5rem;
+        text-align: justify;
+        margin-bottom: 0rem;
+        margin-top: 2rem;
+        margin-left: 0.5rem;
+    }
+
+    .banner p {
+        font-family: 'Mukta Vaani', sans-serif;
+        width: 100%;
+        font-weight: 500;
+        font-size: 6.5rem;
+        letter-spacing: 1.2rem;
+        text-align: center;
+        line-height: 6.5rem;
+    }
+
+    @keyframes BannerDisplay{
+        0%{
+        bottom: -30rem;
+        left:50%;
+        transform: rotateY(360deg) translateX(-50%);
+        }
+        100%{
+            bottom: 50%;
+            left:50%;
+            transform: rotateY(0deg) translateX(-50%) translateY(50%);
+        }
+    } 
+
+    .header nav li {
+        margin-bottom: 0rem;
+    }
+
+    .header nav {
+        position: absolute;
+        top: 14rem;
+    }
+
+}
+
+
+@media (max-height:550px) and (max-width:400px) {
+     .banner{
+        width: 26rem;
+        height: 15.5rem;
+    }
+
+    .banner h3 {
+        font-size: 1.3rem;
+        margin-top: 3.2rem;
+        margin-left: 0.0rem;
+    }
+
+    .banner p {
+        font-weight: 500;
+        font-size: 2.7rem;
+        line-height: 2.8rem;
+    }
+}
+
+
+/* End of responsie  */
 
 </style>

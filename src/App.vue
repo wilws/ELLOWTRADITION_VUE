@@ -1,82 +1,89 @@
 
 <template>
-<!-- <the-header></the-header> -->
+ 
 
 <div class="container">
 
- <!-- header -->
- <header class="header">
-      <img src="@/assets/black_logo.png"  alt="logo">
-      <div class="line line-1"></div>
-      <div class="line line-2"></div>
-      <div @click="MenuControl" class="close-menu-btn">
-        <div class="cross-line-1"></div>
-        <div class="cross-line-2"></div>
-      </div>
-        
-      <nav>
-        <ul @click="MenuControl">
-          <li>
-            <router-link class="router-link" to="/">Home</router-link>
-          </li>
-          <li>
-            <router-link class="router-link" to="/aboutus">About Us</router-link>
-          </li>
-          <!-- <li>
-            <router-link class="router-link" to="/story">Story</router-link>
-          </li> -->
-          <li>
-            <router-link class="router-link" to="/products">Products</router-link>
-          </li>
-          <li>
-            <router-link class="router-link" to="/invoices">Invoices</router-link>
-          </li>
-          <li>
-            <router-link class="router-link" to="/cart">Cart</router-link>
-          </li>
-          <li>
-            <router-link class="router-link" to="/auth">Login</router-link>
-          </li>
-        </ul>
+  <!-- header -->
+  <header class="header">
+        <img src="@/assets/black_logo.png"  alt="logo">
+        <div class="line line-1"></div>
+        <div class="line line-2"></div>
+        <div @click="MenuControl" class="close-menu-btn">
+          <div class="cross-line-1"></div>
+          <div class="cross-line-2"></div>
+        </div>
+          
+        <nav>
+          <ul @click="MenuControl">
+            <li>
+              <router-link class="router-link" to="/">Home</router-link>
+            </li>
+            <li>
+              <router-link class="router-link" to="/aboutus">About Us</router-link>
+            </li>
+            <li>
+              <router-link class="router-link" to="/products">Products</router-link>
+            </li>
+            <li>
+              <router-link class="router-link" to="/invoices">Invoices</router-link>
+            </li>
+            <li>
+              <router-link class="router-link" to="/cart">Cart</router-link>
+            </li>
+            <li>
+              <router-link class="router-link" to="/auth">Login</router-link>
+            </li>
+          </ul>
         <div class="social-media">
           <i class="fab fa-facebook fb-icon"></i>
           <i class="fab fa-instagram-square ig-icon"></i>
         </div>
       </nav>
-  </header>
-  <!-- End of Header -->
+    </header>
+    <!-- End of Header -->
 
-  <!-- Left Bar -->
-  <div class="left-bar">
-    <div @click="MenuControl" class="menu-btn">
-      <div class="line-1"></div>
-      <div class="line-2"></div>
-      <div class="line-3"></div>
-    </div>
+    <!-- Left Bar -->
+    <div class="left-bar">
+      <div @click="MenuControl" class="menu-btn">
+        <div class="line-1"></div>
+        <div class="line-2"></div>
+        <div class="line-3"></div>
+      </div>
 
-    <div class="slogan">
-      <h3>REDISCOVER & SHARE</h3>
-    </div>
+      <div class="slogan">
+        <h3>REDISCOVER & SHARE</h3>
+      </div>
 
-    <div class="short-cut">
-      <i class="login-icon fa-regular fa-circle-user"></i>
-      <i class="cart-icon fa-solid fa-cart-shopping"></i>
-      <i class="account-icon fa-solid fa-receipt"></i>  
+      <div class="short-cut">
+        <div @click="isSingUpPageOpen=true"><i class="login-icon fa-regular fa-circle-user"></i></div>
+        <router-link class="router-link" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
+      </div>
     </div>
+    <!-- End of Left Bar -->
+
+
+    <!-- RouterView -->
+    <div class="routerView">
+    <router-view v-slot="slotProps">
+        <transition>
+          <component :is="slotProps.Component"></component>
+        </transition>
+    </router-view>
+    </div>
+    <!-- End of RouterView -->
   </div>
-  <!-- End of Left Bar -->
+  <!-- End of Container -->
 
 
-  <!-- RouterView -->
-  <div class="routerView">
-  <router-view v-slot="slotProps">
-      <transition>
-        <component :is="slotProps.Component"></component>
-      </transition>
-  </router-view>
-  </div>
-  <!-- End of RouterView -->
-</div>
+
+  <!-- login -->
+  <Teleport to="body">
+      <div v-if="isSingUpPageOpen" class="auth-wrapper"> 
+        <auth-page @closeSignUpPage = "closeSignUpPage"></auth-page>
+      </div>
+  </Teleport>
+  <!-- end of login  -->
 
 </template>
 
@@ -84,39 +91,33 @@
 
 
 <script>
-// import TheHeader from './components/layout/TheHeader.vue';
 
-
+import checkIndexPage from './mixins/checkIndexPage';
+import AuthPage from './pages/auth/AuthPage.vue'
 export default {
 
-
- 
-  // components: {
-  //   TheHeader
-  // }
+  components:{AuthPage},
   
-
-  methods:{
-    MenuControl(){
-      document.querySelector(".container").classList.toggle("change");
-    },
-    notIndex(){
-      if (!document.querySelector(".container").classList.contains('notIdx')){
-        document.querySelector(".container").classList.add("notIdx");
-      }
-    },
-    removeIndex(){
-      if (document.querySelector(".container").classList.contains('notIdx')){
-            document.querySelector(".container").classList.remove("notIdx");
-      }
+  mixins: [checkIndexPage],
+  data(){
+    return {
+      isSingUpPageOpen : false,
     }
   },
-
-  created(){
-
-        //  this.checkIndexPage();
+  watch: {
+    '$route'() {
+      this.checkIndexPage();
+    }
+  },
+  methods:{
+    MenuControl(){
+        document.querySelector(".container").classList.toggle("change");
+    },
+    closeSignUpPage(){
+      console.log('here')
+        this.isSingUpPageOpen = false;
+    }
   }
-
 }
 </script>
 
@@ -135,6 +136,7 @@ export default {
   /* font-family: 'Josefin Slab',serif; */
 }
 
+
 html {
   font-size: 62.5%;
 }
@@ -143,6 +145,7 @@ html {
   width:100%;
   height:100vh;
   perspective: 100rem;
+  overflow: hidden;
 }
 
 .routerView{
@@ -151,7 +154,6 @@ html {
   background-color:white;
   transition: transform .6s;
   box-shadow: 4.5rem 3.5rem 2rem #aaa;
-
 }
 
 .change .routerView{
@@ -195,12 +197,12 @@ html {
 
 .header{
 position: absolute;
-left:-50vw;
+left:-100vw;
  width:23vw;
  height:100%;
  background-color: #fff;
  z-index: 100;
- transition: left .5s;
+ transition: left .4s .1s;
 }
 
 .change .header{
@@ -300,21 +302,46 @@ left:-50vw;
 .left-bar{
   position:fixed;
   top:0;
-  left:0;
-  width:10rem;
+  left:0rem;
+  width:8rem;
   height: 100%;
   z-index: 100;
   opacity: 1;
-  transition: opacity 10s 5s;
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; */
+  transition: left .1s;
 }
 
+.indexAnimation .left-bar{
+  left:-100rem;
+  animation: leftBarMove 3s 10s forwards;
+}
+
+
+@keyframes leftBarMove {
+    0%{
+        left:-100rem;
+    }
+    100%{
+        left:0rem;
+    }
+}
+
+
+.left-bar.clickedProduct,
 .change .left-bar{
-  opacity: 0;
+  left:-11rem;
+  /* color:transparent; */
   visibility: hidden;
+}
+
+.left-bar div{
+  visibility:visible;
+  transition: visibility .1s .55s;
+  /* transition: all .1s; */
+}
+
+.left-bar.clickedProduct div,
+.change .left-bar div{
+  visibility:hidden;
 }
 
 .notIdx .left-bar .menu-btn div{
@@ -334,36 +361,16 @@ left:-50vw;
   flex-direction: column;
   align-content: center; 
    cursor: pointer;
-  /* justify-content: center; */
- 
 }
-
-/* .change .menu-btn{
-  opacity: 0;
-  visibility: hidden;
-} */
 
 .menu-btn div{
  width:100%;
  height: .1rem;
  background-color: #feffff;
  margin-bottom: 1rem;
-
 }
 
-.change .menu-btn .line-1{
-  transform:rotate(90deg) translatex(1rem);
-}
 
-.change .menu-btn .line-2{
-  /* visibility: hidden;
-  opacity: 0; */
-}
-
-.change .menu-btn .line-3{
-  visibility: hidden;
-  opacity: 0;
-}
 
 .slogan {
   position:absolute;
@@ -395,10 +402,10 @@ left:-50vw;
   left:2rem;
   display: flex;
   flex-direction: column;
-  /* background-color: rosybrown; */
 }
+
 .short-cut i{
-  /* color: #feffff; */
+  color: #feffff;
   margin-top:3rem;
   opacity: 0.6;
   cursor: pointer;
@@ -437,34 +444,127 @@ left:-50vw;
   margin-left:0.2rem;
 }
 
-
-
 /* End of left-bar */
 
 
 
+/* Responsive */
+@media (max-width:1060px){
+  .change .routerView{
+    left: 20vw;
+    transform: translateX(15rem) rotateY(-40deg);
+  }
+}
+@media (max-width:1056px){
+  .close-menu-btn {
+    top: 8rem;
+    right: -8rem;
+  }
+}
+
+
+@media (max-width:860px){
+  .change .routerView{
+    left: 23vw;
+    transform: translateX(15rem) rotateY(-40deg);
+  }
+}
+
+@media (max-width:650px){
+  .change .routerView{
+    left: 23vw;
+    transform: translateX(30rem) rotateY(0deg);
+  }
+    .close-menu-btn {
+    top: 8rem;
+    right: -13rem;
+  }
+    .header .line.line-1{
+    width:0;
+  }
+}
+
+  @media (max-width:510px){
+    .change .routerView{
+      left: 23vw;
+      transform: translateX(30rem) rotateY(0deg);
+    }
+
+
+  .close-menu-btn {
+    top: 8rem;
+    right: -13rem;
+  }
+}
+
+
+@media (max-height:670px){
+
+    .header nav {
+      top:14rem;
+    }
+    .header nav li {
+        margin-bottom: 2rem;
+    }
+
+    .header .social-media {
+        width: 100%;
+        margin-top: 3rem;
+    }
+    .header .line.line-1{
+       width:0;
+    }
+}
+
+@media (max-height:550px){
+
+    .header nav {
+      top:10rem;
+    }
+    /* .header nav li {
+        margin-bottom: 0rem;
+    } */
+
+    .header .social-media {
+        width: 100%;
+        margin-top: 3rem;
+    }
+    .header .line.line-1{
+       width:0;
+    }
+}
+
+@media (max-height:470PX){
+
+    .header nav {
+      top:10rem;
+    }
+    .header nav li {
+        margin-bottom: 1rem;
+    }
+}
+
+
 /* 
-.route-enter-from {
-  opacity: 0;
-  transform: translateY(-30px);
-}
 
-.route-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
+@media (max-height:550px) and (max-width:400px) {
+     .banner{
+        width: 26rem;
+        height: 15.5rem;
+    }
 
-.route-enter-active {
-  transition: all 0.3s ease-out;
-}
+    .banner h3 {
+        font-size: 1.3rem;
+        margin-top: 3.2rem;
+        margin-left: 0.0rem;
+    }
 
-.route-leave-active {
-  transition: all 0.3s ease-in;
-}
-
-.route-enter-to,
-.route-leave-from {
-  opacity: 1;
-  transform: translateY(0);
+    .banner p {
+        font-weight: 500;
+        font-size: 2.7rem;
+        line-height: 2.8rem;
+    }
 } */
+
+/* End of Responsive */
 </style>

@@ -6,7 +6,7 @@
         <div class="roll">
             <ul>
                 <li v-for="(product,index) in products" :key="product._id" class="product" @click="viewProduct(index, $event)" :ref="'li'+ index">
-                    <img :src="require(`@/assets/products/${product.imageUrl1}`)" alt=""/>
+                    <img :src="require(`@/assets/products/${product.imageUrl1}`)" alt="" />
                     <h3>{{ product.name }}</h3>
                 </li>
             </ul>
@@ -22,10 +22,10 @@
             <div v-if="!clickedProduct.isSet" class="logo">
                 <div class="box">
                     <div class="front">
-                        <img src="@/assets/black_logo.png" alt="">
+                        <img src="@/assets/black_logo.png" alt="" >
                     </div>
                     <div class="back">
-                        <img src="@/assets/black_logo.png" alt="">
+                        <img src="@/assets/black_logo.png" alt="" >
                     </div>
                 </div>
             </div>
@@ -38,13 +38,17 @@
             
                 <!-- images-wrapper -->
                 <div class="images-wrapper">
+                    <div @click="closeImg" class="close-btn">
+                        <div class="cross-line-1"></div>
+                        <div class="cross-line-2"></div>
+                    </div>
 
                     <div class="picture-frame">    
-                        <div class="img-1-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[0].scale}` }"><img v-bind:style="{ left: imagesStyle[0].left}" class="img-1" :src="require(`@/assets/products/${clickedProduct.imageUrl1}`)" alt=""/></div>
-                        <div class="img-2-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[1].scale}` }"><img v-bind:style="{ left: imagesStyle[1].left }" class="img-2" :src="require(`@/assets/products/${clickedProduct.imageUrl2}`)" alt=""/></div>
-                        <div class="img-3-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[2].scale}` }"><img v-bind:style="{ left: imagesStyle[2].left }" class="img-3" :src="require(`@/assets/products/${clickedProduct.imageUrl3}`)" alt=""/></div>
-                        <div class="img-4-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[3].scale}` }"><img v-bind:style="{ left: imagesStyle[3].left }" class="img-4" :src="require(`@/assets/products/${clickedProduct.imageUrl4}`)" alt=""/></div>
-                        <div class="img-5-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[4].scale}` }"><img v-bind:style="{ left: imagesStyle[4].left }" class="img-5" :src="require(`@/assets/products/${clickedProduct.imageUrl5}`)" alt=""/></div>
+                        <div class="img-1-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[0].scale}` }"><img v-bind:style="{ left: imagesStyle[0].left}" class="img-1" :src="require(`@/assets/products/${clickedProduct.imageUrl1}`)" alt="" /></div>
+                        <div class="img-2-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[1].scale}` }"><img v-bind:style="{ left: imagesStyle[1].left }" class="img-2" :src="require(`@/assets/products/${clickedProduct.imageUrl2}`)" alt="" /></div>
+                        <div class="img-3-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[2].scale}` }"><img v-bind:style="{ left: imagesStyle[2].left }" class="img-3" :src="require(`@/assets/products/${clickedProduct.imageUrl3}`)" alt="" /></div>
+                        <div class="img-4-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[3].scale}` }"><img v-bind:style="{ left: imagesStyle[3].left }" class="img-4" :src="require(`@/assets/products/${clickedProduct.imageUrl4}`)" alt="" /></div>
+                        <div class="img-5-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[4].scale}` }"><img v-bind:style="{ left: imagesStyle[4].left }" class="img-5" :src="require(`@/assets/products/${clickedProduct.imageUrl5}`)" alt="" /></div>
                     </div>
 
                     <button class="btn backward-btn" @click="showPreviousImage"><i class="fa-solid fa-arrow-left"></i></button>
@@ -128,9 +132,9 @@
 
 <script>
 // import { defineComponent } from '@vue/composition-api'
-import checkIndexPage from '../../mixins/checkIndexPage';
+
 export default {
-    mixins: [checkIndexPage],
+   
     data() {
         return{
             error:"",
@@ -176,13 +180,19 @@ export default {
                 
             ],
 
-            cartAnimationinProgress : false
+            cartAnimationinProgress : false,
+            imagesLoadedCounter : 0,
+            imagesLoadedlist : [],
+            windowResize  : false
         }
     },
 
     mounted(){
         // Pre set the landing page
-        this.viewProduct(1,false);
+        this.viewProduct(0,false);
+          
+        this.resize()                                   // if winder width less than 650px. layout will be reconstructed 
+        window.addEventListener("resize",this.resize);  // check if browser resied to 650px or less.
     },
 
 
@@ -192,10 +202,35 @@ export default {
         // await this.$store.dispatch('auth/LoginValidation')          // check if login valid. If not valid. will reset user data in veux 
         // await this.loadProducts()                                   // Load Products from database and store in veux
         this.products = this.$store.getters['products/products'];   // Get products from veux
-        this.checkIndexPage();
+        
+        this.resize()                                   // if winder width less than 650px. layout will be reconstructed 
+        window.addEventListener("resize",this.resize);  // check if browser resied to 650px or less.
     },
+    
 
     methods:{
+        resize(){
+            // add a class "resize" to "showcase"
+            this.closeImg();
+            let w = window.innerWidth;
+            if (w <= "650") {
+                if(!this.windowResize){
+                    document.querySelector(".showcase").classList.add("resize");
+                    this.windowResize = true;
+                }
+            } else {
+                if(this.windowResize){
+                    document.querySelector(".showcase").classList.remove("resize")
+                    this.windowResize = false;
+                }
+            }
+        },
+        imagesLoaded(){
+            console.log("enter images loaded");
+            this.imagesLoadedlist[this.imagesLoadedCounter] = true;
+            this.imagesLoadedCounter++;
+            console.log("after enter images loaded",this.imagesLoadedlist);
+        },
         async loadProducts(){
             try{
                 await this.$store.dispatch('products/loadProducts');
@@ -221,6 +256,7 @@ export default {
             }else{
                 event.target.parentNode.classList.add("clicked");           // Add ".clicked" to the selected product in the roll area
             }
+
         
 
             this.imagesStyle.forEach((style)=>{                             // Reset the images's div and img  style 
@@ -240,7 +276,16 @@ export default {
                     imageUrl3 : this.products[i].imageUrl3,
                     imageUrl4 : this.products[i].imageUrl4,
                     imageUrl5 : this.products[i].imageUrl5,
-            },
+            }
+
+
+            if(this.windowResize){
+                document.querySelector(".showcase").classList.add("showImg");
+
+                document.querySelector(".left-bar").classList.add("clickedProduct")
+            }
+
+
               
             
             this.$nextTick(() => {                                                  // After setting the clicked product :
@@ -300,7 +345,7 @@ export default {
                 let counter = 0
                 this.imagesStyle.forEach((image)=>{
                     counter++;
-                    console.log(counter)
+                  
                     if (counter > 4){
                         return
                     }
@@ -325,6 +370,11 @@ export default {
             return bool
             
         },
+
+        closeImg(){
+            document.querySelector(".showcase").classList.remove("showImg");
+             document.querySelector(".left-bar").classList.remove("clickedProduct")
+       },
 
         addtoCartAnimation(){
 
@@ -543,6 +593,7 @@ export default {
     position: absolute;
     width:100%;
     height: 100%;
+    object-fit: cover;
 }
 
 
@@ -970,12 +1021,7 @@ position: absolute;
      transform: scale(1);
 }
 
-.display-product .description{
-    width:100%;
-    height:calc(100vh - 55rem);
-    background-color: #FAFAFA;
-    padding: 2rem;
-}
+
 
 
 .display-product .images-wrapper .price-tag-wrapper{
@@ -996,6 +1042,34 @@ position: absolute;
 
 .price-tag-wrapper:hover{
     animation: swing 3s forwards;
+}
+
+.display-product .images-wrapper .close-btn{
+    position: absolute;
+    display: none;
+    top: 1rem;
+    right: 4rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    border-radius: 50% 50%;
+    transform: rotate(45deg);
+    padding: 0.3rem;
+    cursor: pointer;
+    z-index: 200;
+}
+
+.close-btn div{
+  width:100%;
+  height:.1rem;
+  background-color:#7D929B;;
+}
+
+.close-btn .cross-line-2{
+  transform:translateY(-0.05rem) rotate(90deg);
 }
 
 .display-product .images-wrapper .progress-wrapper{
@@ -1109,6 +1183,13 @@ position: absolute;
     /* font-family: Arial, Helvetica, sans-serif; */
 }
 
+.display-product .description{
+    width:100%;
+    height:calc(100vh - 55rem);
+    background-color: #FAFAFA;
+    padding: 2rem;
+    overflow: scroll;
+}
 
 
 .display-product .description h2{
@@ -1124,20 +1205,110 @@ position: absolute;
     font-weight: 100;
     color: #000;
     line-height: 2.3rem;
+    text-align: justify;
 }
 
 
 
 /* End of v-else*/
-
-
-
-
 /* End of showcase (right side) */
-
-
-
 /* End Products */
+
+
+/* Responsive */
+
+@media (max-width:1080px){
+    .roll{
+        width:18rem;
+    }
+    .showcase {
+        width: calc(100vw - 26rem);
+    }
+    .product {
+        height: 14vh;
+    }
+    .display-product .images-wrapper .price-tag-wrapper{
+          bottom: -2rem;
+    }
+}
+
+
+
+@media (max-width:650px){
+    .roll{
+        width:100vw;
+    }
+    .product {
+        height: 33vh;
+    }
+    .product h3 {
+        height: 6rem;
+        line-height: 7rem;
+        font-size: 2rem;
+        color: rgb(75, 74, 74);
+    }
+    .resize .display-product{
+        justify-content: unset;
+    }
+    .display-product .images-wrapper .close-btn{
+        display: flex;
+    }
+    .showcase.resize{
+        position: fixed;
+        left: -9rem;
+        width:103vw;
+        height: 100vh;
+        display: none;
+        z-index: 100;
+        transition: display .5s;
+    }
+
+    .showcase.resize.showImg{
+        display: unset;
+    }
+
+    .showcase.resize .images-wrapper{
+        height:30rem;
+    }
+
+    .showcase.resize .display-product .description{
+        height: 60rem;
+    }
+
+    .showcase.resize .display-product .images-wrapper .progress-wrapper{
+        top: 0rem;
+    }
+
+    .display-product .images-wrapper .cart-btn{
+        width: 10.4rem;
+        height: 3rem;
+        FONT-SIZE: .7rem;
+        letter-spacing: 0.2rem;
+    }
+
+    .display-product .images-wrapper .price-tag-wrapper{
+        transform: scale(0.5);
+        bottom: -9rem;
+        right: 0;
+    }
+}
+
+
+@media (max-width:400px){
+    .product {
+        height: 18vh;
+    }
+
+    .product h3{
+    height: 1.4rem;
+    line-height: unset;
+    font-size: .8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+}
+/* End of Responsive */
+
 
 
 </style>

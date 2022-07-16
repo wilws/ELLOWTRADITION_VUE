@@ -18,21 +18,6 @@
 
 
 
-<script>
-import checkIndexPage from '../../mixins/checkIndexPage';
-
-export default {
-    mixins: [checkIndexPage],
-
-    methods:{},
-
-    created(){
-        this.checkIndexPage();
-    }
-}
-</script>
-
-
 <style scoped>
 
 /* Section 2 About Us */
@@ -40,7 +25,6 @@ export default {
     width:100%;
     height:100vh;
     position: relative;
-    overflow: hidden; 
     perspective: 100rem;
 }
 
@@ -48,12 +32,24 @@ export default {
     position:absolute;
     top:0;
     left:13rem;
-    width:55rem;
+    width:50%;
+    height:100vh;
     display: flex;
     flex-direction: column;
     z-index: 10;
-    
+    overflow: scroll;
+    padding-right: 4rem;
+    text-align: justify;
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.section-2 div::-webkit-scrollbar {
+    display: none;
+}
+
+
 
 .section-2 div h1{
 font-weight: 100;
@@ -64,6 +60,7 @@ font-weight: 100;
 }
 
 .section-2 div p{
+    width:100%;
     font-size: 1.9rem;
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 300;
@@ -86,5 +83,51 @@ font-weight: 100;
 
 
 /* End of Section 2 */
+
+
+
+/* responsive */
+@media (max-width: 900px){
+    .section-2 div{
+        width:100%;
+        padding-right: 17rem;
+    }
+}
+
+@media (max-width: 600px){
+    .section-2 div h1{
+        text-align: center;
+        font-size: 5rem;
+    }
+    .section-2 div p{
+         font-size: 2rem;
+    }
+}
+
+@media (max-width: 460px){
+    .section-2 div h1{
+        text-align: center;
+        font-size: 4rem;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+    }
+    .section-2 div p{
+         font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 410px){
+    
+    .section-2 div h1{
+        font-size: 3rem;
+        letter-spacing: 0rem;
+    }
+    .section-2 div p{
+         /* font-size: 1.5rem; */
+    }
+}
+
+
+/* End of responsive */
 
 </style>
