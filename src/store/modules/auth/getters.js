@@ -1,6 +1,5 @@
 export default {
     getUser(state){
-
         return {
             username : state.username,
             email : state.email,

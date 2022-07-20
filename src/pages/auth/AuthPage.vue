@@ -15,12 +15,12 @@
         <h1 class="auth-header">sign up</h1>
         <img class="auth-img" src="~@/assets/simpLogo.jpg" alt="logo">
         <p class="auth-para1" >We are happy to have you to join us !</p>
-        <form>
-            <input class="auth-username" type="text" placeholder=" User Name">
-            <input class="auth-email" type="email" placeholder=" E-mail">
-            <input class="auth-password" type="password" placeholder=" Password">
-            <input class="auth-re-password" type="password" placeholder=" Password">
-            <button class="auth-btn">sign up</button>
+        <form @submit.prevent="authAction('SignUp')">
+            <input class="auth-username" type="text" placeholder=" User Name"  v-model.trim="username.val">
+            <input class="auth-email" type="email" placeholder=" E-mail" v-model.trim="email.val">
+            <input class="auth-password" type="password" placeholder=" Password" v-model.trim="password.val">
+            <input class="auth-re-password" type="password" placeholder=" Password" v-model.trim="repassword.val">
+            <button class="auth-btn" type="submit">sign up</button>
         </form>
         <p class="auth-para2">Already has an account?</p>
         <button class="auth-switch to-login" @click="switchBtn">log in</button>
@@ -28,7 +28,7 @@
         <!-- End of Sign up -->
 
         <!-- Login -->
-        <div class="auth-card log-in-card">
+        <div class="auth-card log-in-card" @submit.prevent="authAction('LogIn')">
 
         <button @click="$emit('closeSignUpPage');" class="close-menu-btn">
             <div class="cross-line-1"></div>
@@ -37,67 +37,30 @@
 
             <h1 class="auth-header">Log in</h1>
             <img class="auth-img" src="~@/assets/simpLogo.jpg" alt="logo">
-            <p class="auth-para1">Welcome Back !</p>
+            <p  class="auth-para1">Welcome Back !</p>
             <form>
-            <input class="auth-e-mail" type="email" placeholder=" E-mail">
-            <input class="auth-password" type="password" placeholder=" Password">
-            <button class="auth-btn">log in</button>
+            <input class="auth-e-mail" type="email" placeholder=" E-mail" v-model.trim="email.val">
+            <input class="auth-password" type="password" placeholder=" Password" v-model.trim="password.val">
+            <button class="auth-btn" type="submit" >log in</button>
             </form>
             <p class="auth-para2">Not yet has an account?</p>
-            <button class="auth-switch" @click="switchBtn">sign up</button>
+            <button  class="auth-switch" @click="switchBtn">sign up</button>
         </div>
         </div>
         <!-- End of login -->
         
 <!-- end of login  -->
-
-<!-- 
-    <form @submit.prevent="signup">
-    <div>
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" v-model.trim="email.val" >
-    </div>
-
-    <div>
-        <label for="username">username</label>
-        <input type="text" id="username" name="username" v-model.trim="username.val" >
-    </div>
-
-    <div>
-        <label for="password">Password</label>
-        <input type="text" id="passoword" name="passoword" v-model.trim="password.val" >
-    </div>
-
-    <button>Sign UP</button>
-    </form> -->
-<!-- 
-
-    <form @submit.prevent="login">
-    <div>
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" v-model.trim="email.val" >
-    </div>
-
-    <div>
-        <label for="password">Password</label>
-        <input type="text" id="passoword" name="passoword" v-model.trim="password.val" >
-    </div>
-
-    <button>Log In</button>
-    </form>
-
-
-
-    <form @submit.prevent="logout">
-    <button>Log Out</button>
-    </form> -->
-
-
 </template>
 
 
 <script>
+
+import AuthMiddlewares from "../../middlewares/authMiddlewares.vue";
 export default {
+
+
+  mixins:[AuthMiddlewares],
+ 
     data(){
         return{
             error:"",
@@ -109,59 +72,35 @@ export default {
                 val: '',
                 isValid: true,
             },
+            repassword: {
+                val: '',
+                isValid: true,
+            },
             username: {
                 val: '',
                 isValid: true,
             },
-            isSingUpPageOpen : false,
+ 
         }
     },
-    created(){
-        const a = this.$store.getters['auth/getUser'];
-        console.log("when app create:", a)
+     
 
-    },
     methods:{
 
         switchBtn(){
+            // flip the login card to sign up
             const cardWrapper = document.querySelector(".auth-card-wrapper");
             cardWrapper.classList.toggle('leftTurn');
-
         },
 
-        async signup(){
-            const formData = {email: this.email,password: this.password,username: this. username}
-            try {
-                await this.$store.dispatch('auth/signup',formData);
-            }catch(err){
-                 this.error = err.message || "O..Something goes wrong"
-            }
-        },
-
-
-        async login(){
-            const formData = { email: this.email, password: this.password,username: this. username }
-            try {
-                await this.$store.dispatch('auth/login',formData);
-
-            const a = this.$store.getters['auth/getUser'];
-            console.log("after login :", a)
-
-
-
-           
-            }catch(err){
-                 this.error = err.message || "O..Something goes wrong"
-            }
-        },
-
-        async logout(){
-            try {  
-                await this.$store.dispatch('auth/logout');
-                console.log(this.$store.getters['auth/getUser']);
-            }catch(err){
-                 this.error = err.message || "O..Something goes wrong"
-            }
+        async authAction(action){
+          try{  
+            await this.AuthHandler(action,this.email,this.password,this. username);
+            // this.$router.go();
+            window.location.reload()
+          } catch (error){
+             this.error = error.message;
+          }
         }
     }
 }

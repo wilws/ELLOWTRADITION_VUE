@@ -6,10 +6,10 @@ import cartModule from './modules/cart/index.js';
 import ordersModule from './modules/orders/index.js';
 
 
-// import VuexPersistence from 'vuex-persist'
-// const vuexLocal = new VuexPersistence({
-//     storage: window.localStorage
-//   });
+import VuexPersistence from 'vuex-persist'
+const vuexLocal = new VuexPersistence({
+    storage: window.localStorage
+  });
 
 
 
@@ -20,7 +20,7 @@ const store = createStore({
         cart :cartModule,
         orders : ordersModule,
     },
-    // plugins: [vuexLocal.plugin]
+    plugins: [vuexLocal.plugin]
 
 
     // stats(){

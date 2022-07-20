@@ -11,9 +11,8 @@ export default {
                     }
             });
 
-            const res = await resData.json();                  
-
-
+            const res = await resData.json();   
+        
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
                 throw error
@@ -21,16 +20,12 @@ export default {
 
             const products = [];
             res.products.forEach(product => {
-
-               
-
                 products.push(product);
             });
 
-      
-
             context.commit('setProducts', products);
 
+        
 
         } catch(err){
             const error = new Error("Fail to Load Products");

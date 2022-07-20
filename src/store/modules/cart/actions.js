@@ -1,22 +1,58 @@
-
+// The interface of the data
+// interface data  {
+//      id : String,
+// }
 
 export default {
+    async loadCartFromDB(context){
+
+        if (!context.rootGetters['auth/isLogin']){             // If user not loged in. Just return 
+            return
+        }
+        
+        try{
+            const resData = await fetch(
+                'http://localhost:8080/get-cart/',{
+                    method: "GET",                              
+                    headers:{
+                        'Content-Type':'application/json'         
+                    },
+                    credentials: 'include'
+            });
+
+            const res = await resData.json();   
+            if (resData.status !== 200) {                           // Check if return status 200
+                const error = new Error(res.message)
+                throw error
+            } 
+
+            const cartItems = [];
+            res.cart.forEach((c) => {
+                cartItems.push({
+                        productId: c.productId,
+                        quantity: c.quantity,
+                });
+            });
+
+            context.commit('updateCart',cartItems);                 // Update VUEX
+
+        } catch(err){
+            const error = new Error("Fail to Load Cart Item");
+            throw error;
+        }
+    },
+
+
     async addtoCart(context,data) {
 
-        //  The interface of the data
-        // interface data  {
-        //      id : String,
-        // }
-
- 
-        const cart = context.getters['getCart'];
-        const updatedCartItems = [...cart];                             // Deep clone the cart
-        const cartProductIndex = cart.findIndex(cp => {                 // find the index of the same product in the current cart          
-            return cp.productId === data.id;
+        const cart = context.getters['getCart'];                            // Load Cart From VUEX
+        const updatedCartItems = [...cart];                                 // Deep clone the cart
+        const cartProductIndex = cart.findIndex(cp => {    
+            return cp.productId === data.id;                                // find the index of the same product in the current cart       
         });
 
-
-        if (cartProductIndex >= 0){                                       // If ame product is found in the cart
+    
+        if (cartProductIndex >= 0){                                       // If same product is found in the cart
             updatedCartItems[cartProductIndex].quantity += 1;             // update the quantity
         } else {
             updatedCartItems.push({                                       // If no same product in cart
@@ -24,13 +60,18 @@ export default {
                 quantity: 1,
             });
         }
-        await context.dispatch('save',updatedCartItems)
+
+        try{
+            await context.dispatch('save',updatedCartItems);              // update to database
+        } catch(error){
+            throw new Error("Fail to add product to cart");
+        }    
     },
 
     async deductCart(context,data) {
 
         const cart = context.getters['getCart'];
-        let updatedCartItems = [...cart];                             // Deep clone the cart
+        let updatedCartItems = [...cart];                               // Deep clone the cart
         const cartProductIndex = cart.findIndex(cp => {                 // find the index of the same product in the current cart          
             return cp.productId === data.id;
         });
@@ -46,7 +87,11 @@ export default {
                 });                                                         // remove from cart if qty < 1
             }
         }
-        await context.dispatch('save',updatedCartItems)
+        try{
+            await context.dispatch('save',updatedCartItems);              // update to database
+        } catch(error){
+            throw new Error("Fail to delete product from cart");
+        }   
     },
 
 
@@ -55,7 +100,11 @@ export default {
         const updatedCartItems = cart.filter(cp => {
             return cp.productId !== data.id
         });
-        await context.dispatch('save',updatedCartItems)
+        try{
+            await context.dispatch('save',updatedCartItems);              // update to database
+        } catch(error){
+            throw new Error("Fail to remove product from cart");
+        }   
     },
 
 
@@ -76,6 +125,8 @@ export default {
             throw error;
         }
     },
+
+  
 
 
     async updateCartToDB(_,data){
@@ -103,7 +154,6 @@ export default {
             } 
 
         } catch(err){
-            console.log(err)
             const error = new Error("Fail to Update Cart in Database");
             throw error;
         }
@@ -136,11 +186,10 @@ export default {
             throw error
         }
 
-    }
+    },
 
 
-    // loadCartFromDB(context,data){
-    //     console.log(context,data)
-    // },
+    
+
 
 }

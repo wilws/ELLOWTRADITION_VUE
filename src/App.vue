@@ -25,14 +25,14 @@
             <li>
               <router-link class="router-link" to="/products">Products</router-link>
             </li>
-            <li>
+            <li v-show="isLogin">
               <router-link class="router-link" to="/invoices">Invoices</router-link>
             </li>
             <li>
               <router-link class="router-link" to="/cart">Cart</router-link>
             </li>
-            <li>
-              <router-link class="router-link" to="/auth">Login</router-link>
+            <li v-show="isLogin"  @click="authAction('LogOut')">
+              <p class="router-link">Logout</p>
             </li>
           </ul>
         <div class="social-media">
@@ -55,8 +55,13 @@
         <h3>REDISCOVER & SHARE</h3>
       </div>
 
-      <div class="short-cut">
-        <div @click="isSingUpPageOpen=true"><i class="login-icon fa-regular fa-circle-user"></i></div>
+      <div class="short-cut" >
+        
+        <div v-if="isLogin" class="isAuth" >
+            <div><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></div>
+            <div @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
+        </div>
+        <div v-else @click="isSingUpPageOpen=true"><i class="login-icon fa-regular fa-circle-user"></i></div>
         <router-link class="router-link" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
       </div>
     </div>
@@ -93,14 +98,18 @@
 <script>
 
 import checkIndexPage from './mixins/checkIndexPage';
-import AuthPage from './pages/auth/AuthPage.vue'
+import AuthPage from './pages/auth/AuthPage.vue';                       // Login / Sign Up Page Open
+import AuthMiddlewares from './middlewares/authMiddlewares.vue';        
+
+
 export default {
 
   components:{AuthPage},
   
-  mixins: [checkIndexPage],
+  mixins: [checkIndexPage,AuthMiddlewares],
   data(){
     return {
+      isLogin :false,
       isSingUpPageOpen : false,
     }
   },
@@ -109,14 +118,30 @@ export default {
       this.checkIndexPage();
     }
   },
+  created(){
+    this.setStatus();
+
+  },
   methods:{
     MenuControl(){
         document.querySelector(".container").classList.toggle("change");
     },
     closeSignUpPage(){
-      console.log('here')
         this.isSingUpPageOpen = false;
-    }
+    },
+    setStatus(){
+        this.isLogin = this.$store.getters['auth/isLogin'];
+    },
+    async authAction(action){
+          try{
+             await this.AuthHandler(action);
+             this.setStatus();
+             this.$router.go();
+          } catch (error){
+             this.error = error.message;
+          }
+      }
+
   }
 }
 </script>
@@ -249,6 +274,7 @@ left:-100vw;
   margin-bottom:2rem;
 }
 
+.header nav li p,
 .header nav li .router-link{
   color:black;
   font-family: "Mukta Vaani";
@@ -259,8 +285,10 @@ left:-100vw;
   text-decoration: none;
   text-shadow: 0.2rem 0.4rem 3rem #555;
   position: relative;
+  cursor: pointer;
 }
 
+.header nav li p::before,
 .header nav li .router-link::before{
   position: absolute;
   bottom:23%;
@@ -276,6 +304,7 @@ left:-100vw;
   transition: width 1s;
 }
 
+.header nav li p:hover:before,
 .header nav li .router-link:hover:before {
   width:115%
 }
@@ -403,7 +432,7 @@ left:-100vw;
   display: flex;
   flex-direction: column;
 }
-
+.short-cut .isAuth i,
 .short-cut i{
   color: #feffff;
   margin-top:3rem;
@@ -416,8 +445,25 @@ left:-100vw;
  color:black;
 }
 
+.short-cut .isAuth i:hover,
 .short-cut i:hover{
   opacity: 1;
+}
+
+.short-cut .isAuth {
+  display: flex;
+  flex-direction: column;
+  color: #feffff;
+}
+
+
+.short-cut .isAuth .logout-icon{
+
+  font-size: 3.5rem;
+}
+
+.short-cut .isAuth .invoice-page-icon{
+  font-size: 3rem;
 }
 
 .short-cut .login-icon{

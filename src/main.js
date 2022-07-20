@@ -7,13 +7,13 @@ import store from './store/index.js';
 // import VueCookies from 'vue-cookies'
 
 // import { VueCookieNext } from 'vue-cookie-next'
-
+// import Vuelidate from 'vuelidate'
 
 
 const app = createApp(App);
 app.use(router);
 app.use(store);
-// app.use(checkIdx);
+// app.use(Vuelidate);
 // app.use(VueCookies);
 
 app.mount('#app');

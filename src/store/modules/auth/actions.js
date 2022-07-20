@@ -22,13 +22,16 @@ export default {
    
             const res = await resData.json();  
 
+            console.log(res)
+
             if (resData.status !== 200) {                           // Check if return status 200
-                const error = new Error(res.message)
-                throw error
+                const error = new Error(res.message);
+                throw error;
             } 
 
         } catch(err){
-            const error = new Error("Fail to Signup");
+            console.log(err)
+            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
@@ -36,6 +39,7 @@ export default {
 
 
     async login(context,data){
+
         const formData = {
             email : data.email.val,
             password : data.password.val,
@@ -53,13 +57,12 @@ export default {
             });
             
             const res = await resData.json();  
+     
 
-            if (resData.status !== 200) {                           // Check if return status 200
+            if (resData.status !== 200) {                        // Check if return status 200
                 const error = new Error(res.message)
                 throw error
             }
-
-            
 
             context.dispatch('localStatusUpdate',{
                 isLogin :true,
@@ -68,15 +71,16 @@ export default {
                 email: res.email,
             })
 
-            // context.commit('isLogin',true)
-            // context.commit('userLogin',{
-            //     token:res.token,
-            //     username: res.username,
-            //     email: res.email,
-            // });
+            context.commit('isLogin',true)
+            context.commit('userLogin',{
+                token:res.token,
+                username: res.username,
+                email: res.email,
+            });
 
         } catch(err){
-            const error = new Error("Fail to Signup");
+            console.log(err)
+            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
@@ -98,6 +102,8 @@ export default {
 
             const res = await resData.json();
 
+
+            console.log(res)
             if (resData.status != 200){
                 const error = new Error(res.message);
                 throw error;
@@ -122,7 +128,8 @@ export default {
             // });
 
         } catch(err){
-            const error = new Error("Fail to logout");
+            console.log(err)
+            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },

@@ -5,15 +5,15 @@
     <div class="cart-summary">
         <h1>Cart</h1>
         <ul>
-            <li class="total-item">Total Item : <span>10</span></li>
-            <li class="product-amount">Product : <span>$ 10,982</span></li>
-            <li class="vat">VAT : <span>$ 19.82</span></li>
-            <li class="shipping">Shipping :  <span>$ 299.8</span></li>
+            <li class="total-item">Total Item : <span> {{noOfItems}}</span></li>
+            <li class="product-amount">Product : <span>$ {{productTotalAmount}}</span></li>
+            <li class="vat">VAT : <span>$ {{vat}}</span></li>
+            <li class="shipping">Shipping :  <span>$ {{shipping}}</span></li>
         </ul>
         <div class="line"></div>
         <div class="total-amount-wrapper">
             <h3>Total :</h3>
-            <div class=total-amount>$ 10,423</div>
+            <div class=total-amount>$ {{ totalAmount}}</div>
         </div>
         <button class="checkout-btn"  @click="checkout">
             <!-- div<i class="fa-solid fa-money-check-dollar"></i> -->
@@ -24,23 +24,23 @@
 
     <!-- cart-item -->
     <div class="cart-items">
-        <ul v-for="item in cart" :key="item.productId">
+        <ul v-for="item in cartItems" :key="item.productId">
             <li  class="cart-item">
 
-                <div class="delete-btn">
+                <div class="delete-btn" @click="amedCartItem('Remove',item.productId)">
                     <div class="line1"></div>
                     <div class="line2"></div>
                 </div>
                 
                 <div class="img">
-                    <img :src="require(`@/assets/products/${item.product.imageUrl1}`)"/>
+                    <img :src="item.product.imageUrl1"/>
                 </div>
                 <div class="name">{{item.name}}</div>
                 <div class="price">$ {{item.price}}</div>
                 <div class="qtyController">
-                    <div class="min">-</div>
+                    <div class="min" @click="amedCartItem('Deduct',item.productId)">-</div>
                     <div class="qty">{{item.quantity}}</div>
-                    <div class="add">+</div>
+                    <div class="add" @click="amedCartItem('Add',item.productId)">+</div>
                 </div>
                 <div class="subtotal">$ {{item.subtotal}}</div>
             </li>
@@ -56,55 +56,55 @@
 
 <script>
 
+import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
 
 export default {
  
+    mixins:[CartMiddlewares],
+
     data() {
         return {
-            cart:[],
+            cartObj:{},
             products:[],
+            cartItems:[],
+            productTotalAmount:0,
+            totalAmount:0,
+            shipping:0,
+            vat:0,
+            errorMsg:"",
+            noOfItems:0
         }
     },
    
     async created(){
-        await this.loadProducts()
-        this.cartInfoConstruction();  
-
-    },
-
-    computed:{
-        totalPrice(){
-            let i = 0;
-            this.cart.forEach(item =>{
-                i += item.subtotal;
-            })
-            return i
+        try{
+            const cart = await this.CartHandler();
+            this.setVariables(cart.cartObj);
+        } catch(error){
+            this.errorMsg = error.message;
         }
     },
 
     methods:{
-        async loadProducts(){
-            try{
-                // await this.$store.dispatch('products/loadProducts');    
-                this.products = this.$store.getters['products/products'];
-            } catch(err){
-                this.error = err.message || "O..Something goes wrong"
-            }
+        setVariables(cartObj){
+            this.cartObj = cartObj;
+            this.cartItems = cartObj.cartItems;
+            this.productTotalAmount = cartObj.productTotalAmount;
+            this.vat = cartObj.vat;
+            this.totalAmount = cartObj.totalAmount;
+            this.shipping = cartObj.shipping;
+            this.errorMsg = cartObj.errorMsg;
+            this.totalItemNo = cartObj.cartItems.length;
+            this.noOfItems = cartObj.noOfItems;
         },
 
-        cartInfoConstruction(){
-            const productObj = JSON.parse(JSON.stringify(this.products)); 
-            const cartObj = this.$store.getters['cart/getCart'];
-            this.cart = cartObj.map((c) => {
-                let a = productObj.find((p) => p._id == c.productId)   
-                    return {
-                        ...c,
-                        price: +a.price.$numberDecimal,
-                        name: a.name,
-                        product : a,
-                        subtotal: +c.quantity * +a.price.$numberDecimal
-                    }
-            });       
+        async amedCartItem(action,productId){
+            try{
+                const cart = await this.CartHandler(action,productId);
+                this.setVariables(cart.cartObj);    
+            } catch(error){
+                this.errorMsg = error.message;
+            }
         },
 
         checkout(){
@@ -120,7 +120,7 @@ export default {
 <style scoped>
 /* Section 4 - Cart */
 .section-4{
-    width:calc( 100% - 8rem);
+    width:calc( 100% -6rem);
     height:100vh;
     position: relative;
     display: flex;
@@ -129,7 +129,7 @@ export default {
     align-items: center; */
     padding-top: 2rem;
     padding-left: 2rem;
-    margin-left:8rem;
+    margin-left:6rem;
 }
 
 /* cart-summary */
@@ -157,14 +157,14 @@ export default {
     text-align: center;
 }
 
-.cart-summary ul{
+/* .cart-summary ul{
     
-}
+} */
 
 .cart-summary ul li{
     width:100%;
     color:#FFFCFC;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 100;
     margin:3rem 0rem;
     text-align: left;
@@ -234,7 +234,7 @@ export default {
     background-color: rgba(211, 81, 81, 0.5);
 }
 
-.total-amount::before{}
+/* .total-amount::before{} */
 
 .cart-summary .checkout-btn{
     position: relative;

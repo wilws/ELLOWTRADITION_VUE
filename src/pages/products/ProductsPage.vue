@@ -4,9 +4,9 @@
         
         <!-- roll (left part) -->
         <div class="roll">
-            <ul>
-                <li v-for="(product,index) in products" :key="product._id" class="product" @click="viewProduct(index, $event)" :ref="'li'+ index">
-                    <img :src="require(`@/assets/products/${product.imageUrl1}`)" alt="" />
+            <ul ref="products">
+                <li v-for="(product,index) in products" :key="product._id" class="product"  @click="viewProduct(index, $event)"> <!--:ref="'li'+ index"> -->
+                    <img :src="product.imageUrl1" alt="" /> 
                     <h3>{{ product.name }}</h3>
                 </li>
             </ul>
@@ -19,7 +19,7 @@
         <div class="showcase">
 
             <!-- v-if : display logo -->
-            <div v-if="!clickedProduct.isSet" class="logo">
+            <div v-if="!productIsSet" class="logo">
                 <div class="box">
                     <div class="front">
                         <img src="@/assets/black_logo.png" alt="" >
@@ -28,6 +28,7 @@
                         <img src="@/assets/black_logo.png" alt="" >
                     </div>
                 </div>
+                <h3 class="errorMsg">{{ error }}</h3>
             </div>
             <!-- End of v-if -->
         
@@ -44,22 +45,21 @@
                     </div>
 
                     <div class="picture-frame">    
-                        <div class="img-1-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[0].scale}` }"><img v-bind:style="{ left: imagesStyle[0].left}" class="img-1" :src="require(`@/assets/products/${clickedProduct.imageUrl1}`)" alt="" /></div>
-                        <div class="img-2-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[1].scale}` }"><img v-bind:style="{ left: imagesStyle[1].left }" class="img-2" :src="require(`@/assets/products/${clickedProduct.imageUrl2}`)" alt="" /></div>
-                        <div class="img-3-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[2].scale}` }"><img v-bind:style="{ left: imagesStyle[2].left }" class="img-3" :src="require(`@/assets/products/${clickedProduct.imageUrl3}`)" alt="" /></div>
-                        <div class="img-4-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[3].scale}` }"><img v-bind:style="{ left: imagesStyle[3].left }" class="img-4" :src="require(`@/assets/products/${clickedProduct.imageUrl4}`)" alt="" /></div>
-                        <div class="img-5-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[4].scale}` }"><img v-bind:style="{ left: imagesStyle[4].left }" class="img-5" :src="require(`@/assets/products/${clickedProduct.imageUrl5}`)" alt="" /></div>
+                        <div class="img-1-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[0].scale}` }"><img v-bind:style="{ left: imagesStyle[0].left}" class="img-1" :src="clickedProduct.imageUrl1" alt="" target="_blank"/></div>
+                        <div class="img-2-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[1].scale}` }"><img v-bind:style="{ left: imagesStyle[1].left }" class="img-2" :src="clickedProduct.imageUrl2" alt="" /></div>
+                        <div class="img-3-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[2].scale}` }"><img v-bind:style="{ left: imagesStyle[2].left }" class="img-3" :src="clickedProduct.imageUrl3" alt="" /></div>
+                        <div class="img-4-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[3].scale}` }"><img v-bind:style="{ left: imagesStyle[3].left }" class="img-4" :src="clickedProduct.imageUrl4" alt="" /></div>
+                        <div class="img-5-wrapper" v-bind:style="{ transform: `scale(${imagesStyle[4].scale}` }"><img v-bind:style="{ left: imagesStyle[4].left }" class="img-5" :src="clickedProduct.imageUrl5" alt="" /></div>
                     </div>
 
                     <button class="btn backward-btn" @click="showPreviousImage"><i class="fa-solid fa-arrow-left"></i></button>
                     <button class="btn forward-btn" @click="showNextImage"><i class="fa-solid fa-arrow-right"></i></button>
-
-                    <button @click="addtoCart(clickedProduct._id)" class="cart-btn">add to cart</button>
+                    <button @click="addtoCartFromProductPage(clickedProduct.id)" class="cart-btn">add to cart</button>
                     
                     <div class="progress-wrapper">
                         <!-- <h2 class="progress"></h2> -->
                         <!-- <div class="circles-wrapper"> -->
-                            <span class="circle-1"></span>
+                            <span class="circle-1" style="background-color:black"></span>
                             <span class="circle-2"></span>
                             <span class="circle-3"></span>
                             <span class="circle-4"></span>
@@ -89,57 +89,24 @@
             <!-- End of v-else -->
         </div>
         <!-- End of showcase -->
-
-        
     </section>
-
-    <!-- <button @click="clearCart()">Clear cart</button> -->
-
-
-<!-- 
-    <ul>
-        <li v-for="(product, index ) in products" :key="product._id" >
-            <h3>{{ product.name }}</h3>
-            <h4>${{ product.price.$numberDecimal }}</h4>
-            
-            
-          
-            <div>
-                <button @click="viewProduct(index)">View</button>
-                <button @click="addtoCart(product)"> + </button>
-                <button @click="deductfromCart(product)">  - </button>
-                <button @click="removefromCart(product)"> Remove </button>
-            </div>
-        
-       
-        </li>
-     
-    </ul> -->
-<!--
-    <Teleport to="body">
-        <div v-if="open" class="modal">
-            <h3>{{ clickedProduct.name }}</h3>
-            <h4>${{ clickedProduct.price }}</h4>
-            <h4>{{ clickedProduct.description }}</h4>
-            <button @click="open = false">Close</button>
-        </div>
-    </Teleport> -->
-
-   
 </template>
 
 
 
 <script>
-// import { defineComponent } from '@vue/composition-api'
 
+import productMiddlewares from "../../middlewares/productMiddlewares.vue";
+import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
 export default {
+
+    mixins:[productMiddlewares,CartMiddlewares],
    
     data() {
         return{
-            error:"",
-            productIsSet : false,
-            clickedProduct : {
+            error:"",                                // store error msg
+            productIsSet : false,                    // remove loading page
+            clickedProduct : {                       // store the clicked product's details
                 isSet : false,
                 name : String,
                 id:String,
@@ -151,14 +118,11 @@ export default {
                 imageUrl4 : String,
                 imageUrl5 : String,
             },
-            imgNo : 0,
-            img5 : "",
-            img1 : "",
-            images :[],
-            products:[],
+            imgNo : 0,                               // store the no of image that currently displays          
+            products:[],                             // store the loaded product from VUEX / DB   
             imagesStyle:[
                 {
-                    scale:1.5,
+                    scale:1,
                     left:"0vw"
                 },
                 {
@@ -179,40 +143,61 @@ export default {
                 }
                 
             ],
+            cartAnimationinProgress : false,         //  True when animation is in progress, so as to prevent interuption animation
+            windowResize  : false,                   //  Check if the window is resize to determind necessity of useing responsive style.
+        }
+    },
 
-            cartAnimationinProgress : false,
-            imagesLoadedCounter : 0,
-            imagesLoadedlist : [],
-            windowResize  : false
+    async created(){
+
+        //Load product data when landing.
+        const productsObj = await this.ProductLoader();          // Use middlewares to communicate with DB and to load product data
+        if (!productsObj.error){                                 // If no error encounted in loading product data
+            this.products =  await productsObj.products;         // assign the data into this component
+            this.productIsSet = true;                            // Set it true otherwise error of failing loading appears
+
+            this.clickedProduct = {                              // To assign the first image to display when landing
+                isSet:true,
+                name : this.products[0].name,
+                id : this.products[0]._id,
+                price : this.products[0].price.$numberDecimal,
+                description : this.products[0].description,
+                imageUrl1 : this.products[0].imageUrl1,
+                imageUrl2 : this.products[0].imageUrl2,
+                imageUrl3 : this.products[0].imageUrl3,
+                imageUrl4 : this.products[0].imageUrl4,
+                imageUrl5 : this.products[0].imageUrl5,
+            }
+        } else {
+            this.error = productsObj.error;
+        }
+
+
+        //  Load Cart data when landing
+        try{
+            const cart = await this.CartHandler();
+            this.setVariables(cart.cartObj);
+        } catch(error){
+            this.errorMsg = error.message;
         }
     },
 
     mounted(){
-        // Pre set the landing page
-        this.viewProduct(0,false);
-          
-        this.resize()                                   // if winder width less than 650px. layout will be reconstructed 
-        window.addEventListener("resize",this.resize);  // check if browser resied to 650px or less.
+        // Responsive Setting
+        this.resize()                                     // Check if window width less than 650px. layout will be reconstructed if < 650px
+        window.addEventListener("resize",this.resize);    // Always ready to trigger "resize()" when width change. 
     },
 
-
-
-    async created(){
-
-        // await this.$store.dispatch('auth/LoginValidation')          // check if login valid. If not valid. will reset user data in veux 
-        // await this.loadProducts()                                   // Load Products from database and store in veux
-        this.products = this.$store.getters['products/products'];   // Get products from veux
-        
-        this.resize()                                   // if winder width less than 650px. layout will be reconstructed 
-        window.addEventListener("resize",this.resize);  // check if browser resied to 650px or less.
-    },
     
 
     methods:{
+
         resize(){
-            // add a class "resize" to "showcase"
-            this.closeImg();
-            let w = window.innerWidth;
+            // If browser wisth is less than 650px
+            // add classes "resize" to "showcase" to make responsive effect
+
+            this.closeImg();                          // close all clicked image first 
+            let w = window.innerWidth;                // get the width of the window
             if (w <= "650") {
                 if(!this.windowResize){
                     document.querySelector(".showcase").classList.add("resize");
@@ -225,85 +210,73 @@ export default {
                 }
             }
         },
-        imagesLoaded(){
-            console.log("enter images loaded");
-            this.imagesLoadedlist[this.imagesLoadedCounter] = true;
-            this.imagesLoadedCounter++;
-            console.log("after enter images loaded",this.imagesLoadedlist);
-        },
-        async loadProducts(){
-            try{
-                await this.$store.dispatch('products/loadProducts');
-            } catch(err){
-                this.error = err.message || "O..Something goes wrong"
-            }
-        },
 
+        closeImg(){
+            // close the image when view in <650px width 
+            document.querySelector(".showcase").classList.remove("showImg");
+            document.querySelector(".left-bar").classList.remove("clickedProduct")
+        },
 
         async viewProduct(i, event){
 
-            // When click the pic in roll area, show product in the right hand side.
-            // If event is "False" meaning this function is not triggered by clicking but during mounted 
-
+            // When click the pic in roll area, show product in the right hand side.                                                                                                      
             const products = await document.querySelectorAll(".product");   
             products.forEach((product)=>{
-                if (product.classList.contains("clicked")){                 // remove all ".clicked" class, so as to un-select the image
+                if (product.classList.contains("clicked")){                 // remove all ".clicked" class, so as to un-select the image in roll area
                     product.classList.remove("clicked")
                 }
             });
-            if (!event){                                                    
-                products[0].classList.add("clicked");               
-            }else{
-                event.target.parentNode.classList.add("clicked");           // Add ".clicked" to the selected product in the roll area
+                                                
+            event.target.parentNode.classList.add("clicked");              // Add ".clicked" to the selected product in the roll area
+            this.clickedProduct = {
+                isSet:true,
+                name : this.products[i].name,
+                id : this.products[i]._id,
+                price : this.products[i].price.$numberDecimal,
+                description : this.products[i].description,
+                imageUrl1 : this.products[i].imageUrl1,
+                imageUrl2 : this.products[i].imageUrl2,
+                imageUrl3 : this.products[i].imageUrl3,
+                imageUrl4 : this.products[i].imageUrl4,
+                imageUrl5 : this.products[i].imageUrl5,
             }
 
-        
+            // Re-set image style
+            this.imageDisplayReset();  
 
-            this.imagesStyle.forEach((style)=>{                             // Reset the images's div and img  style 
+            // Price Tag Animation 
+            this.priceTangAnimation();   
+
+            // Responsive effect
+            if(this.windowResize){                                                          // if browser is less than 650px
+                document.querySelector(".showcase").classList.add("showImg");               // add additional class for CSS responsive effect
+                document.querySelector(".left-bar").classList.add("clickedProduct")
+            }
+        },
+
+        imageDisplayReset(){
+            // Reset Images setting when click to another product in roll area
+            this.progressCircleController(0);                                   // Animation : Fill the first progress circle
+            const img1 = document.querySelector(".img-1-wrapper");              // Animation : Rescale the first image
+            img1.style.transition = "transform 1s"; 
+            this.imagesStyle.forEach((style)=>{                                 // Reset the images's div and img style 
                 style.scale = 1.5;
                 style.left = "0vw";
             })
+            this.imagesStyle[0].scale = 1;                                      // Set the first image to 1 (to be readable)
+            this.imgNo = 0;    
+        },
 
-            this.imgNo = 0;                                                 // Set the current display image as 0 (ready to show the first img)
-            this.clickedProduct = {
-                    isSet:true,
-                    name : this.products[i].name,
-                    id : this.products[i]._id,
-                    price : this.products[i].price.$numberDecimal,
-                    description : this.products[i].description,
-                    imageUrl1 : this.products[i].imageUrl1,
-                    imageUrl2 : this.products[i].imageUrl2,
-                    imageUrl3 : this.products[i].imageUrl3,
-                    imageUrl4 : this.products[i].imageUrl4,
-                    imageUrl5 : this.products[i].imageUrl5,
-            }
-
-
-            if(this.windowResize){
-                document.querySelector(".showcase").classList.add("showImg");
-
-                document.querySelector(".left-bar").classList.add("clickedProduct")
-            }
-
-
-              
-            
-            this.$nextTick(() => {                                                  // After setting the clicked product :
-                this.progressCircleController(0);                                   // Animation : Fill the first progress circle
-
-                const img1 = document.querySelector(".img-1-wrapper");              // Animation : Rescale the first image
-                img1.style.transition = "transform 1s";
-                this.imagesStyle[0].scale = 1;
-
-                
-                const priceTag = document.querySelector(".price-tag-wrapper");      // Animation : swing the price tag
-                if (!priceTag.classList.contains("animated")){                      // if class "animated" not attached
-                    priceTag.classList.add("animated");                             // add it
-                } 
-                setTimeout(()=>{                                                    // Remove class "animated" after .31s
-                    priceTag.classList.remove("animated");
-                },3100)
-            })    
+        priceTangAnimation(){
+            // Price Tag Animation 
+            const priceTag = document.querySelector(".price-tag-wrapper");      // Animation : swing the price tag
+            if (!priceTag.classList.contains("animated")){                      // if class "animated" not attached
+                priceTag.classList.add("animated");                             // add it
+            } 
+            setTimeout(()=>{                                                    // Remove class "animated" after .31s
+                priceTag.classList.remove("animated");
+            },3100)
+            // })    
         },
 
         progressCircleController(i){
@@ -316,8 +289,9 @@ export default {
 
 
         showPreviousImage(){
+            // show product image when pressing right arrow
             this.imgNo--;
-            if(!this.firstAndlastImageControl(this.imgNo)){
+            if(!this.firstAndlastImageControl(this.imgNo)){      // check if moving last / first images
                 this.imagesStyle[this.imgNo].left = "0vw";       // display in-coming section
                 this.imagesStyle[this.imgNo].scale =1;           // scale back in-coming section
                 this.imagesStyle[this.imgNo + 1].scale =1.5;     // scale up the out-going section
@@ -325,8 +299,9 @@ export default {
         },
 
         showNextImage(){
+             // show product image when pressing left arrow
             this.imgNo++;
-            if(!this.firstAndlastImageControl(this.imgNo)){
+            if(!this.firstAndlastImageControl(this.imgNo)){         // check if moving last / first images
                 this.imagesStyle[this.imgNo - 1].left = "-100vw";   // remove out-going section
                 this.imagesStyle[this.imgNo].scale = 1;             // Scale back in-coming section
                 this.imagesStyle[this.imgNo - 1].scale = 1.5;       // Re - Scale back out-going section
@@ -361,7 +336,6 @@ export default {
                     image.left="0vw";
                 });
                 this.imgNo = 0;
-                console.log('reset imgNo:', this.imgNo);
                 this.imagesStyle[4].scale = 1.5;
                 this.imagesStyle[0].scale = 1;
                 bool = true;
@@ -371,10 +345,7 @@ export default {
             
         },
 
-        closeImg(){
-            document.querySelector(".showcase").classList.remove("showImg");
-             document.querySelector(".left-bar").classList.remove("clickedProduct")
-       },
+
 
         addtoCartAnimation(){
 
@@ -425,87 +396,24 @@ export default {
         },
 
 
-        async addtoCart(p){
+        async addtoCartFromProductPage(p){
 
-            if (this.cartAnimationinProgress){                           // If animation is still in progress, quite the function to stop further triggering
-                return
+            if (this.cartAnimationinProgress){       // If animation is still in progress, 
+                return                               // quite the function to stop further triggering
             } 
-
-            this.addtoCartAnimation()
-
-
-            const a = this.$store.getters['cart/getCart']
-            console.log("before add",JSON.parse(JSON.stringify(a)))
-            try {
-                 await this.$store.dispatch('cart/addtoCart',{
-                    id : p._id,
-                })
-
-                const b = this.$store.getters['cart/getCart']
-                console.log("after add",JSON.parse(JSON.stringify(b)))
-
-              
-                
-
-            }catch(err){
-
-                this.error = err.message || "Cannot add product into cart";
+            this.addtoCartAnimation();               // Borrow from the cartMiddleware 
+            try{  
+                await this.CartHandler('Add',p);
+            } catch(error){
+                this.error = error.message;
             }
         },
-   
-        async removefromCart(p){
-            const a = this.$store.getters['cart/getCart']
-            console.log("before remove",JSON.parse(JSON.stringify(a)))
-            try {
-                await this.$store.dispatch('cart/removeCart',{
-                    id : p._id,
-                });
+    },
+    beforeRouteEnter(to,from) {
 
-                const b = this.$store.getters['cart/getCart']
-                console.log("after remove",JSON.parse(JSON.stringify(b)))
-
-            }catch(err){
-
-                this.error = err.message || "Cannot add product into cart";
-            }
-        },
-
-        async deductfromCart(p){
-            const a = this.$store.getters['cart/getCart']
-            console.log("before remove",JSON.parse(JSON.stringify(a)))
-            try {
-                await this.$store.dispatch('cart/deductCart',{
-                    id : p._id,
-                });
-
-                const b = this.$store.getters['cart/getCart']
-                console.log("after remove",JSON.parse(JSON.stringify(b)))
-
-            }catch(err){
-
-                this.error = err.message || "Cannot add product into cart";
-            }
-
-        },
-
-
-        async clearCart(){
-            const a = this.$store.getters['cart/getCart']
-            console.log("before clear",JSON.parse(JSON.stringify(a)))
-            try {
-                await this.$store.dispatch('cart/clearCart')
-
-                const b = this.$store.getters['cart/getCart']
-                console.log("after clear",JSON.parse(JSON.stringify(b)))
-
-            }catch(err){
-
-                this.error = err.message || "Cannot add product into cart";
-            }
-        },
-
-        
-        
+        if (from.fullPath === "/auth"){
+           window.location.reload(); 
+        }
     }
 }
 </script>
@@ -738,6 +646,11 @@ export default {
     transform:rotateX(90deg); 
     transform-origin: top;
     border: whitesmoke solid;
+}
+
+.logo .errorMsg{
+    position: absolute;
+    top: 54%;
 }
 /* End of v-if */ 
 
@@ -1227,6 +1140,9 @@ position: absolute;
     .product {
         height: 14vh;
     }
+    .product h3 {
+        color: rgb(75, 74, 74);
+    }
     .display-product .images-wrapper .price-tag-wrapper{
           bottom: -2rem;
     }
@@ -1242,9 +1158,9 @@ position: absolute;
         height: 33vh;
     }
     .product h3 {
-        height: 6rem;
-        line-height: 7rem;
-        font-size: 2rem;
+        height: 2rem;
+        line-height: 2.2rem;
+        font-size: 1.2rem;
         color: rgb(75, 74, 74);
     }
     .resize .display-product{
