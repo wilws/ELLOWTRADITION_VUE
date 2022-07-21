@@ -409,12 +409,12 @@ export default {
             }
         },
     },
-    beforeRouteEnter(to,from) {
+    // beforeRouteEnter(to,from) {
 
-        if (from.fullPath === "/auth"){
-           window.location.reload(); 
-        }
-    }
+    //     if (from.fullPath === "/auth"){
+    //        window.location.reload(); 
+    //     }
+    // }
 }
 </script>
 

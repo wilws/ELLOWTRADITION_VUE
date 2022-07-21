@@ -113,6 +113,7 @@ export default {
         await context.dispatch('save',updatedCartItems)
     },
 
+  
 
     async save(context,data){
         try {
@@ -125,6 +126,9 @@ export default {
             throw error;
         }
     },
+
+
+
 
   
 
@@ -187,6 +191,26 @@ export default {
         }
 
     },
+
+
+    // async writeToTempCart(context,data){
+    //     console.log('in cart action write to tempcart')
+    //     try {
+    //         context.commit('writeToTempCart',data);                     // update the local state
+    //     } catch(err) {
+    //         const error = new Error('cannot write to temp cart');
+    //         throw error;
+    //     }
+    // },
+
+    async replaceMainCart(context){
+        const cart = context.getters['cart/getCart'];
+        try{
+            await context.dispatch('save',cart);              // update to database
+        } catch(error){
+            throw new Error("Fail to replace main cart");
+        } 
+    }
 
 
     

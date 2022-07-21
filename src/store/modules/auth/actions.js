@@ -4,9 +4,9 @@ export default {
 
     async signup(_,data){
         const formData = {
-            email : data.email.val,
-            username : data.username.val,
-            password : data.password.val,
+            email : data.email,
+            username : data.username,
+            password : data.password,
         }
 
         try{
@@ -22,7 +22,10 @@ export default {
    
             const res = await resData.json();  
 
-            console.log(res)
+            if (res.message === "Validation Failed"){
+                const error = new Error(res.data[0].msg);
+                throw error;
+            }
 
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message);
@@ -30,8 +33,7 @@ export default {
             } 
 
         } catch(err){
-            console.log(err)
-            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
+            const error = new Error(err.message);  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
@@ -39,10 +41,9 @@ export default {
 
 
     async login(context,data){
-
         const formData = {
-            email : data.email.val,
-            password : data.password.val,
+            email : data.email,
+            password : data.password,
         }
 
         try{    
@@ -57,8 +58,11 @@ export default {
             });
             
             const res = await resData.json();  
-     
 
+            if (res.message === "Validation Failed"){
+                const error = new Error(res.data[0].msg);
+                throw error;
+            }
             if (resData.status !== 200) {                        // Check if return status 200
                 const error = new Error(res.message)
                 throw error
@@ -71,24 +75,21 @@ export default {
                 email: res.email,
             })
 
-            context.commit('isLogin',true)
-            context.commit('userLogin',{
-                token:res.token,
-                username: res.username,
-                email: res.email,
-            });
+            // context.commit('isLogin',true)
+            // context.commit('userLogin',{
+            //     token:res.token,
+            //     username: res.username,
+            //     email: res.email,
+            // });
 
         } catch(err){
             console.log(err)
-            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
+            const error = new Error(err.message);  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
 
     async logout(context){
-
-        console.log('cookies:')
-        console.log(document.cookie);
 
         try{
 
@@ -102,8 +103,6 @@ export default {
 
             const res = await resData.json();
 
-
-            console.log(res)
             if (resData.status != 200){
                 const error = new Error(res.message);
                 throw error;
@@ -176,7 +175,11 @@ export default {
             username:data.username,
             email:data.email,
         });
+    },
 
+    setAuthForCheckout(context,data){
+        console.log('in action, setAuthForCheckout. set:',data)
+        context.commit('setAuthForCheckout',data);
     }
     
 

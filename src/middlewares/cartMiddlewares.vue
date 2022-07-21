@@ -37,6 +37,9 @@ export default {
                         break;
                     case "Cart":
                         // return cart object only
+                        if (this.ifAuthForCheckout){    // if the page is direct from checkout login
+                            this.replaceMainCart()      // if the DB's cart item by cartitem before checkin
+                        }
                         await this.loadCartFromDB();
                        break;
                     default:
@@ -45,6 +48,8 @@ export default {
                 }
 
                 result.cartObj = await this.constructCartObject();
+                this.unsetAuthForCheckout();
+
    
             } catch(error) {
                 console.log(error)
@@ -166,6 +171,25 @@ export default {
                 total += item.subtotal
             });
             return total
+        },
+        unsetAuthForCheckout(){
+            console.log('in cart handler - unsetAuthForCheckout')
+            this.$store.dispatch('auth/isAuthForCheckout',false);
+        },
+
+        ifAuthForCheckout(){
+            console.log('in cart handler - ifAuthForCheckout')
+            // ifAuthForCheckout = the page is leaded from user log in due to checkout 
+            // user want to checkout but does not login / no account
+            // User is required to login perior to checking out
+            // After user does so, cart will display items that are added before logging in.
+            // Those pre-added items  will replaced the cart in DB by replaceMainCart()
+            //  AuthForCheckout will set to false after that
+            return this.$store.getters['auth/isAuthForCheckout'];
+        },
+        replaceMainCart(){
+            console.log('in cart handler - replace main cart')
+            this.$store.dispatch('cart/replaceMainCart');
         }
     }
 }

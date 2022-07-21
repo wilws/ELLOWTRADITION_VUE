@@ -10,6 +10,7 @@ export default {
             email:"",
             token:"",
             isLogin:false,
+            authForCheckout:false
         }
     },
     mutations,

@@ -15,20 +15,39 @@
         <h1 class="auth-header">sign up</h1>
         <img class="auth-img" src="~@/assets/simpLogo.jpg" alt="logo">
         <p class="auth-para1" >We are happy to have you to join us !</p>
-        <form @submit.prevent="authAction('SignUp')">
+        <p class="errorMsg">{{ error}}</p>
+
+        <!-- <form @submit.prevent="authAction('SignUp')">
             <input class="auth-username" type="text" placeholder=" User Name"  v-model.trim="username.val">
             <input class="auth-email" type="email" placeholder=" E-mail" v-model.trim="email.val">
             <input class="auth-password" type="password" placeholder=" Password" v-model.trim="password.val">
             <input class="auth-re-password" type="password" placeholder=" Password" v-model.trim="repassword.val">
             <button class="auth-btn" type="submit">sign up</button>
-        </form>
+        </form> -->
+  
+      <Form ref="form1" @submit="authAction('SignUp')"  :validation-schema="schema2">
+        <Field id="signUp_username" name="signUp_username" type="text"  class="auth-username" placeholder="User Name" v-model.trim="username"/>
+        <ErrorMessage name="signUp_username" class="alert"/>
+
+        <Field id="signUp_emailAddress" name="signUp_emailAddress" type="email"  class="auth-e-mail" placeholder="E-mail" v-model.trim="email"/>
+        <ErrorMessage name="signUp_emailAddress" class="alert"/>
+
+        <Field id="signUp_password" name="signUp_password" type="password" class="auth-password" placeholder="Password" v-model.trim="password"/>
+        <ErrorMessage name="signUp_password" class="alert"/>
+
+        <Field id="signUp_passwordConfirm" name="signUp_passwordConfirm" type="password" class="auth-password" placeholder="Re-Type Password" v-model.trim="repassword"/>
+        <ErrorMessage name="signUp_passwordConfirm" class="alert" />
+
+        <button  class="auth-btn" >Singn Up</button>
+      </Form>
+
         <p class="auth-para2">Already has an account?</p>
         <button class="auth-switch to-login" @click="switchBtn">log in</button>
         </div>
         <!-- End of Sign up -->
 
         <!-- Login -->
-        <div class="auth-card log-in-card" @submit.prevent="authAction('LogIn')">
+        <div class="auth-card log-in-card" >
 
         <button @click="$emit('closeSignUpPage');" class="close-menu-btn">
             <div class="cross-line-1"></div>
@@ -38,11 +57,15 @@
             <h1 class="auth-header">Log in</h1>
             <img class="auth-img" src="~@/assets/simpLogo.jpg" alt="logo">
             <p  class="auth-para1">Welcome Back !</p>
-            <form>
-            <input class="auth-e-mail" type="email" placeholder=" E-mail" v-model.trim="email.val">
-            <input class="auth-password" type="password" placeholder=" Password" v-model.trim="password.val">
-            <button class="auth-btn" type="submit" >log in</button>
-            </form>
+            <p class="errorMsg">{{ error}}</p>
+
+             <Form  ref="form2"  @submit="authAction('LogIn')"  :validation-schema="schema">
+                <Field id="signIn_email" name="signIn_email" type="email"  class="auth-e-mail" placeholder="E-mail" v-model.trim="email"/>
+                <ErrorMessage name="signIn_email" class="alert"/>
+                <Field id="signIn_password" name="signIn_password" type="password" class="auth-password" placeholder="Password" v-model.trim="password"/>
+                <ErrorMessage name="signIn_password" class="alert"/>
+                <button class="auth-btn">log in</button>
+            </Form>
             <p class="auth-para2">Not yet has an account?</p>
             <button  class="auth-switch" @click="switchBtn">sign up</button>
         </div>
@@ -56,52 +79,77 @@
 <script>
 
 import AuthMiddlewares from "../../middlewares/authMiddlewares.vue";
+
+import { Field, Form, ErrorMessage } from "vee-validate";
+import * as Yup from "yup";
+
 export default {
-
-
+  components: {
+    Field,
+    Form,
+    ErrorMessage,
+  },
+ 
   mixins:[AuthMiddlewares],
  
     data(){
-        return{
-            error:"",
-            email: {
-                val: '',
-                isValid: true,
-            },
-            password: {
-                val: '',
-                isValid: true,
-            },
-            repassword: {
-                val: '',
-                isValid: true,
-            },
-            username: {
-                val: '',
-                isValid: true,
-            },
- 
-        }
+      const schema = Yup.object().shape({
+        signIn_email: Yup.string().email().required().label("Email Address"),
+        signIn_password: Yup.string().min(6).max(30).required().label("Password"),
+      
+      });
+
+      const schema2 = Yup.object().shape({
+        signUp_emailAddress: Yup.string().email().required().label("Email Address"),
+        signUp_username: Yup.string().required().min(6).max(30).label("User Name"),
+        signUp_password: Yup.string().required().min(6).max(30).label("Password"),
+        signUp_passwordConfirm: Yup.string().oneOf([Yup.ref('signUp_password'), null], 'Passwords must match').required().max(30).min(6).label("Password Confirmation"),
+
+      });
+      return{
+        schema,
+        schema2,
+        error:"",
+        email:"",
+        password:"",
+        username:"",
+        repassword:""
+      }
     },
-     
 
     methods:{
 
         switchBtn(){
             // flip the login card to sign up
+            this.resetVariables()
             const cardWrapper = document.querySelector(".auth-card-wrapper");
             cardWrapper.classList.toggle('leftTurn');
+            
         },
 
+        resetVariables(){
+          console.log("rest")
+          this.error = "";
+          this.email = "";
+          this.password = "";
+          this.repassword = "";
+          this.username = "";
+          this.$refs.form1.resetForm();
+          this.$refs.form2.resetForm();
+        },
+
+
+
         async authAction(action){
+          console.log(action,this.email,this.password,this.username)
           try{  
-            await this.AuthHandler(action,this.email,this.password,this. username);
-            // this.$router.go();
-            window.location.reload()
+            await this.AuthHandler(action,this.email,this.password,this.username);
+            this.$router.go();
           } catch (error){
-             this.error = error.message;
+            console.log(error)
+            this.error = error.message;
           }
-        }
+        },
     }
 }
 
@@ -114,6 +162,12 @@ export default {
 
 
 /* Sign Up / Login  */
+
+.alert{
+  color:red;
+  position: relative;
+  top: -1.5rem;
+  }
 
 .auth-wrapper{
   position:absolute;
@@ -131,7 +185,7 @@ export default {
   left:50%;
   transform: translateX(-50%) translateY(-50%);
   width:34rem;
-  height:57.7rem;
+  height:70rem;
   perspective: 100rem;
   transform-style: preserve-3d;
   transition: transform .5s 
@@ -209,7 +263,7 @@ export default {
 }
 
 .auth-card form{
-  margin-top:-2rem;
+  margin-top:-5rem;
   width:100%;
   padding: 3rem;
   display: flex;
@@ -233,15 +287,18 @@ export default {
   font-weight: 100;
 }
 
-.auth-username{
-  
+/* .auth-username{
 }
 
 .auth-email{}
 
 .auth-password{}
 
-.auth-re-password{}
+.auth-re-password{} */
+
+.errorMsg{
+  color:red;
+}
 
 .auth-btn{
   background-color: #7D929B;

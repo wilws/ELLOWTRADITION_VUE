@@ -42,6 +42,7 @@ export default {
                 //     quantity: 1,
                 // },
             ],
+            // tempCart:[]
             // totalCartValue:0,
         }
     },

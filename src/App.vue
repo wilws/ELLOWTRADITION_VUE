@@ -61,7 +61,7 @@
             <div><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></div>
             <div @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
         </div>
-        <div v-else @click="isSingUpPageOpen=true"><i class="login-icon fa-regular fa-circle-user"></i></div>
+        <div v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
         <router-link class="router-link" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
       </div>
     </div>
@@ -125,6 +125,7 @@ export default {
   methods:{
     MenuControl(){
         document.querySelector(".container").classList.toggle("change");
+        this.$store.dispatch('cart/setAuthForCheckout',false)
     },
     closeSignUpPage(){
         this.isSingUpPageOpen = false;

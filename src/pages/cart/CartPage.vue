@@ -16,7 +16,6 @@
             <div class=total-amount>$ {{ totalAmount}}</div>
         </div>
         <button class="checkout-btn"  @click="checkout">
-            <!-- div<i class="fa-solid fa-money-check-dollar"></i> -->
             <p>Checkout ></p>
         </button>
     </div>
@@ -57,10 +56,10 @@
 <script>
 
 import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
-
+import CheckoutMiddlewares from "../../middlewares/checkoutMiddlewares.vue";
 export default {
  
-    mixins:[CartMiddlewares],
+    mixins:[CartMiddlewares,CheckoutMiddlewares],
 
     data() {
         return {
@@ -79,14 +78,14 @@ export default {
     async created(){
         try{
             const cart = await this.CartHandler();
-            this.setVariables(cart.cartObj);
+            this.resetVariables(cart.cartObj);
         } catch(error){
             this.errorMsg = error.message;
         }
     },
 
     methods:{
-        setVariables(cartObj){
+        resetVariables(cartObj){
             this.cartObj = cartObj;
             this.cartItems = cartObj.cartItems;
             this.productTotalAmount = cartObj.productTotalAmount;
@@ -107,9 +106,13 @@ export default {
             }
         },
 
-        checkout(){
+        async checkout(){
             console.log('click checkout')
-            this.$store.dispatch('cart/checkout');
+            try{
+                await this.CheckoutHandler();
+            }catch(error){
+                this.errorMsg = error.message;
+            }
         }
     }
 }

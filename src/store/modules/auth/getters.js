@@ -10,7 +10,11 @@ export default {
 
     isLogin(state){
         return state.isLogin
-    }
+    },
 
+    isAuthForCheckout(state){
+        console.log('in getter, get authforcheckout:', state.authForCheckout)
+        return state.authForCheckout
+    }
 
 }

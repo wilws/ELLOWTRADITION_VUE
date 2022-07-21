@@ -11,6 +11,11 @@ export default {
         state.username = payload.username,
         state.email = payload.email,
         state.token = payload.token
+    },
+
+    setAuthForCheckout(state,payload){
+        console.log('in muttation, setAuthForCheckout. set:',payload)
+        state.authForCheckout = payload
     }
 
 }
