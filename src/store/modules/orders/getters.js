@@ -1,7 +1,5 @@
 export default {
     getInvoices(state){
-        console.log("getters in get Invoice")
-
         return state.invoices
     },
 

@@ -122,7 +122,7 @@ export default {
             }
             context.commit('updateCart',data);                     // update the local state
         } catch(err) {
-            const error = new Error('cannot update cart in Database');
+            const error = new Error(err.message);
             throw error;
         }
     },
@@ -158,7 +158,7 @@ export default {
             } 
 
         } catch(err){
-            const error = new Error("Fail to Update Cart in Database");
+            const error = new Error(err.message);
             throw error;
         }
     },
@@ -203,12 +203,16 @@ export default {
     //     }
     // },
 
-    async replaceMainCart(context){
-        const cart = context.getters['cart/getCart'];
+    async synchoniseCartInDB(context){
+        // upload currrent cart in VUEX to DB
+        const cart = context.getters['getCart'];
+        console.log('cart in sychoniseCartInDB')
+        console.log(cart)
         try{
             await context.dispatch('save',cart);              // update to database
         } catch(error){
-            throw new Error("Fail to replace main cart");
+            console.log(error)
+            throw new Error(error.message);
         } 
     }
 

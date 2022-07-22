@@ -25,12 +25,11 @@ export default {
             });
 
             context.commit('setInvoices', invoices);
-            context.commit('isSet',true);
+            // context.commit('isSet',true);
 
         } catch(err){
             console.log(err)
-            const error = new Error("Fail to Load invoices");
-            throw error;
+            throw new Error(err);
         }
     },
 

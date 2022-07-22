@@ -13,6 +13,7 @@ export default {
         state.token = payload.token
     },
 
+
     setAuthForCheckout(state,payload){
         console.log('in muttation, setAuthForCheckout. set:',payload)
         state.authForCheckout = payload

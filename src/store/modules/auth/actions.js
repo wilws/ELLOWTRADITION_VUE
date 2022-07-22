@@ -178,6 +178,7 @@ export default {
     },
 
     setAuthForCheckout(context,data){
+        console.log(data)
         console.log('in action, setAuthForCheckout. set:',data)
         context.commit('setAuthForCheckout',data);
     }

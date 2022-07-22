@@ -4,8 +4,8 @@
         <div class="left-area">
             <div class="invoice_summary_wrapper">
                 <h1>Invoices</h1>
-                <p class="total_invoice">Total No. of Invoice: <span>5</span></p>
-                <p class="spend">Accumulative Spend: $<span> 10000</span></p>
+                <p class="total_invoice">Total No. of Invoice: <span>{{totalNoInvoice}}</span></p>
+                <p class="spend">Accumulative Spend: $<span> {{accumulativeSpending}}</span></p>
             </div>
             <div class="personal_info_wrapper">
                 <h1>Personal Info</h1>
@@ -31,24 +31,23 @@
     <div class="invoices">
         <ul v-for="invoice in invoices" :key="invoice._id">
             <li>
+                <router-link :to="{name:'invoice',params:{'invoiceId':invoice._id}}" class="view" style="text-decoration:none">
                 <div class="invoice">
                         <div class="date">
-                            <p class="day">06</p>
-                            <p class="month">SEP</p>
-                            <p class="year">2022</p>
+                            <p class="day">{{ invoice.date.day }}</p>
+                            <p class="month">{{ invoice.date.mEng }}</p>
+                            <p class="year">{{ invoice.date.year }}</p>
                         </div>
                         <div class="line"></div>
                         <div class="invoice_no">
                             <div class="tag">Invoice no</div>
-                            <!-- <p>{{ invoice._id}}</p> -->
-                            <p>2523479889324523940</p>
+                            <p>{{ invoice._id }}</p>
                         </div>
                         <div class="amount">
                             <p>$ {{ invoice.total }}</p>
                         </div>
- 
-                        <router-link :to="`/invoice/${invoice._id}`" class="view" style="text-decoration:none"><i class="fa-solid fa-paperclip" ></i></router-link>
                 </div>
+                </router-link>
             </li>
         </ul>
     </div>
@@ -59,32 +58,44 @@
 
 <script>
 
-
+import InvoiceHandler from "../../middlewares/invoiceMiddlewares.vue";
 export default {
+
+    mixins:[InvoiceHandler],
 
     data(){
         return {
-            invoices:[]
+            invoiceObj:{},
+            invoices:[],
+            totalNoInvoice:0,
+            accumulativeSpending:0
         }
     },
 
-
     async created(){
-
-
-        const isSet = this.$store.getters['orders/isSet'];
-
-
-        if (!isSet) {
-            try{
-                await this.$store.dispatch('orders/loadInvoices');
-            } catch (err){
-                console.log(err)
+        try{
+            this.invoiceObj = await this.InvoiceHandler("Invoices");
+            // console.log(this.invoiceObj);
+            // this.setVariables(this.invoiceObj);
+            this.invoices = this.invoiceObj.invoices,
+            this.totalNoInvoice = this.invoiceObj.totalNoInvoice,
+            this.accumulativeSpending =  this.invoiceObj.accumulativeSpending
+            
+        } catch(error){
+            if (error.message=="Error: Not authenticated"){
+                await this.$router.push({name:"products"});
+                // window.location.reload()
             }
+            throw new Error(error);
         }
-         
-        this.invoices = this.$store.getters['orders/getInvoices'];
-    }
+    },
+// methods:{
+//     setVariables(invoiceObj){
+//         this.invoices = invoiceObj.invoices,
+//         this.totalNoInvoice = invoiceObj.totalNoInvoice,
+//         this.accumulativeSpending =  invoiceObj.accumulativeSpending
+//     },
+// }
 }
 </script>
 

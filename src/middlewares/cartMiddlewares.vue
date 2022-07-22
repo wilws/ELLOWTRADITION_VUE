@@ -10,7 +10,9 @@ export default {
     methods:{
 
        async CartHandler(action="Cart",productId=0){
-        
+           console.log('In CartHandler init')
+
+            // this.$store.dispatch('auth/setAuthForCheckout',false)
             let result = {
                 cartObj:{},
                 errorMsg:""
@@ -21,7 +23,6 @@ export default {
                     case "Add": 
                         // Add 1 into cart 
                         await this.addtoCart(productId);
-        
                         break;
                     case "Deduct":
                         // Deduct 1 from the cart
@@ -37,10 +38,12 @@ export default {
                         break;
                     case "Cart":
                         // return cart object only
-                        if (this.ifAuthForCheckout){    // if the page is direct from checkout login
-                            this.replaceMainCart()      // if the DB's cart item by cartitem before checkin
+                        if (this.ifAuthForCheckout()){                  // if the page is direct from checkout login
+                            await this.synchoniseCartInDB()             // it upload the current cart to DB but not download the cart from DB
+                            this.unsetAuthForCheckout()                 // unset the auth for checkout status
+                        } else {
+                            await this.loadCartFromDB();                //ifAuthForCheckout() is false load cart from DB"
                         }
-                        await this.loadCartFromDB();
                        break;
                     default:
                         // return cart object only
@@ -48,9 +51,8 @@ export default {
                 }
 
                 result.cartObj = await this.constructCartObject();
-                this.unsetAuthForCheckout();
-
-   
+                console.log(result.cartObj)
+         
             } catch(error) {
                 console.log(error)
                 result.errorMsg  = error.message || "Cannot perform cart action";
@@ -174,7 +176,7 @@ export default {
         },
         unsetAuthForCheckout(){
             console.log('in cart handler - unsetAuthForCheckout')
-            this.$store.dispatch('auth/isAuthForCheckout',false);
+            this.$store.dispatch('auth/setAuthForCheckout',false)
         },
 
         ifAuthForCheckout(){
@@ -187,9 +189,14 @@ export default {
             //  AuthForCheckout will set to false after that
             return this.$store.getters['auth/isAuthForCheckout'];
         },
-        replaceMainCart(){
-            console.log('in cart handler - replace main cart')
-            this.$store.dispatch('cart/replaceMainCart');
+
+        async synchoniseCartInDB(){
+            console.log('in cart handler - synchoniseCartInDB')
+            try{
+                await this.$store.dispatch('cart/synchoniseCartInDB');
+            } catch(error){
+                throw new Error(error.message);
+            }
         }
     }
 }

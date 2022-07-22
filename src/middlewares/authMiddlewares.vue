@@ -27,7 +27,14 @@ export default {
                     console.log('get error in handler')
                     console.log(error)
                     throw new Error(error);
-                }
+                } 
+                // finally {
+                //     if(this.$store.getters['auth/isAuthForCheckout']){
+                //         console.log('this is check for log out')
+                //         this.$store.dispatch('auth/setAuthForCheckout',false)
+                //         console.log('authforcheckout now is set to:', this.$store.getters['auth/isAuthForCheckout'])
+                //     }
+                // }
         },
 
         async singUpAction(username,email,password){

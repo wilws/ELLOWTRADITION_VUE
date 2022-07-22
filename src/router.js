@@ -23,10 +23,12 @@ const router = createRouter({
         { path:'/cart',component:cartPage,name:'cart'  },
         // { path:'/policy',component:policyPage },
         { path:'/products',component:productsPage,name:'products'  },
-        { path:'/invoices',component:invoicesPage,name:'invoice'  },
+        { path:'/invoices',component:invoicesPage,name:'invoices'  },
         { 
             path:'/invoice/:invoiceId',
             component:invoiceDetails,
+            name:'invoice',
+            // props: { invoice: false }
         },
         { path: '/:notFound(.*)', component: NotFound }
     ],

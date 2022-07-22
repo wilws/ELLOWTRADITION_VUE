@@ -5,11 +5,13 @@
     <div class="cart-summary">
         <h1>Invoice</h1>
         <ul>
-            <li>{{ invoice._id }}</li>
-            <li class="total-item">Total Item : <span>10</span></li>
-            <li class="product-amount">Product : <span>$ 10,982</span></li>
-            <li class="vat">VAT : <span>$ 19.82</span></li>
-            <li class="shipping">Shipping :  <span>$ 299.8</span></li>
+            <li class="date">Date: {{invoice.date.day}} {{invoice.date.mEng}} {{invoice.date.year}}</li>
+            <li class="invoiceId">Invoice No:<br> <span>{{ invoice._id }}</span></li>
+            
+            <li class="total-item">Total Item : <span>{{ invoice.noOfItem }}</span></li>
+            <li class="product-amount">Product :  <span>$ {{ invoice.productTotal }}</span></li>
+            <li class="vat">VAT : <span>$ {{ invoice.vat }}</span></li>
+            <li class="shipping">Shipping :  <span>$ {{ invoice.shipping }}</span></li>
         </ul>
         <div class="line"></div>
         <div class="total-amount-wrapper">
@@ -27,13 +29,10 @@
     <div class="cart-items">
         <ul v-for="product in invoice.products" :key="product._Id">
             <li  class="cart-item">
-                <div class="img">
-                    <img :src="require(`@/assets/products/${product.imageUrl1}`)"/>
-                </div>
                 <div class="name">{{product.name}}</div>
-                <div class="price">$ {{product.price.$numberDecimal}}</div>
-                <div class="qty">Qty : {{product.quantity}}</div>
-                <div class="subtotal">$ {{product.subtotal}}</div>
+                <div class="price">Unit price: <br>$ {{product.price}}</div>
+                <div class="qty">Qty : <br> {{product.quantity}}</div>
+                <div class="subtotal">Subtotal: <br>$ {{product.subTotal}}</div>
             </li>
         </ul>
     </div>
@@ -45,47 +44,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-<p>Invoice no: {{ invoice._id }}</p>
-    <p>{{ invoice.createdAt }}</p>
-    <ul v-for="product in invoice.products" :key="product.productId">
-        <li> Product: {{product.name}}</li>
-        <li> Price: {{product.price}}</li>
-        <li> Quantity: {{product.quantity}}</li>
-        <li> Subtotal: {{product.subtotal}}</li>
-    </ul>
-    <p>Total Amount: {{ invoice.total}}</p> -->
-
-
-
-
 <script>
 
 
+import InvoiceHandler from "../../middlewares/invoiceMiddlewares.vue";
 export default {
+
+    mixins:[InvoiceHandler],
     
     data(){
         return {
@@ -96,25 +61,43 @@ export default {
 
 
 
-
     async created(){
+        const InvoiceId = this.$route.params.invoiceId
+
+        try{
+            this.invoice= await this.InvoiceHandler("View",InvoiceId);
+            console.log(this.invoice);
+            // this.setVariables(this.invoiceObj);
+            
+            
+        } catch(error){
+            console.log(error)
+            if (error.message=="Error: Not authenticated"){
+             
+                await this.$router.push({name:"products"});
+                window.location.reload()
+
+            }
+            throw new Error(error);
+        }
+
 
         
-        if (this.$route.query.checkout){
-            this.$store.dispatch('cart/clearCart')
-            try{
-                await this.$store.dispatch('orders/loadInvoices');
-            } catch (err){
-                console.log(err)
-            }
-        }
+        // if (this.$route.query.checkout){
+        //     this.$store.dispatch('cart/clearCart')
+        //     try{
+        //         await this.$store.dispatch('orders/loadInvoices');
+        //     } catch (err){
+        //         console.log(err)
+        //     }
+        // }
        
-        const InvoiceId = this.$route.params.invoiceId;                // Get invoice id from the URl param
-        let invoices = this.$store.getters['orders/getInvoices'];      // Get all the invoices from vuex
-        const idx = invoices.findIndex(invoice =>{                     // Get the targeted invoice's index in the invoices array
-            return invoice._id.toString() == InvoiceId                  
-        });
-        this.invoice = invoices[idx];                                  
+        // const InvoiceId = this.$route.params.invoiceId;                // Get invoice id from the URl param
+        // let invoices = this.$store.getters['orders/getInvoices'];      // Get all the invoices from vuex
+        // const idx = invoices.findIndex(invoice =>{                     // Get the targeted invoice's index in the invoices array
+        //     return invoice._id.toString() == InvoiceId                  
+        // });
+        // this.invoice = invoices[idx];                                  
       
     },
 
@@ -180,8 +163,8 @@ export default {
 .cart-summary ul li{
     width:100%;
     color:#FFFCFC;
-    font-size: 2rem;
-    font-weight: 100;
+    font-size: 1.5rem;
+    font-weight: 300;
     margin:3rem 0rem;
     text-align: left;
     letter-spacing: 0.8rem;
@@ -193,6 +176,45 @@ export default {
     right:2rem;
     text-align: right;
     /* letter-spacing: 0.5rem; */
+}
+
+
+.cart-summary .invoiceId{
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+    margin-top: 1rem;
+    margin-bottom: 6rem;
+}
+
+.cart-summary .invoiceId span{
+    letter-spacing: 0.2rem;
+        text-align: left;
+    width: 100%;
+    padding-left: 4rem;
+
+}
+
+.cart-summary .date{
+    font-weight: 400;
+    letter-spacing: .2rem;
+    margin-top: 0rem;
+    font-size: 1.4rem;
+        margin-bottom: 0rem;
+}
+.cart-summary .total-item{
+        /* font-weight: 400;
+    letter-spacing: .5rem;
+   */
+}
+.cart-summary .product-amount{
+      /* margin: 1.2rem 0rem; */
+}
+.cart-summary .vat{
+      /* margin: 1.2rem 0rem; */
+}
+.cart-summary .shipping{
+      /* margin-top: 1.2rem;
+      margin-bottom: 5rem; */
 }
 
 .cart-summary .line{
@@ -219,6 +241,8 @@ export default {
     font-family: 'IBM Plex Sans', sans-serif;
 }
 
+
+
 .cart-summary .total-amount-wrapper .total-amount{
     position: relative;
     padding-top: 5rem;
@@ -231,7 +255,7 @@ export default {
     color: azure;
 }
 
-.total-amount::after{
+/* .total-amount::after{
     position: absolute;
     top:0;
     left:0;
@@ -239,20 +263,20 @@ export default {
     height:1rem;
     z-index: 8;
     background-color: rgba(255, 255, 255, 0.5);
-}
+} */
 
-.total-amount::before{
+/* .total-amount::before{
     position: absolute;
     top:0;
     left:0;
     width:100%;
     height:1rem;
     background-color: rgba(211, 81, 81, 0.5);
-}
+} */
 
-.total-amount::before{}
+/* .total-amount::before{} */
 
-.cart-summary .checkout-btn{
+/* .cart-summary .checkout-btn{
     position: relative;
     margin-top: 13rem;
     width: 100%;
@@ -276,7 +300,7 @@ export default {
     padding-left: 2%;
     transition: transform 1s;
     
-}
+} */
 
 /* .cart-summary .checkout-btn p{
     position:absolute;
@@ -286,7 +310,7 @@ export default {
     z-index: 1;
     background-color: ivory;
 } */
-
+/* 
 .cart-summary .checkout-btn i{
     position:absolute;
     width:100%;
@@ -297,10 +321,10 @@ export default {
     z-index: 3;
     background-color: ivory;
    
-}
+} */
 
 
-
+/* 
 .cart-summary .checkout-btn::before{
     content:"";
     width: 33rem;
@@ -336,7 +360,7 @@ export default {
     100%{
         transform:translateX(100rem) skewX(20deg);
     }
-}
+} */
 
 
 
@@ -372,7 +396,7 @@ export default {
      /* overflow: hidden; */
 }
 
-.delete-btn{
+/* .delete-btn{
     position:absolute;
     top:-0.4rem;
     z-index: 3;
@@ -409,9 +433,9 @@ export default {
 
 .delete-btn:hover{
     opacity:1;
-    /* transform:scale(1.5); */
+    transform:scale(1.5);
     background-color: rgb(245, 118, 118)
-}
+} */
 
 
 .cart-item .img{
@@ -441,10 +465,12 @@ export default {
     white-space:nowrap;
     overflow:hidden;
     text-overflow: ellipsis;
+    padding-left: 1rem;
 }
 
 .cart-item .price{
-    width:8rem;
+    text-align: center;
+    width:14rem;
     font-size: 1.43rem;
     white-space:nowrap;
     overflow:hidden;
@@ -481,6 +507,7 @@ export default {
 } */
 
 .cart-item .qty{
+    text-align: center;
     font-size: 1.5rem;
 }
 
@@ -497,7 +524,7 @@ export default {
 } */
 
 .cart-item .subtotal{
-    width:8rem;
+    width:14rem;
     text-align: center;
     font-size: 1.5rem;
     white-space:nowrap;

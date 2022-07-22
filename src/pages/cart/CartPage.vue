@@ -74,18 +74,38 @@ export default {
             noOfItems:0
         }
     },
+
+    watch:{
+        noOfItems(){                 
+            this.checkOutBtnControl();                   // check if item = 0, if no item in cart. unshow the checkout button
+        }
+    },
    
     async created(){
         try{
-            const cart = await this.CartHandler();
-            this.resetVariables(cart.cartObj);
+            const cart = await this.CartHandler();       // Get Cart detail 
+            this.setVariables(cart.cartObj);             // Set details in page
         } catch(error){
             this.errorMsg = error.message;
         }
     },
 
+    mounted(){
+        this.checkOutBtnControl();                       // to Control the availablity of the checkout button
+    },
+
     methods:{
-        resetVariables(cartObj){
+        checkOutBtnControl(){
+            if(this.noOfItems <=0){
+                document.querySelector(".checkout-btn").classList.add('disabled');
+                document.querySelector(".checkout-btn").disabled = true;
+            } else {
+                document.querySelector(".checkout-btn").classList.remove('disabled');
+                document.querySelector(".checkout-btn").disabled = false;
+            }
+        },
+
+        setVariables(cartObj){
             this.cartObj = cartObj;
             this.cartItems = cartObj.cartItems;
             this.productTotalAmount = cartObj.productTotalAmount;
@@ -100,14 +120,14 @@ export default {
         async amedCartItem(action,productId){
             try{
                 const cart = await this.CartHandler(action,productId);
-                this.setVariables(cart.cartObj);    
+                this.setVariables(cart.cartObj);   
             } catch(error){
                 this.errorMsg = error.message;
             }
         },
 
         async checkout(){
-            console.log('click checkout')
+            console.log('click checkout button')
             try{
                 await this.CheckoutHandler();
             }catch(error){
@@ -315,6 +335,19 @@ export default {
 .checkout-btn:hover:before {
     animation:checkouthover 2s infinite;
 }
+
+.checkout-btn.disabled{
+display: none;
+}
+
+/* .checkout-btn.disabled:hover {
+    background-color: unset;
+    color:unset
+} */
+
+/* .checkout-btn.disabled:hover:before {
+    animation:unset
+} */
 
 @keyframes checkouthover {
     0%{

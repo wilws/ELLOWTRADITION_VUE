@@ -58,7 +58,7 @@
       <div class="short-cut" >
         
         <div v-if="isLogin" class="isAuth" >
-            <div><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></div>
+            <div><router-link class="router-link" to="/invoices"><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></router-link></div>
             <div @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
         </div>
         <div v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
@@ -125,10 +125,17 @@ export default {
   methods:{
     MenuControl(){
         document.querySelector(".container").classList.toggle("change");
-        this.$store.dispatch('cart/setAuthForCheckout',false)
+        
     },
     closeSignUpPage(){
         this.isSingUpPageOpen = false;
+        console.log('Enter to app.vue", authfor checkout now is :',this.$store.getters['auth/isAuthForCheckout'])
+        if(this.$store.getters['auth/isAuthForCheckout']){
+          console.log('this is check for log out')
+          this.$store.dispatch('auth/setAuthForCheckout',false)
+          console.log('authforcheckout now is set to:', this.$store.getters['auth/isAuthForCheckout'])
+        }
+        
     },
     setStatus(){
         this.isLogin = this.$store.getters['auth/isLogin'];
@@ -169,13 +176,14 @@ html {
 
 .container{
   width:100%;
+  /* max-width: 1300px; */
   height:100vh;
   perspective: 100rem;
   overflow: hidden;
 }
 
 .routerView{
-  width:100vw;
+  width:100%;
   height: 100vh;
   background-color:white;
   transition: transform .6s;
