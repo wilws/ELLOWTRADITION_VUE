@@ -2,6 +2,7 @@ export default {
     async loadProducts(context){
        
         const api = `${context.rootGetters['getServerUrl']}get-products/`;
+        console.log(api)
         
         try{
             const resData = await fetch(api,{

@@ -26,7 +26,10 @@
 
         <!-- v-if : display logo -->
         <div v-if="!cartIsSet" >
-            <empty-page-component></empty-page-component>
+            <empty-page-component>
+                <i class="fa-solid fa-cart-flatbed-empty"></i>
+                No Items in Cart
+            </empty-page-component>
         </div>
         <!-- End of v-if -->
 
@@ -95,7 +98,6 @@ export default {
     async created(){
         try{
             const cart = await this.CartHandler();       // Get Cart detail 
-            console.log(cart)
             this.setVariables(cart.cartObj);             // Set details in page
         } catch(error){
             this.errorMsg = error.message;
@@ -562,7 +564,7 @@ display: none;
 
 @media(max-width: 900px){
     .section-4{
-        flex-direction: column-reverse;
+        flex-direction: column;
         overflow: scroll;
     }
     .cart-items {

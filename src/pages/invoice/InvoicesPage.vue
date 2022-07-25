@@ -33,7 +33,7 @@
     <div class="invoices">
         <!-- v-if : display logo -->
         <div v-if="!invoiceIsSet" >
-            <empty-page-component></empty-page-component>
+            <empty-page-component>No Invoices Found</empty-page-component>
         </div>
         <!-- End of v-if -->
 
@@ -102,21 +102,17 @@ export default {
             if (this.invoices.length){                                            // If no invoice, start the "emptyPageComponent"
                 this.invoiceIsSet=true
             }
-
-            console.log( this.invoiceObj)
-            
+      
             this.userObj = await this.AccountHandler("User");   
             this.email = this.userObj.email;
             this.username = this.userObj.username;
             this.address = this.userObj.address;
                 
         } catch(error){                                                 // If error happened during fetching invoice / invoiceObj cannot be set.
-            
             if (error.statusCode == 401){                               // If the error is 401, meaing that it is about authentication. (maybe token expired)
-                   
                 this.msg = `Error : ${error.message}. Maybe Token is expired. Please log in again`      
                 await this.AuthHandler("LogOut"); 
-                await new Promise(resolve => {setTimeout(() => { resolve('') }, 5000)})   // wait 5000s to redirect website to products 
+                await new Promise(resolve => {setTimeout(() => { resolve('') }, 2000)})   // wait 5000s to redirect website to products 
                 await this.$router.push({name:"products"});                               // after finished redirect
                 window.location.reload();                                                 // re load page to update DOM
             }        

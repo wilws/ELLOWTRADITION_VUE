@@ -5,32 +5,31 @@
 
 export default {
     async loadCartFromDB(context){
-        
+
         if (!context.rootGetters['auth/isLogin']){             // If user not loged in. Just return 
             return
         }
         
-        try{
+        try {
+
             const api = `${context.rootGetters['getServerUrl']}get-cart/`;
-            // const api = "http://localhost:8080/get-cart/"
+            const jwt = context.rootGetters['auth/getUser'].token;
+        
             const resData = await fetch(api,{
-                    method: "GET",                              
+                    method: "GET",                                // change from "GET" to "POST" as cookies not allowed               
                     headers:{
+                        Authorization: 'Bearer ' + jwt,
                         'Content-Type':'application/json'         
                     },
                     credentials: 'include'
             });
 
             const res = await resData.json();   
-            console.log(resData)
-            console.log(res)
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
                 error.statusCode = res.status;
                 throw error
             } 
-
-           
 
             const cartItems = [];
             res.cart.forEach((c) => {
@@ -43,10 +42,58 @@ export default {
             context.commit('updateCart',cartItems);                 // Update VUEX
 
         } catch(err){
+            console.log(err)
             const error = err;
             throw error;
         }
     },
+
+    // async loadCartFromDB(context){
+    // This method is muted because cookies Auth approach is not support by heroku
+
+ 
+        
+    //     if (!context.rootGetters['auth/isLogin']){             // If user not loged in. Just return 
+    
+    //         return
+    //     }
+    //     try{
+    //         const api = `${context.rootGetters['getServerUrl']}get-cart/`;
+    //         const resData = await fetch(api,{
+    //                 method: "GET",                              
+    //                 headers:{
+    //                     'Content-Type':'application/json'         
+    //                 },
+    //                 credentials: 'include'
+    //         });
+
+    //         const res = await resData.json();   
+    //         console.log(resData)
+    //         console.log(res)
+    //         if (resData.status !== 200) {                           // Check if return status 200
+    //             const error = new Error(res.message)
+    //             error.statusCode = res.status;
+    //             throw error
+    //         } 
+
+           
+
+    //         const cartItems = [];
+    //         res.cart.forEach((c) => {
+    //             cartItems.push({
+    //                     productId: c.productId,
+    //                     quantity: c.quantity,
+    //             });
+    //         });
+
+    //         context.commit('updateCart',cartItems);                 // Update VUEX
+
+    //     } catch(err){
+    //         console.log(err)
+    //         const error = err;
+    //         throw error;
+    //     }
+    // },
 
 
     async addtoCart(context,data) {
@@ -135,30 +182,28 @@ export default {
 
 
 
-
-  
-
-
+     
     async updateCartToDB(context,data){
-
-        const cart = {
-            cart: JSON.parse(JSON.stringify(data))
-        }
-
+        // This is non-Cookie approach  
         try{   
             const api = `${context.rootGetters['getServerUrl']}update-cart`;
+            const jwt = context.rootGetters['auth/getUser'].token;
+            const formData = {
+                cart: JSON.parse(JSON.stringify(data))
+            }
+            
             const resData = await fetch(api,{
                     method: "PUT",                              
                     headers:{
+                        Authorization: 'Bearer ' + jwt,
                         'Content-Type':'application/json'         
                     },
-                    body:JSON.stringify(cart),
+                    body:JSON.stringify(formData),
                     credentials: 'include'
             });
             
             const res = await resData.json();  
 
-            console.log(res)
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
                 error.statusCode = res.status;
@@ -171,20 +216,25 @@ export default {
         }
     },
 
-
     async checkout(context){
 
         try {
             const api = `${context.rootGetters['getServerUrl']}checkout`;
+            console.log(api)
+            const jwt = context.rootGetters['auth/getUser'].token;
             const resData = await fetch(api,{
                 method:"POST",
                 headers:{
+                    Authorization: 'Bearer ' + jwt,
                     'Content-Type':'application/json'
                 },
                 credentials: 'include'
             })
 
             const res = await resData.json(); 
+
+            console.log(res);
+            console.log(resData);
 
 
             if (resData.status !== 200) {                           // Check if return status 200
@@ -203,6 +253,86 @@ export default {
     },
 
 
+    async synchoniseCartInDB(context){
+        // upload currrent cart in VUEX to DB
+        const cart = context.getters['getCart'];
+        try{
+            await context.dispatch('save',cart);              // update to database
+        } catch(error){
+            throw new Error(error.message);
+        } 
+    }
+
+
+
+
+  
+
+    // Cookies Approach Functions. Muted Because Heroku not support cookies 
+    // async updateCartToDB(context,data){
+    //     
+    //     const cart = {
+    //         cart: JSON.parse(JSON.stringify(data))
+    //     }
+
+    //     try{   
+    //         const api = `${context.rootGetters['getServerUrl']}update-cart`;
+    //         const resData = await fetch(api,{
+    //                 method: "PUT",                              
+    //                 headers:{
+    //                     'Content-Type':'application/json'         
+    //                 },
+    //                 body:JSON.stringify(cart),
+    //                 credentials: 'include'
+    //         });
+            
+    //         const res = await resData.json();  
+
+    //         console.log(res)
+    //         if (resData.status !== 200) {                           // Check if return status 200
+    //             const error = new Error(res.message)
+    //             error.statusCode = res.status;
+    //             throw error
+    //         } 
+
+    //     } catch(err){
+    //         const error = err;
+    //         throw error;
+    //     }
+    // },
+
+
+    // async checkout(context){
+
+    //     try {
+    //         const api = `${context.rootGetters['getServerUrl']}checkout`;
+    //         const resData = await fetch(api,{
+    //             method:"POST",
+    //             headers:{
+    //                 'Content-Type':'application/json'
+    //             },
+    //             credentials: 'include'
+    //         })
+
+    //         const res = await resData.json(); 
+
+
+    //         if (resData.status !== 200) {                           // Check if return status 200
+    //             const error = new Error(res.message)
+    //             error.statusCode = res.status;
+    //             throw error
+    //         } 
+   
+    //         window.location.href = res.session.url
+
+    //     }catch(err){
+    //         const error = err;
+    //         throw error;
+    //     }
+
+    // },
+
+
     // async writeToTempCart(context,data){
     //     console.log('in cart action write to tempcart')
     //     try {
@@ -213,15 +343,6 @@ export default {
     //     }
     // },
 
-    async synchoniseCartInDB(context){
-        // upload currrent cart in VUEX to DB
-        const cart = context.getters['getCart'];
-        try{
-            await context.dispatch('save',cart);              // update to database
-        } catch(error){
-            throw new Error(error.message);
-        } 
-    }
 
 
     

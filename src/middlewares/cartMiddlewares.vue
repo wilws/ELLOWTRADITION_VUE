@@ -10,7 +10,6 @@ export default {
     methods:{
 
        async CartHandler(action="Cart",productId=0){
-           console.log('In CartHandler init')
 
             let result = {
                 cartObj:{},
@@ -179,12 +178,10 @@ export default {
             return total
         },
         unsetAuthForCheckout(){
-            console.log('in cart handler - unsetAuthForCheckout')
             this.$store.dispatch('auth/setAuthForCheckout',false)
         },
 
         ifAuthForCheckout(){
-            console.log('in cart handler - ifAuthForCheckout')
             // ifAuthForCheckout = the page is leaded from user log in due to checkout 
             // user want to checkout but does not login / no account
             // User is required to login perior to checking out
@@ -195,7 +192,6 @@ export default {
         },
 
         async synchoniseCartInDB(){
-            console.log('in cart handler - synchoniseCartInDB')
             try{
                 await this.$store.dispatch('cart/synchoniseCartInDB');
             } catch(err){

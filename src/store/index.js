@@ -7,6 +7,7 @@ import ordersModule from './modules/orders/index.js';
 
 
 import VuexPersistence from 'vuex-persist'
+
 const vuexLocal = new VuexPersistence({
     storage: window.localStorage
   });
@@ -25,7 +26,23 @@ const store = createStore({
 
     state(){
         return{
-            serverURL:'https://ellowtradition.herokuapp.com/',
+            serverURL : 'http://localhost:8080/'
+        }
+    },
+    mutations:{
+        setServerUrl(state,payload){
+            return state.serverURL = payload;
+        }
+    },
+    actions:{
+        setServerUrl(context,data){
+            let serverURL;
+            if (data.mode == "live") {
+                serverURL = 'https://ellowtradition.herokuapp.com/'
+            } else {
+                serverURL ='http://localhost:8080/'
+            }
+            context.commit('setServerUrl',serverURL);
         }
     },
     getters:{

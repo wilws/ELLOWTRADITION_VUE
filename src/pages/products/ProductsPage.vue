@@ -4,6 +4,9 @@
         
         <!-- roll (left part) -->
         <div class="roll">
+            <div v-if="!productIsSet">
+                <p class="loadingMsg">Loading..</p>
+            </div>
             <ul ref="products">
                 <li v-for="(product,index) in products" :key="product._id" class="product"  @click="viewProduct(index, $event)"> <!--:ref="'li'+ index"> -->
                     <img :src="product.imageUrl1" alt="" /> 
@@ -18,7 +21,9 @@
 
             <!-- v-if : display logo -->
             <div v-if="!productIsSet" >
-            <empty-page-component></empty-page-component>
+            <empty-page-component>
+                Loading Products
+            </empty-page-component>
             </div>
             <!-- End of v-if -->
         
@@ -145,6 +150,9 @@ export default {
 
         //Load product data when landing.
         const productsObj = await this.ProductLoader();          // Use middlewares to communicate with DB and to load product data
+        await new Promise(resolve=>{
+                setTimeout(()=>{resolve('')},2500)}
+        )
         if (!productsObj.error){                                 // If no error encounted in loading product data
             this.products =  await productsObj.products;         // assign the data into this component
             this.productIsSet = true;                            // Set it true otherwise error of failing loading appears
@@ -450,6 +458,34 @@ export default {
     flex-direction: column;
     align-items: center;
     padding-top: 1rem;
+}
+
+.roll .loadingMsg{
+    position: absolute;
+    width:100%;
+    text-align: center;
+    top:45%;
+    font-size: 2rem;
+    display: none;
+    opacity: 0;
+    animation:loadingMsgRotation 3s infinite ;
+    letter-spacing: 1.2rem;
+    color: #707070;
+}
+
+@keyframes loadingMsgRotation {
+    0%{
+        opacity: 0;
+    }
+    25%{
+        opacity: 1;
+    }
+    50%{
+         opacity: 0;
+    }
+    100%{
+         opacity: 1;
+    }
 }
 
 .product {
@@ -1151,6 +1187,9 @@ position: absolute;
     .roll{
         width:100vw;
     }
+    .roll .loadingMsg{
+        display: unset;
+    }
     .product {
         height: 33vh;
     }
@@ -1175,6 +1214,7 @@ position: absolute;
         z-index: 100;
         transition: display .5s;
     }
+
 
     .showcase.resize.showImg{
         display: unset;

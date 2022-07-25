@@ -29,8 +29,8 @@
     font-size: 5rem;
 }
 .alert-wrapper div{
-    width:40rem;
-    height:20rem;
+    width: 25rem;
+    height: 35rem;
     font-size: 2rem;
     background-color: rgb(255, 255, 255);
     color: black;

@@ -1,5 +1,5 @@
 <template>
-                <div v-if="!productIsSet" class="logo">
+            <div class="logo">
                 <div class="box">
                     <div class="front">
                         <img src="@/assets/black_logo.png" alt="" >
@@ -8,7 +8,7 @@
                         <img src="@/assets/black_logo.png" alt="" >
                     </div>
                 </div>
-                <h3 class="errorMsg">{{ error }}</h3>
+               <div class="msg"><slot></slot></div>
             </div>
 </template>
 
@@ -147,6 +147,16 @@
 .logo .errorMsg{
     position: absolute;
     top: 54%;
+}
+
+.msg{
+    position: absolute;
+    bottom: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.3rem;
+    letter-spacing: 1.2rem;
+    color: #5e5e61;
 }
 /* End of v-if */ 
 

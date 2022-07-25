@@ -105,6 +105,9 @@ import AuthMiddlewares from './middlewares/authMiddlewares.vue';
 
 
 export default {
+  setup(){
+
+  },
 
   components:{AuthPage},
   
@@ -121,10 +124,14 @@ export default {
     }
   },
   created(){
-    this.setStatus();
+    //choose dev or live mode 
+    this.$store.dispatch('setServerUrl',{mode:"dev"});
+    // this.$store.dispatch('setServerUrl',{mode:"live"});
 
+    this.setStatus();
   },
   methods:{
+  
     MenuControl(){
         document.querySelector(".container").classList.toggle("change");
         
@@ -138,6 +145,9 @@ export default {
     },
     setStatus(){
         this.isLogin = this.$store.getters['auth/isLogin'];
+        console.log('after setting login / logout')
+        console.log(this.$store.getters['auth/getUser']);
+        
     },
     async authAction(action){
           try{

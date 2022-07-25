@@ -38,16 +38,16 @@ export default {
 
 
     async login(context,data){
-        const formData = {
-            email : data.email,
-            password : data.password,
-        }
-
-        const api = `${context.rootGetters['getServerUrl']}auth/login`;
-        // const api = "http://localhost:8080/auth/login/"
         try{    
+            const formData = {
+                email : data.email,
+                password : data.password,
+            }
+            const api = `${context.rootGetters['getServerUrl']}auth/login`;
+         
             const resData = await fetch(api,{
-                    method: "POST",                              
+                    method: "POST",  
+                                     
                     headers:{
                         'Content-Type':'application/json'         
                     },
@@ -56,20 +56,11 @@ export default {
             });
             
             const res = await resData.json();  
-            console.log(res)
             if (resData.status !== 200) {                        // Check if return status 200
                 const error = new Error(res.message)
                 error.statusCode = resData.status;
                 throw error
             }
-
-
-            const d = new Date();
-            d.setTime(d.getTime() + (1*24*60*60*1000));
-            let expires = "expires="+ d.toUTCString();
-            document.cookie = "jwt=" + res.token + ";" + expires + ";path=/";
-  
-            
 
             context.dispatch('localStatusUpdate',{
                 isLogin :true,
@@ -79,8 +70,6 @@ export default {
                 address: res.address,
             })
 
-            
-
         } catch(err){
             const error = err // prevent " error  Unnecessary try/catch wrapper "
             throw error;
@@ -88,15 +77,21 @@ export default {
     },
 
     async logout(context){
+        const jwt = context.getters['getUser'].token
 
-        const api = `${context.rootGetters['getServerUrl']}auth/logout`;
+        if (!jwt){
+            return 
+        }
+       
 
         try{
-
+            const api = `${context.rootGetters['getServerUrl']}auth/logout`;
+            // const jwt = context.getters['getUser'].token;
             const resData = await fetch(api,{
                 method:'POST',
                 headers:{
-                    "Content-Type" : "aplication/json",
+                    Authorization: 'Bearer ' + jwt,
+                    'Content-Type' : 'application/json',
                 },
                 credentials: 'include'
             })
@@ -109,10 +104,10 @@ export default {
                 throw error;
             }
 
-            const d = new Date();
-            d.setTime(d.getTime() + (0*24*60*60*1000));
-            let expires = "expires="+ d.toUTCString();
-            document.cookie = "jwt=" + res.token + ";" + expires + ";path=/";
+            console.log(resData)
+            console.log(res)
+
+        
 
             context.dispatch('localStatusUpdate',{
                 isLogin :false,
@@ -125,12 +120,57 @@ export default {
 
             context.dispatch('orders/clearInvoices',null,{root:true})
             context.dispatch('cart/clearCart',null,{root:true})
-
+            
         } catch(err){
             const error = err  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
+
+    // async logout(context){
+
+    //     const api = `${context.rootGetters['getServerUrl']}auth/logout`;
+
+    //     try{
+
+    //         const resData = await fetch(api,{
+    //             method:'POST',
+    //             headers:{
+    //                 "Content-Type" : "aplication/json",
+    //             },
+    //             credentials: 'include'
+    //         })
+
+    //         const res = await resData.json();
+
+    //         if (resData.status != 200){
+    //             const error = new Error(res.message)
+    //             error.statusCode = resData.status;
+    //             throw error;
+    //         }
+
+    //         const d = new Date();
+    //         d.setTime(d.getTime() + (0*24*60*60*1000));
+    //         let expires = "expires="+ d.toUTCString();
+    //         document.cookie = "jwt=" + res.token + ";" + expires + ";path=/";
+
+    //         context.dispatch('localStatusUpdate',{
+    //             isLogin :false,
+    //             token:"",
+    //             username:"",
+    //             email:"",
+    //             address:"",
+    //         })
+
+
+    //         context.dispatch('orders/clearInvoices',null,{root:true})
+    //         context.dispatch('cart/clearCart',null,{root:true})
+
+    //     } catch(err){
+    //         const error = err  // prevent " error  Unnecessary try/catch wrapper "
+    //         throw error;
+    //     }
+    // },
 
     // async LoginValidation(context){
 
