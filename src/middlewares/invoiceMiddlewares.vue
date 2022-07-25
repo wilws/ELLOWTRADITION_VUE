@@ -10,7 +10,9 @@ export default {
 
             try{
                 if(!this.checkIfLogin()){
-                    throw new Error('Not authenticated');
+                    const error =  new Error('Not authenticated');
+                    error.statusCode = 401;
+                    throw error
                 }
 
                 // await this.loadInvoiceFromDB();
@@ -26,9 +28,10 @@ export default {
                     default:
                         throw new Error('Please provide action: "Invoices" / " View"');
                 }
-            } catch(error) {
-                console.log(error)
-                throw new Error(error)
+            } catch(err) {
+                console.log(err)
+                const error = err;
+                throw error;
             }
         },
 
@@ -51,12 +54,13 @@ export default {
             
             return invoiceObj.map((invoice)=>{
                 const date = invoice.createdAt.split('-');
-                const d = date[2].substring(0,1);
+                const d = date[2].substring(0,2);
                 const y = date[0];
                 const m = date[1];
-                const mEng = months[+m-1]
-                const dZero = +d < 9? `0${d}` : d
-         
+                const mEng = months[+m-1];
+                const dZero = +d < 9? `0${d}` : d;
+           
+                
                 return {
                     _id :invoice._id,
                     total : invoice.total,
@@ -65,12 +69,13 @@ export default {
                     vat:invoice.vat,
                     shipping:invoice.shipping,
                     productTotal:invoice.productTotal,
-                    date : {
+                    date: {
                         fullDate : invoice.createdAt,
-                        day: dZero,
+                        day : dZero,
+                        day2 : 0,
                         month: m,
                         year:y,
-                        mEng : mEng,
+                        mEng : mEng
                     }
                 }
             })
@@ -98,8 +103,11 @@ export default {
         async loadInvoiceFromDB(){
             try{
                 await this.$store.dispatch('orders/loadInvoices');
-            } catch(error){
-                throw new Error(error);
+            } catch(err){
+                console.log(err)
+                console.log(err.statusCode)
+                const error = err;
+                throw error;
             }
         }
     }

@@ -19,17 +19,15 @@ export default {
                 try{
                     await this.$store.dispatch('products/loadProducts');        // pull product from DB to update the products in VUEX,
                     productsObj.products = this.extractProductsFromVUEX();      // then extract product from VUEX                
-                } catch(err){
-                    productsObj.error = err.message || "O..Something goes wrong"
-                }                                      
+                    return productsObj
+            } catch(err){
+                const error = err;
+                throw error;
+            }                                     
             }
-            return productsObj
+
         },
 
-        // ProductAdder(i){
-            
-
-        // },
 
         // Actions of VUEX
         checkProductSet(){

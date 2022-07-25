@@ -5,15 +5,15 @@ import store from './store/index.js';
 // import checkIdx from './mixins/checkIndexPage.js'
 // import { useCookies } from "vue3-cookies";
 // import VueCookies from 'vue-cookies'
-
+import VueCookies from 'vue-cookies'
 // import { VueCookieNext } from 'vue-cookie-next'
-// import Vuelidate from 'vuelidate'
+
 
 
 const app = createApp(App);
 app.use(router);
 app.use(store);
-// app.use(Vuelidate);
-// app.use(VueCookies);
+
+app.use(VueCookies);
 
 app.mount('#app');

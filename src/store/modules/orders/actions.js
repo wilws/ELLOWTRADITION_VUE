@@ -12,10 +12,10 @@ export default {
                     credentials: 'include'
             });
 
-            const res = await resData.json();                  
-
+            const res = await resData.json();     
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = resData.status
                 throw error
             } 
 
@@ -25,17 +25,15 @@ export default {
             });
 
             context.commit('setInvoices', invoices);
-            // context.commit('isSet',true);
 
         } catch(err){
-            console.log(err)
-            throw new Error(err);
+            const error = err;
+            throw error;
         }
     },
 
 
     clearInvoices(context){
-        console.log('clearInvoices')
         context.commit('setInvoices', []);
         context.commit('isSet',false);
     }

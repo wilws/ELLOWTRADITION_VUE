@@ -38,6 +38,9 @@
         <Field id="signUp_passwordConfirm" name="signUp_passwordConfirm" type="password" class="auth-password" placeholder="Re-Type Password" v-model.trim="repassword"/>
         <ErrorMessage name="signUp_passwordConfirm" class="alert" />
 
+        <Field id="signUp_address" name="signUp_address" type="textarea" class="auth-address" placeholder="Delivery address" v-model="address"/>
+        <ErrorMessage name="signUp_address" class="alert" />
+
         <button  class="auth-btn" >Singn Up</button>
       </Form>
 
@@ -104,6 +107,7 @@ export default {
         signUp_username: Yup.string().required().min(6).max(30).label("User Name"),
         signUp_password: Yup.string().required().min(6).max(30).label("Password"),
         signUp_passwordConfirm: Yup.string().oneOf([Yup.ref('signUp_password'), null], 'Passwords must match').required().max(30).min(6).label("Password Confirmation"),
+        signUp_address: Yup.string().required().max(250).label("Delivery Address"),
 
       });
       return{
@@ -113,18 +117,18 @@ export default {
         email:"",
         password:"",
         username:"",
-        repassword:""
+        repassword:"",
+        address:""
       }
     },
 
     methods:{
 
         switchBtn(){
-            // flip the login card to sign up
-            this.resetVariables()
-            const cardWrapper = document.querySelector(".auth-card-wrapper");
-            cardWrapper.classList.toggle('leftTurn');
-            
+          // flip the login card to sign up or login
+          this.resetVariables();                // to clear the input and error message when flipping                                              
+          const cardWrapper = document.querySelector(".auth-card-wrapper");
+          cardWrapper.classList.toggle('leftTurn');
         },
 
         resetVariables(){
@@ -134,19 +138,18 @@ export default {
           this.password = "";
           this.repassword = "";
           this.username = "";
+          this.address = "";
           this.$refs.form1.resetForm();
           this.$refs.form2.resetForm();
         },
 
 
-
         async authAction(action){
-          console.log(action,this.email,this.password,this.username)
           try{  
-            await this.AuthHandler(action,this.email,this.password,this.username);
-            this.$router.go();
+            await this.AuthHandler(action,this.email,this.password,this.username,this.address);
+            this.$router.go();              // refresh after login / sign up
+
           } catch (error){
-            console.log(error)
             this.error = error.message;
           }
         },
@@ -263,7 +266,7 @@ export default {
 }
 
 .auth-card form{
-  margin-top:-5rem;
+  margin-top:-2rem;
   width:100%;
   padding: 3rem;
   display: flex;

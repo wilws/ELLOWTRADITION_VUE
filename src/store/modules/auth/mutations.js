@@ -5,17 +5,15 @@ export default {
     },
 
     updateStatus(state, payload){
-
-        console.log('in updateStatus')
-        console.log(payload)
+        state.isLogin = payload.isLogin,
         state.username = payload.username,
         state.email = payload.email,
+        state.address = payload.address,
         state.token = payload.token
     },
 
 
     setAuthForCheckout(state,payload){
-        console.log('in muttation, setAuthForCheckout. set:',payload)
         state.authForCheckout = payload
     }
 

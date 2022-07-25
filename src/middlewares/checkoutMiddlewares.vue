@@ -14,8 +14,9 @@ export default {
                 console.log('is log in, do checkout')                     // if is logined , process checkout
                 try{
                     await this.checkoutAction();
-                }catch(error){
-                    throw new Error(error)
+                } catch(err){
+                    const error = err;
+                    throw error;
                 }
             }else{                                    // If not login
                 this.openLoginPage()                  // if it is not login, ask the user to login first
@@ -28,8 +29,9 @@ export default {
             console.log("in checkout function")
             try{
                 this.$store.dispatch('cart/checkout');
-            }catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 

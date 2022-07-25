@@ -2,16 +2,18 @@
 
 export default {
 
-    async signup(_,data){
+    async signup(context,data){
         const formData = {
             email : data.email,
             username : data.username,
             password : data.password,
+            address : data.address,
         }
 
+        const api = `${context.rootGetters['getServerUrl']}auth/signup`;
+
         try{
-            const resData = await fetch(
-                'http://localhost:8080/auth/signup',{
+            const resData = await fetch(api,{
                     method: "POST",                              
                     headers:{
                         'Content-Type':'application/json'         
@@ -19,21 +21,16 @@ export default {
                     body:JSON.stringify(formData),
                     credentials: 'include'
             });
-   
             const res = await resData.json();  
-
-            if (res.message === "Validation Failed"){
-                const error = new Error(res.data[0].msg);
-                throw error;
-            }
 
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message);
+                error.statusCode = resData.status;
                 throw error;
             } 
 
         } catch(err){
-            const error = new Error(err.message);  // prevent " error  Unnecessary try/catch wrapper "
+            const error = err // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
@@ -46,9 +43,10 @@ export default {
             password : data.password,
         }
 
+        const api = `${context.rootGetters['getServerUrl']}auth/login`;
+        // const api = "http://localhost:8080/auth/login/"
         try{    
-            const resData = await fetch(
-                'http://localhost:8080/auth/login',{
+            const resData = await fetch(api,{
                     method: "POST",                              
                     headers:{
                         'Content-Type':'application/json'         
@@ -58,42 +56,44 @@ export default {
             });
             
             const res = await resData.json();  
-
-            if (res.message === "Validation Failed"){
-                const error = new Error(res.data[0].msg);
-                throw error;
-            }
+            console.log(res)
             if (resData.status !== 200) {                        // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = resData.status;
                 throw error
             }
+
+
+            const d = new Date();
+            d.setTime(d.getTime() + (1*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            document.cookie = "jwt=" + res.token + ";" + expires + ";path=/";
+  
+            
 
             context.dispatch('localStatusUpdate',{
                 isLogin :true,
                 token:res.token,
                 username: res.username,
                 email: res.email,
+                address: res.address,
             })
 
-            // context.commit('isLogin',true)
-            // context.commit('userLogin',{
-            //     token:res.token,
-            //     username: res.username,
-            //     email: res.email,
-            // });
+            
 
         } catch(err){
-            console.log(err)
-            const error = new Error(err.message);  // prevent " error  Unnecessary try/catch wrapper "
+            const error = err // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
 
     async logout(context){
 
+        const api = `${context.rootGetters['getServerUrl']}auth/logout`;
+
         try{
 
-            const resData = await fetch("http://localhost:8080/auth/logout",{
+            const resData = await fetch(api,{
                 method:'POST',
                 headers:{
                     "Content-Type" : "aplication/json",
@@ -104,84 +104,81 @@ export default {
             const res = await resData.json();
 
             if (resData.status != 200){
-                const error = new Error(res.message);
+                const error = new Error(res.message)
+                error.statusCode = resData.status;
                 throw error;
             }
 
+            const d = new Date();
+            d.setTime(d.getTime() + (0*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            document.cookie = "jwt=" + res.token + ";" + expires + ";path=/";
 
             context.dispatch('localStatusUpdate',{
                 isLogin :false,
                 token:"",
                 username:"",
                 email:"",
+                address:"",
             })
+
 
             context.dispatch('orders/clearInvoices',null,{root:true})
             context.dispatch('cart/clearCart',null,{root:true})
 
-            // context.commit('isLogin',false)
-            // context.commit('userLogin',{
-            //     token:"",
-            //     username:"",
-            //     email:"",
-            // });
-
         } catch(err){
-            console.log(err)
-            const error = new Error(err.me);  // prevent " error  Unnecessary try/catch wrapper "
+            const error = err  // prevent " error  Unnecessary try/catch wrapper "
             throw error;
         }
     },
 
-    async LoginValidation(context){
+    // async LoginValidation(context){
 
-        console.log("in LoginValidation")
+    //     console.log("in LoginValidation")
 
-        try{
-            const resData = await fetch("http://localhost:8080/auth/is-Login",{
-                method:'POST',
-                headers:{
-                    "Content-Type" : "aplication/json",
-                },
-                credentials: 'include'
-            })
+    //     try{
+    //         const resData = await fetch("http://localhost:8080/auth/is-Login",{
+    //             method:'POST',
+    //             headers:{
+    //                 "Content-Type" : "aplication/json",
+    //             },
+    //             credentials: 'include'
+    //         })
 
-            if (resData.status != 200){
-                context.dispatch('localStatusUpdate',{
-                    isLogin :false,
-                    token:"",
-                    username:"",
-                    email:"",
-                });
-            }
+    //         if (resData.status != 200){
+    //             context.dispatch('localStatusUpdate',{
+    //                 isLogin :false,
+    //                 token:"",
+    //                 username:"",
+    //                 email:"",
+    //                 address:"",
+    //             });
+    //         }
 
-        } catch(err){
-            const error = new Error("Fail to checkstatus");
-            context.dispatch('localStatusUpdate',{
-                isLogin :false,
-                token:"",
-                username:"",
-                email:"",
-            });
-            throw error;
-        }
-
-    },
+    //     } catch(err){
+    //         const error = new Error("Fail to checkstatus");
+    //         context.dispatch('localStatusUpdate',{
+    //             isLogin :false,
+    //             token:"",
+    //             username:"",
+    //             email:"",
+    //         });
+    //         throw error;
+    //     }
+    // },
 
     localStatusUpdate(context,data){
-        context.commit('isLogin',data.isLogin)
         context.commit('updateStatus',{
+            isLogin :data.isLogin,
             token:data.token,
             username:data.username,
             email:data.email,
+            address:data.address,
         });
     },
 
     setAuthForCheckout(context,data){
-        console.log(data)
-        console.log('in action, setAuthForCheckout. set:',data)
         context.commit('setAuthForCheckout',data);
-    }
-    
+    },
 
 }

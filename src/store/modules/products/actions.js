@@ -1,10 +1,10 @@
 export default {
     async loadProducts(context){
-
+       
+        const api = `${context.rootGetters['getServerUrl']}get-products/`;
+        
         try{
-            
-            const resData = await fetch(
-                'http://localhost:8080/get-products/',{
+            const resData = await fetch(api,{
                     method: "GET",                              
                     headers:{
                         'Content-Type':'application/json'         
@@ -15,6 +15,7 @@ export default {
         
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = resData.status
                 throw error
             } 
 
@@ -25,10 +26,9 @@ export default {
 
             context.commit('setProducts', products);
 
-        
-
+    
         } catch(err){
-            const error = new Error("Fail to Load Products");
+            const error = err;
             throw error;
         }
     },

@@ -1,6 +1,9 @@
 
 <template>
  
+<div class="resposiveLimit">
+  <h1><i class="fa-regular fa-face-sad-cry"></i> Sorry ! <br>The website Cannot display properly in this screen size</h1>
+</div>
 
 <div class="container">
 
@@ -26,7 +29,7 @@
               <router-link class="router-link" to="/products">Products</router-link>
             </li>
             <li v-show="isLogin">
-              <router-link class="router-link" to="/invoices">Invoices</router-link>
+              <router-link class="router-link" to="/invoices">Account</router-link>
             </li>
             <li>
               <router-link class="router-link" to="/cart">Cart</router-link>
@@ -56,13 +59,12 @@
       </div>
 
       <div class="short-cut" >
-        
         <div v-if="isLogin" class="isAuth" >
-            <div><router-link class="router-link" to="/invoices"><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></router-link></div>
-            <div @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
+            <div class="invoice-page-icon-wrapper"><router-link class="router-link" to="/invoices"><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></router-link></div>
+            <div class="logout-icon-wrapper" @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
         </div>
-        <div v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
-        <router-link class="router-link" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
+        <div  class="login-icon-wrapper" v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
+        <router-link class="router-link cart-icon-wrapper" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
       </div>
     </div>
     <!-- End of Left Bar -->
@@ -129,11 +131,8 @@ export default {
     },
     closeSignUpPage(){
         this.isSingUpPageOpen = false;
-        console.log('Enter to app.vue", authfor checkout now is :',this.$store.getters['auth/isAuthForCheckout'])
         if(this.$store.getters['auth/isAuthForCheckout']){
-          console.log('this is check for log out')
           this.$store.dispatch('auth/setAuthForCheckout',false)
-          console.log('authforcheckout now is set to:', this.$store.getters['auth/isAuthForCheckout'])
         }
         
     },
@@ -170,16 +169,39 @@ export default {
 }
 
 
+
 html {
   font-size: 62.5%;
+  width:100vw;
+  height: 100vh;
+  /* display: flex; */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.resposiveLimit{
+      position:absolute;
+      top:30%;
+      width:90%;
+      text-align: center;
+      font-size: 1rem;
+      padding: 1rem;
+      border:thin solid #9e9b9b;
+      margin: 1rem;
+      color:#707070;
+      display: none;
 }
 
 .container{
+
   width:100%;
-  /* max-width: 1300px; */
-  height:100vh;
+  max-width: 1700px;
+  height:100%;
+  /* max-height: 800px; */
   perspective: 100rem;
   overflow: hidden;
+  box-shadow: 4.5rem 3.5rem 2rem #aaa;
 }
 
 .routerView{
@@ -441,6 +463,10 @@ left:-100vw;
   display: flex;
   flex-direction: column;
 }
+.short-cut div{
+  position: relative;
+}
+
 .short-cut .isAuth i,
 .short-cut i{
   color: #feffff;
@@ -467,7 +493,6 @@ left:-100vw;
 
 
 .short-cut .isAuth .logout-icon{
-
   font-size: 3.5rem;
 }
 
@@ -476,7 +501,6 @@ left:-100vw;
 }
 
 .short-cut .login-icon{
-
   font-size: 3.5rem;
 }
 
@@ -490,7 +514,8 @@ left:-100vw;
 .cart-icon.addCart{
   opacity: 1;
   color: #ff00a3;
-  transition: all 1s 2s;
+  transition: all .2s 1s;
+  z-index: 1000;
 }
 
 .short-cut .account-icon{
@@ -498,6 +523,76 @@ left:-100vw;
   font-size: 3.5rem;
   margin-left:0.2rem;
 }
+
+
+
+
+.invoice-page-icon-wrapper::before{
+  content:"My Account";
+  position: absolute;
+  top:50%;
+  right:-2.5rem;
+  background-color: rgba(247, 217, 84, 0.904);
+  font-size:1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  color:#707070;
+  border:solid #707070 thin;
+  display:none;
+}
+.invoice-page-icon-wrapper:hover:before{
+  display:unset;
+}
+
+
+.logout-icon-wrapper::before{
+  content:"Log Out";
+  position: absolute;
+  top:50%;
+  right:-1rem;
+  background-color: rgba(247, 217, 84, 0.904);
+  font-size:1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  color:#707070;
+  border:solid #707070 thin;
+  display:none;
+}
+.logout-icon-wrapper:hover:before{
+  display:unset;
+}
+
+.login-icon-wrapper::before{
+  content:"Log In";
+  position: absolute;
+  top:50%;
+  right:0rem;
+  background-color: rgba(247, 217, 84, 0.904);
+  font-size:1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  color:707070;
+  border:solid #707070 thin;
+  display:none;
+}
+
+.login-icon-wrapper:hover::before{
+  display:unset;
+}
+
+/* .cart-icon-wrapper::before{
+  content:"Cart";
+  position: absolute;
+  top:25%;
+  right:0rem;
+  background-color: rgba(247, 217, 84, 0.904);
+  font-size:1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  color:707070;
+  border:solid #707070 thin;
+} */
+
 
 /* End of left-bar */
 
@@ -596,6 +691,15 @@ left:-100vw;
     }
     .header nav li {
         margin-bottom: 1rem;
+    }
+}
+
+@media(max-width:300px){
+    .container{
+        display: none;
+    }
+    .resposiveLimit{
+      display:unset
     }
 }
 

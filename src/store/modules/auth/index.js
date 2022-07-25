@@ -9,6 +9,7 @@ export default {
             username:"",
             email:"",
             token:"",
+            address:"",
             isLogin:false,
             authForCheckout:false
         }

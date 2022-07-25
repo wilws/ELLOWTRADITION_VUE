@@ -2,17 +2,16 @@
 export default {
     methods:{
 
-        async AuthHandler(action,email="",password="",username=""){
-                console.log('in AuthHandler')
+        async AuthHandler(action,email="",password="",username="",address=""){
                 try{
                     switch(action){
                         case('SignUp'):
-                            await this.singUpAction(username,email,password);
-                            await this.logInAction(username,email,password);
+                            await this.singUpAction(username,email,password,address);
+                            await this.logInAction(username,email,password,address);
                             break;
                         
                         case('LogIn'):
-                            await this.logInAction(username,email,password);
+                            await this.logInAction(username,email,password,address);
                             break;
                         
                         case('LogOut'):
@@ -23,42 +22,36 @@ export default {
                             throw new Error('No action found')
                     }
 
-                } catch(error) {
-                    console.log('get error in handler')
-                    console.log(error)
-                    throw new Error(error);
+                } catch(err) {
+                    const error = err
+                    throw error
                 } 
-                // finally {
-                //     if(this.$store.getters['auth/isAuthForCheckout']){
-                //         console.log('this is check for log out')
-                //         this.$store.dispatch('auth/setAuthForCheckout',false)
-                //         console.log('authforcheckout now is set to:', this.$store.getters['auth/isAuthForCheckout'])
-                //     }
-                // }
         },
 
-        async singUpAction(username,email,password){
+        async singUpAction(username,email,password,address){
             try{
                 if(this.checkIfLogin()){                                                // Check if User Login
                     throw new Error("Login already. Please log out and try again");     // If use is login in, ask user to log out first 
                 }
-                const formData = {email: email,   password: password,  username: username}
+                const formData = {email: email,   password: password,  username: username, address:address}
                 await this.signUp(formData);     
-            } catch(error){
-                throw new Error(error.message || "Sign Up Failed");
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 
-        async logInAction(username,email,password){
+        async logInAction(username,email,password,address){
             try{
-                if(this.checkIfLogin()){                                                     // Check if User Login                                              
+                if(this.checkIfLogin()){        // Check if User Login                                              
                         throw new Error("Login already");                                    // If use is login in, ask user to log out first 
                 }
-                const formData = {email: email,   password: password,  username: username}
+                const formData = {email: email,   password: password,  username: username, address:address}
                 await this.logIn(formData);
      
-            } catch(error){
-                throw new Error(error.message || "Login Failed");                                              // Catch the error from VUEX, rethrow it to the caller
+            } catch(err){
+                const error = err;
+                throw error;                                            // Catch the error from VUEX, rethrow it to the caller
             }
         },
 
@@ -69,12 +62,17 @@ export default {
                     throw  new Error("Logout already");                // If use is login in, ask user to log out first 
                 }
                 await this.logOut();
-            } catch(error){
-                throw new Error(error.message || "Logout Failed");                                                     // Catch the error from VUEX, rethrow it to the caller
+            } catch(err){
+                const error = err;
+                throw error;                                                  // Catch the error from VUEX, rethrow it to the caller
             }
         },
         checkIfLogin(){
             return this.$store.getters['auth/isLogin'];
+        },
+
+        getUserInfo(){
+            return this.$store.getters['auth/getUser'];
         },
 
         async signUp(formData){       

@@ -13,22 +13,12 @@
         </div>
         <!-- End of roll -->
     
-
-
         <!-- showcase (right part) -->
         <div class="showcase">
 
             <!-- v-if : display logo -->
-            <div v-if="!productIsSet" class="logo">
-                <div class="box">
-                    <div class="front">
-                        <img src="@/assets/black_logo.png" alt="" >
-                    </div>
-                    <div class="back">
-                        <img src="@/assets/black_logo.png" alt="" >
-                    </div>
-                </div>
-                <h3 class="errorMsg">{{ error }}</h3>
+            <div v-if="!productIsSet" >
+            <empty-page-component></empty-page-component>
             </div>
             <!-- End of v-if -->
         
@@ -98,9 +88,12 @@
 
 import productMiddlewares from "../../middlewares/productMiddlewares.vue";
 import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
+import emptyPageComponent from '../../components/emptyPageComponent.vue';
 export default {
+  components: { emptyPageComponent },
 
     mixins:[productMiddlewares,CartMiddlewares],
+ 
    
     data() {
         return{
@@ -389,10 +382,10 @@ export default {
                 diamond.classList.remove('move');
                 cartBtn.classList.remove("clicked");
                 this.cartAnimationinProgress = false;
-            },2000);
+            },1050);
             setTimeout(()=>{
                 cartIcon.classList.remove("addCart");
-            },4000);
+            },1400);
         },
 
 
@@ -456,6 +449,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 1rem;
 }
 
 .product {
@@ -854,7 +848,9 @@ position: absolute;
 
 .cart-diamond.move {
     visibility: visible;
-    animation: x 2s linear forwards,y 2s forwards cubic-bezier(0,-1.7,1,-1.7);
+    animation: 
+        x 1s linear forwards,
+        y 1s forwards cubic-bezier(0,-1.7,1,-1.7);
 }
 
 
@@ -881,9 +877,10 @@ position: absolute;
     0%{
         transform:rotate(0) scale(1);
     }
-    50%{
+    /* 50%{
          transform:rotate(360deg) scale(1);
-    }
+    } */
+    
     100%{
          transform:rotate(720deg) scale(1);
     }

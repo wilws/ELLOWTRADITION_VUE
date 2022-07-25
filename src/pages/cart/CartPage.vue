@@ -23,7 +23,14 @@
 
     <!-- cart-item -->
     <div class="cart-items">
-        <ul v-for="item in cartItems" :key="item.productId">
+
+        <!-- v-if : display logo -->
+        <div v-if="!cartIsSet" >
+            <empty-page-component></empty-page-component>
+        </div>
+        <!-- End of v-if -->
+
+        <ul v-else v-for="item in cartItems" :key="item.productId">
             <li  class="cart-item">
 
                 <div class="delete-btn" @click="amedCartItem('Remove',item.productId)">
@@ -57,12 +64,16 @@
 
 import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
 import CheckoutMiddlewares from "../../middlewares/checkoutMiddlewares.vue";
+import emptyPageComponent from '../../components/emptyPageComponent.vue';
+
 export default {
- 
+
+    components: { emptyPageComponent }, 
     mixins:[CartMiddlewares,CheckoutMiddlewares],
 
     data() {
         return {
+            cartIsSet:false,
             cartObj:{},
             products:[],
             cartItems:[],
@@ -84,6 +95,7 @@ export default {
     async created(){
         try{
             const cart = await this.CartHandler();       // Get Cart detail 
+            console.log(cart)
             this.setVariables(cart.cartObj);             // Set details in page
         } catch(error){
             this.errorMsg = error.message;
@@ -115,6 +127,10 @@ export default {
             this.errorMsg = cartObj.errorMsg;
             this.totalItemNo = cartObj.cartItems.length;
             this.noOfItems = cartObj.noOfItems;
+
+            if (this.totalItemNo >0){
+                this.cartIsSet = true;
+            }
         },
 
         async amedCartItem(action,productId){

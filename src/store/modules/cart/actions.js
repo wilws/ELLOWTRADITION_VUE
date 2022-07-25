@@ -5,14 +5,15 @@
 
 export default {
     async loadCartFromDB(context){
-
+        
         if (!context.rootGetters['auth/isLogin']){             // If user not loged in. Just return 
             return
         }
         
         try{
-            const resData = await fetch(
-                'http://localhost:8080/get-cart/',{
+            const api = `${context.rootGetters['getServerUrl']}get-cart/`;
+            // const api = "http://localhost:8080/get-cart/"
+            const resData = await fetch(api,{
                     method: "GET",                              
                     headers:{
                         'Content-Type':'application/json'         
@@ -21,10 +22,15 @@ export default {
             });
 
             const res = await resData.json();   
+            console.log(resData)
+            console.log(res)
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = res.status;
                 throw error
             } 
+
+           
 
             const cartItems = [];
             res.cart.forEach((c) => {
@@ -37,7 +43,7 @@ export default {
             context.commit('updateCart',cartItems);                 // Update VUEX
 
         } catch(err){
-            const error = new Error("Fail to Load Cart Item");
+            const error = err;
             throw error;
         }
     },
@@ -122,7 +128,7 @@ export default {
             }
             context.commit('updateCart',data);                     // update the local state
         } catch(err) {
-            const error = new Error(err.message);
+            const error = err;
             throw error;
         }
     },
@@ -133,15 +139,15 @@ export default {
   
 
 
-    async updateCartToDB(_,data){
+    async updateCartToDB(context,data){
 
         const cart = {
             cart: JSON.parse(JSON.stringify(data))
         }
 
         try{   
-            const resData = await fetch(
-                'http://localhost:8080/update-cart',{
+            const api = `${context.rootGetters['getServerUrl']}update-cart`;
+            const resData = await fetch(api,{
                     method: "PUT",                              
                     headers:{
                         'Content-Type':'application/json'         
@@ -152,22 +158,25 @@ export default {
             
             const res = await resData.json();  
 
+            console.log(res)
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = res.status;
                 throw error
             } 
 
         } catch(err){
-            const error = new Error(err.message);
+            const error = err;
             throw error;
         }
     },
 
 
-    async checkout(){
+    async checkout(context){
 
         try {
-            const resData = await fetch('http://localhost:8080/checkout',{
+            const api = `${context.rootGetters['getServerUrl']}checkout`;
+            const resData = await fetch(api,{
                 method:"POST",
                 headers:{
                     'Content-Type':'application/json'
@@ -180,14 +189,15 @@ export default {
 
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
+                error.statusCode = res.status;
                 throw error
             } 
    
             window.location.href = res.session.url
 
         }catch(err){
-            const error = new Error("Fail to checkout");
-            throw error
+            const error = err;
+            throw error;
         }
 
     },
@@ -206,12 +216,9 @@ export default {
     async synchoniseCartInDB(context){
         // upload currrent cart in VUEX to DB
         const cart = context.getters['getCart'];
-        console.log('cart in sychoniseCartInDB')
-        console.log(cart)
         try{
             await context.dispatch('save',cart);              // update to database
         } catch(error){
-            console.log(error)
             throw new Error(error.message);
         } 
     }

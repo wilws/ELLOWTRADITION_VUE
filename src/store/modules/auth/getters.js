@@ -3,6 +3,7 @@ export default {
         return {
             username : state.username,
             email : state.email,
+            address : state.address,
             token : state.token
         }
 

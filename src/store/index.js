@@ -20,14 +20,20 @@ const store = createStore({
         cart :cartModule,
         orders : ordersModule,
     },
-    plugins: [vuexLocal.plugin]
+    
 
 
-    // stats(){
-    //     return{
-    //         products:[],
-    //     }
-    // },
+    state(){
+        return{
+            serverURL:'https://ellowtradition.herokuapp.com/',
+        }
+    },
+    getters:{
+        getServerUrl(state){
+            return state.serverURL
+        }
+    },
+    plugins: [vuexLocal.plugin],
 
 });
 

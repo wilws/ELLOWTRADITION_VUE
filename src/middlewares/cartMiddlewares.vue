@@ -12,7 +12,6 @@ export default {
        async CartHandler(action="Cart",productId=0){
            console.log('In CartHandler init')
 
-            // this.$store.dispatch('auth/setAuthForCheckout',false)
             let result = {
                 cartObj:{},
                 errorMsg:""
@@ -51,45 +50,47 @@ export default {
                 }
 
                 result.cartObj = await this.constructCartObject();
-                console.log(result.cartObj)
+                return result
          
-            } catch(error) {
-                console.log(error)
-                result.errorMsg  = error.message || "Cannot perform cart action";
-                
+            } catch(err){
+                const error = err;
+                throw error;
             }
-            return result
         },
     
         async addtoCart(p){
             try{
                 await this.$store.dispatch('cart/addtoCart',{id : p});
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
    
         async removefromCart(p){
             try{
                 await this.$store.dispatch('cart/removeCart',{id : p});   
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 
         async deductfromCart(p){
             try{
                 await this.$store.dispatch('cart/deductCart',{ id : p});
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 
         async clearCart(){
             try{
                 await this.$store.dispatch('cart/clearCart');
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 
@@ -100,8 +101,9 @@ export default {
         async loadCartFromDB(){
             try{
                 await this.$store.dispatch('cart/loadCartFromDB');
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         },
 
@@ -112,6 +114,7 @@ export default {
                 const shipping = this.calculateShippingAmount();
                 const totalAmount = shipping + vat + productTotalAmount;
                 const noOfItems = this.calulateNoOfItem();
+                const userInfo = this.getUserInfo()
 
                 return {
                     cartItems : cartItems,
@@ -120,6 +123,7 @@ export default {
                     productTotalAmount: productTotalAmount.toFixed(2),
                     totalAmount: totalAmount.toFixed(2),
                     noOfItems : noOfItems,
+                    userInfo : userInfo,
                     errorMsg: errorMsg,
                 }
         },
@@ -194,8 +198,9 @@ export default {
             console.log('in cart handler - synchoniseCartInDB')
             try{
                 await this.$store.dispatch('cart/synchoniseCartInDB');
-            } catch(error){
-                throw new Error(error.message);
+            } catch(err){
+                const error = err;
+                throw error;
             }
         }
     }

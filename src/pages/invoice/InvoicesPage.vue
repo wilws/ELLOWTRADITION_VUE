@@ -1,5 +1,7 @@
 <template>
 
+    <alert-component v-show="msg">{{msg}}</alert-component>
+
     <section class="section-5">
         <div class="left-area">
             <div class="invoice_summary_wrapper">
@@ -11,25 +13,32 @@
                 <h1>Personal Info</h1>
                 <div class="username">
                     <p class="label">User Name</p>
-                    <p>Ron Wilson</p>
+                    <p>{{ username }}</p>
                 </div>
                 <div class="email">
                     <p class="label">E-mail</p>
-                    <p>test@gmail.com</p>
+                    <p>{{ email }}</p>
                 </div>
                 <div class="shippingAddress">
                     <p class="label">Shipping Address</p>
-                    <p>Room 12A, The Blue Roomes, Media City, Manchester</p>
+                    <p>{{ address }}</p>
                 </div>
             </div>
         </div>
 
-        
 
+    
    
 
     <div class="invoices">
-        <ul v-for="invoice in invoices" :key="invoice._id">
+        <!-- v-if : display logo -->
+        <div v-if="!invoiceIsSet" >
+            <empty-page-component></empty-page-component>
+        </div>
+        <!-- End of v-if -->
+
+        <!-- v-else : invoice display-->
+        <ul  v-else v-for="invoice in invoices" :key="invoice._id">
             <li>
                 <router-link :to="{name:'invoice',params:{'invoiceId':invoice._id}}" class="view" style="text-decoration:none">
                 <div class="invoice">
@@ -39,6 +48,7 @@
                             <p class="year">{{ invoice.date.year }}</p>
                         </div>
                         <div class="line"></div>
+                        <div class="responsivePara">Click to View</div>
                         <div class="invoice_no">
                             <div class="tag">Invoice no</div>
                             <p>{{ invoice._id }}</p>
@@ -59,43 +69,59 @@
 <script>
 
 import InvoiceHandler from "../../middlewares/invoiceMiddlewares.vue";
+import AccountHandler from "../../middlewares/accountMiddlewares.vue";
+import emptyPageComponent from '../../components/emptyPageComponent.vue';
+import alertComponent from '../../components/alertComponent.vue';
 export default {
 
-    mixins:[InvoiceHandler],
+    components: { emptyPageComponent, alertComponent },
+    mixins:[InvoiceHandler,AccountHandler],
 
     data(){
         return {
+            invoiceIsSet:false,
             invoiceObj:{},
             invoices:[],
             totalNoInvoice:0,
-            accumulativeSpending:0
+            accumulativeSpending:0,
+            userObj:{},
+            email:"",
+            username:"",
+            address:"",
+            msg:"",
         }
     },
 
     async created(){
         try{
-            this.invoiceObj = await this.InvoiceHandler("Invoices");
-            // console.log(this.invoiceObj);
-            // this.setVariables(this.invoiceObj);
-            this.invoices = this.invoiceObj.invoices,
-            this.totalNoInvoice = this.invoiceObj.totalNoInvoice,
-            this.accumulativeSpending =  this.invoiceObj.accumulativeSpending
-            
-        } catch(error){
-            if (error.message=="Error: Not authenticated"){
-                await this.$router.push({name:"products"});
-                // window.location.reload()
+            this.invoiceObj = await this.InvoiceHandler("Invoices");             // Use Invoice middlewares to handle this page. All invoices data will be store in invoiceObj
+            this.invoices = this.invoiceObj.invoices.reverse(),                  // reverse the order so latest invoice come first
+            this.totalNoInvoice = this.invoiceObj.totalNoInvoice,                // Calculate the no of invoice. If no invoice, give the "emptyPageComponent"
+            this.accumulativeSpending =  this.invoiceObj.accumulativeSpending    // Get the total amount of spending.
+
+            if (this.invoices.length){                                            // If no invoice, start the "emptyPageComponent"
+                this.invoiceIsSet=true
             }
-            throw new Error(error);
+
+            console.log( this.invoiceObj)
+            
+            this.userObj = await this.AccountHandler("User");   
+            this.email = this.userObj.email;
+            this.username = this.userObj.username;
+            this.address = this.userObj.address;
+                
+        } catch(error){                                                 // If error happened during fetching invoice / invoiceObj cannot be set.
+            
+            if (error.statusCode == 401){                               // If the error is 401, meaing that it is about authentication. (maybe token expired)
+                   
+                this.msg = `Error : ${error.message}. Maybe Token is expired. Please log in again`      
+                await this.AuthHandler("LogOut"); 
+                await new Promise(resolve => {setTimeout(() => { resolve('') }, 5000)})   // wait 5000s to redirect website to products 
+                await this.$router.push({name:"products"});                               // after finished redirect
+                window.location.reload();                                                 // re load page to update DOM
+            }        
         }
     },
-// methods:{
-//     setVariables(invoiceObj){
-//         this.invoices = invoiceObj.invoices,
-//         this.totalNoInvoice = invoiceObj.totalNoInvoice,
-//         this.accumulativeSpending =  invoiceObj.accumulativeSpending
-//     },
-// }
 }
 </script>
 
@@ -240,6 +266,13 @@ export default {
     width:.1rem;
     height:80%;
     background-color: #7D929B;
+}
+
+.invoice .responsivePara{
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+    display: none;
 }
 
 .invoice .date{
@@ -455,7 +488,7 @@ export default {
         top:60%;
     }
 }
-@media(max-width:375px){
+@media(max-width:436px){
     .left-area .personal_info_wrapper div p{
         font-size: 1rem;
     }
@@ -464,6 +497,15 @@ export default {
     }
     .invoice .invoice_no p{
         font-size: 0rem;
+    }
+     .invoice .responsivePara{
+        display: unset;
+    }
+}
+
+@media(max-width:308px){
+    .section-5{
+        display: none;
     }
 }
 /* End of Invoice */

@@ -1,11 +1,14 @@
 <template>
-<section class="section-4">
 
+    <alert-component v-show="msg">{{msg}}</alert-component>
+
+<section class="section-4">
     <!-- cart-summary -->
     <div class="cart-summary">
         <h1>Invoice</h1>
         <ul>
             <li class="date">Date: {{invoice.date.day}} {{invoice.date.mEng}} {{invoice.date.year}}</li>
+            <!-- <li class="date">{{invoice.ddate.day}}</li> -->
             <li class="invoiceId">Invoice No:<br> <span>{{ invoice._id }}</span></li>
             
             <li class="total-item">Total Item : <span>{{ invoice.noOfItem }}</span></li>
@@ -48,69 +51,45 @@
 
 
 import InvoiceHandler from "../../middlewares/invoiceMiddlewares.vue";
+import alertComponent from '../../components/alertComponent.vue';
+import AuthMiddlewares from "../../middlewares/authMiddlewares.vue";
 export default {
 
-    mixins:[InvoiceHandler],
+    components: { alertComponent },
+    mixins:[InvoiceHandler,AuthMiddlewares],
     
     data(){
         return {
             invoice:"",
-            previousPath :null,
+            msg:"",
+            showMsg:false
         }
     },
-
-
+    Watch:{
+        msg(){
+            this.showMsg = true
+        }
+    },
 
     async created(){
-        const InvoiceId = this.$route.params.invoiceId
-
         try{
+            const InvoiceId = this.$route.params.invoiceId;
             this.invoice= await this.InvoiceHandler("View",InvoiceId);
-            console.log(this.invoice);
-            // this.setVariables(this.invoiceObj);
-            
+            console.log(this.invoice)
             
         } catch(error){
-            console.log(error)
-            if (error.message=="Error: Not authenticated"){
-             
-                await this.$router.push({name:"products"});
-                window.location.reload()
-
-            }
-            throw new Error(error);
-        }
-
-
+            console.log(error.statusCode)
         
-        // if (this.$route.query.checkout){
-        //     this.$store.dispatch('cart/clearCart')
-        //     try{
-        //         await this.$store.dispatch('orders/loadInvoices');
-        //     } catch (err){
-        //         console.log(err)
-        //     }
-        // }
-       
-        // const InvoiceId = this.$route.params.invoiceId;                // Get invoice id from the URl param
-        // let invoices = this.$store.getters['orders/getInvoices'];      // Get all the invoices from vuex
-        // const idx = invoices.findIndex(invoice =>{                     // Get the targeted invoice's index in the invoices array
-        //     return invoice._id.toString() == InvoiceId                  
-        // });
-        // this.invoice = invoices[idx];                                  
-      
-    },
-
-    methods:{
-
-        // getInvoiceId(){
-        //     this.invoideId = this.$route.query.invoideId;
-        //     console.log(this.$route.query)
-        // }
-
+              if (error.statusCode == 401){                               // If the error is 401, meaing that it is about authentication. (maybe token expired)
+                  
+                this.msg = `Error : ${error.message}. Maybe Token is expired. Please log in again`;      
+                await this.AuthHandler("LogOut");  
+                await new Promise(resolve => {setTimeout(() => { resolve('') }, 1000)})   // wait 5000s to redirect website to products 
+                await this.$router.push({name:"products"});                               // after finished redirect
+                window.location.reload();                                                 // re load page to update DOM
+            }
+        }               
     }
-
-
 }
 </script>
 
@@ -509,6 +488,7 @@ export default {
 .cart-item .qty{
     text-align: center;
     font-size: 1.5rem;
+    width:9rem;
 }
 
 /* .cart-item .qtyController .add{
@@ -534,5 +514,113 @@ export default {
 /* End of cart-item */
 
 /* End of Section 4 */
+
+
+/* Responsive */
+
+@media(max-width: 1080px){
+    .cart-item .name{
+        width: 14rem;
+        margin-right: 5rem;
+    }
+}
+
+@media(max-width: 1000px){
+    .cart-item .name{
+        width: 8rem;
+    }
+}
+
+@media(max-width: 940px){
+    .cart-item .name{
+        width: 0rem;
+    }
+}
+
+@media(max-width: 900px){
+    .section-4{
+        flex-direction: column-reverse;
+        overflow: scroll;
+    }
+    .cart-items {
+        width: 100%;
+        margin-left:0;
+        padding: 0.7rem 2rem 2rem 1rem;
+        overflow: unset;
+        height: unset;
+    }
+    .cart-item .name{
+        width: 33rem;
+        margin-right: 5rem;
+    }
+    .cart-summary{
+        width: 95%;
+        height: 99vh;
+        margin-bottom: 21px;
+    }
+}
+
+@media(max-width: 700px){
+    .cart-item .name{
+        width: 20rem;
+    }
+    .cart-item .subtotal{
+        /* position: absolute;
+        right: 0;
+        bottom: 0;
+        font-weight: bold; */
+    }
+}
+
+@media(max-width: 520px){
+    .cart-item .name{
+        position: absolute;
+        top: 1.5rem;
+        width: 98%;
+        font-size: 1.8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        left: 1.5rem;
+        font-weight:300;
+    }
+
+    .cart-item .subtotal{
+        /* position: absolute;
+        right: 0;
+        bottom: 0; */
+        font-weight: bold;
+    }
+
+    .cart-item{
+        height:12rem;
+        padding-top: 4rem;
+    }
+
+
+    .cart-summary ul li{
+        font-size: 1rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .cart-summary .total-amount-wrapper .total-amount{
+        font-size:3rem;
+    }
+}
+
+
+@media(max-width: 435px){
+    .cart-item .name{
+        left: 0.1rem;
+    }
+}
+
+@media(max-height:800px){
+    .cart-summary .checkout-btn{
+        margin-top: 6rem;
+        width: 100%;
+        height: 6rem;
+    }
+}
+/* End of Responsive */
 
 </style>
