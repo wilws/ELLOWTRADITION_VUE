@@ -125,8 +125,8 @@ export default {
   },
   created(){
     //choose dev or live mode 
-    this.$store.dispatch('setServerUrl',{mode:"dev"});
-    // this.$store.dispatch('setServerUrl',{mode:"live"});
+    // this.$store.dispatch('setServerUrl',{mode:"dev"});
+    this.$store.dispatch('setServerUrl',{mode:"live"});
 
     this.setStatus();
   },
