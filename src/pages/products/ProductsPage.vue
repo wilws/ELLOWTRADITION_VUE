@@ -436,7 +436,7 @@ export default {
     height:100%;
     position: relative;
     display: flex;
-    perspective: 100rem;
+    /* perspective: 100rem; */
     margin-left:8rem;
 }
 
@@ -1205,6 +1205,8 @@ position: absolute;
     }
     .resize .display-product{
         justify-content: unset;
+        padding: 0;
+
     }
     .display-product .images-wrapper .close-btn{
         display: flex;
@@ -1215,9 +1217,10 @@ position: absolute;
     }
     .showcase.resize{
         position: fixed;
-        left: -9rem;
-        bottom: 0;
-        width: calc(100% + 9rem);
+        /* left: -9rem; */
+        left:0;
+  
+        width: 100%;
         height: 100%;
         display: none;
         z-index: 100;

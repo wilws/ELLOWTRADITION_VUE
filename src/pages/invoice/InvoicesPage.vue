@@ -149,7 +149,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-between; */
+    justify-content: space-between;
 }
 
 .left-area .invoice_summary_wrapper{
@@ -404,6 +404,7 @@ export default {
     }
     .left-area{
         width:98%;
+        justify-content: unset;
     }
     .invoices{
         overflow: unset;
