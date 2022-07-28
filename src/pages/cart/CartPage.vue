@@ -1,4 +1,5 @@
 <template>
+<alert-component v-show="ErrorMsg">{{ErrorMsg}}</alert-component>
 <section class="section-4">
 
     <!-- cart-summary -->
@@ -26,10 +27,7 @@
 
         <!-- v-if : display logo -->
         <div v-if="!cartIsSet" >
-            <empty-page-component>
-                <i class="fa-solid fa-cart-flatbed-empty"></i>
-                No Items in Cart
-            </empty-page-component>
+            <empty-page-component :msg="msg"></empty-page-component>
         </div>
         <!-- End of v-if -->
 
@@ -68,10 +66,10 @@
 import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
 import CheckoutMiddlewares from "../../middlewares/checkoutMiddlewares.vue";
 import emptyPageComponent from '../../components/emptyPageComponent.vue';
-
+import alertComponent from '../../components/alertComponent.vue';
 export default {
 
-    components: { emptyPageComponent }, 
+    components: { emptyPageComponent,alertComponent }, 
     mixins:[CartMiddlewares,CheckoutMiddlewares],
 
     data() {
@@ -84,23 +82,35 @@ export default {
             totalAmount:0,
             shipping:0,
             vat:0,
-            errorMsg:"",
-            noOfItems:0
+            msg:"",
+            noOfItems:0,
+            ErrorMsg:"",
         }
     },
 
     watch:{
         noOfItems(){                 
             this.checkOutBtnControl();                   // check if item = 0, if no item in cart. unshow the checkout button
+        },
+        msg(value){
+            return value
         }
     },
    
     async created(){
         try{
+            this.msg = "Loading Cart Items"
             const cart = await this.CartHandler();       // Get Cart detail 
             this.setVariables(cart.cartObj);             // Set details in page
+            
         } catch(error){
-            this.errorMsg = error.message;
+             if (error.statusCode == 401){                               // If the error is 401, meaing that it is about authentication. (maybe token expired)
+                this.ErrorMsg = `Error : ${error.message}. Maybe Token is expired. Please log in again`      
+                await this.AuthHandler("LogOut"); 
+                await new Promise(resolve => {setTimeout(() => { resolve('') }, 3000)})   // wait 5000s to redirect website to products 
+                window.location.reload();                                                 // re load page to update DOM
+            }    
+            this.msg = error.message;
         }
     },
 
@@ -132,7 +142,16 @@ export default {
 
             if (this.totalItemNo >0){
                 this.cartIsSet = true;
+            } else {
+                // this.cartIsSet = true;
+                
+                this.msg = "No Items in Cart";
+                console.log('here')
+                // this.$nextTick(()=>{
+                // // this.cartIsSet = false;
+                // })
             }
+       
         },
 
         async amedCartItem(action,productId){
@@ -162,12 +181,12 @@ export default {
 /* Section 4 - Cart */
 .section-4{
     width:calc( 100% -6rem);
-    height:100vh;
+    height:100%;
     position: relative;
     display: flex;
     perspective: 100rem;
-    /* justify-content: space-around;
-    align-items: center; */
+    /* justify-content: space-around; */
+    /* align-items: center;  */
     padding-top: 2rem;
     padding-left: 2rem;
     margin-left:6rem;
@@ -177,7 +196,8 @@ export default {
 .cart-summary{
     position: relative;
     width:40rem;
-    height:95vh;
+    /* height:95vh; */
+    height:625px;
     background-color: #7D929B;
     display: flex;
     flex-direction: column;
@@ -223,21 +243,20 @@ export default {
 .cart-summary .line{
     width:80%;
     height: .1rem;
-    margin: 0 auto;
     background-color:#707070;
 }
 
 .cart-summary .total-amount-wrapper{
-
+    width:100%;
     letter-spacing: 1rem;
     font-size: 3rem;
-    margin-top: 0.5rem;
+    height:auto;
 }
 
 .cart-summary .total-amount-wrapper h3{
     color:#FFFCFC;
     font-size: 2rem;
-    margin:4rem 0rem;
+    margin:2rem 0rem;
     text-align: left;
     font-weight:200;
     letter-spacing: 0.8rem;
@@ -246,17 +265,23 @@ export default {
 
 .cart-summary .total-amount-wrapper .total-amount{
     position: relative;
-    padding-top: 5rem;
+    /* padding-top: 5rem; */
     width:100%;
     height: 100%;
-    font-family: 'Srisakdi', cursive;
+    /* font-family: 'Srisakdi', cursive; */
     font-weight:500;
     text-align: center;
     font-size: 4rem;
     color: azure;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
 }
 
-.total-amount::after{
+/* .total-amount::after{
     position: absolute;
     top:0;
     left:0;
@@ -273,15 +298,16 @@ export default {
     width:100%;
     height:1rem;
     background-color: rgba(211, 81, 81, 0.5);
-}
+} */
 
 /* .total-amount::before{} */
 
 .cart-summary .checkout-btn{
     position: relative;
-    margin-top: 13rem;
+    margin-top: 6rem;
     width: 100%;
     height: 6rem;
+    min-height: 6rem;
     letter-spacing: 1rem;
     font-weight: 300;
     font-size: 1.8rem;
@@ -568,9 +594,9 @@ display: none;
         overflow: scroll;
     }
     .cart-items {
-        width: 100%;
+        width: 95%;
         margin-left:0;
-        padding: 0.7rem 2rem 2rem 1rem;
+        padding: 0;
         overflow: unset;
         height: unset;
     }
@@ -580,8 +606,10 @@ display: none;
     }
     .cart-summary{
         width: 95%;
-        height: 99vh;
+        height:628px;
+        min-height:628px;
         margin-bottom: 21px;
+        /* margin-top: 5rem; */
     }
 }
 
@@ -624,12 +652,32 @@ display: none;
     }
 
     .cart-summary ul li{
-        font-size: 1rem;
+        font-size: 1.5rem;
         letter-spacing: 0.3rem;
     }
 
     .cart-summary .total-amount-wrapper .total-amount{
         font-size:3rem;
+    }
+    .cart-summary .checkout-btn{
+        margin-top:7rem;
+    }
+}
+
+
+@media(max-width: 339px){
+
+    .cart-summary ul li{
+        font-size: 1.3rem;
+        letter-spacing: 0.3rem;
+    }
+
+    .cart-summary .total-amount-wrapper .total-amount{
+        font-size:2rem;
+    }
+    .cart-summary .checkout-btn{
+        margin-top:3rem;
+        font-size:1.3rem;
     }
 }
 

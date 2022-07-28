@@ -8,11 +8,59 @@
                         <img src="@/assets/black_logo.png" alt="" >
                     </div>
                 </div>
-               <div class="msg"><slot></slot></div>
+               <div class="msg" id="emptyPageMessageInsertPoint"></div>
+               <div class="emptyPageResponsive">{{msg}}</div>
             </div>
 </template>
 
-<style scoped>
+<script>
+export default {
+    props:['msg'],
+    watch:{
+        async msg(){
+            this.textAnimation();
+            // this.setMsgPosition();
+        }
+    },
+    data(){
+        return{
+            leftValue:0,
+            insertMsg:""
+        }
+    },
+    created(){
+        window.addEventListener("resize",()=>{
+            this.setMsgPosition()
+        });
+    },
+    mounted(){
+        this.textAnimation();
+        this.setMsgPosition();
+    },
+    methods:{
+        textAnimation(){
+         
+            let delayValue = 0;
+            let html = ""; 
+            this.leftValue =0;
+            for(let i=0;i<this.msg.length;i++){
+                html +=`<span style="left:${this.leftValue}px; animation-name:drop-letters;animation-duration:3s;animation-iteration-count:infinite;animation-delay:${delayValue}s">${this.msg[i]}</span>`
+                this.leftValue += 20;
+                delayValue += 0.1;
+            }
+            document.getElementById('emptyPageMessageInsertPoint').innerHTML = html;            
+        },
+        setMsgPosition(){
+            
+            const containerWidth = document.querySelector('.logo').offsetWidth;
+            const leftOffSet = (containerWidth - (this.leftValue))/2
+            document.querySelector(".msg").style.left = `${leftOffSet}px`;
+        }
+    }
+}
+</script>
+
+<style>
 /* v-if */
 .logo{
     position: relative;
@@ -23,14 +71,17 @@
     align-items: center;
     justify-content: center;
     perspective: 100rem;
-    background-color: #FAFAFA
+    background-color: #FAFAFA;
+    overflow: hidden;
+
+    max-height: 1020px;
+    height: 100vh;
 }
 
 .logo .box{
     position:absolute;
     width:21rem;
     height: 9rem;
-    transform: rotateY(-45deg) rotateZ(45deg);
     transform-style: preserve-3d;
     animation: rotate 2s forwards;
 
@@ -39,8 +90,10 @@
 @keyframes rotate {
     0%{
         transform: rotateY(0) translateY(-500%);
+
     }
     100%{
+
         transform: 
             rotateY(-380deg) 
             rotateZ(360deg)  
@@ -151,14 +204,64 @@
 
 .msg{
     position: absolute;
+    left:0;
     bottom: 40%;
-    width: 100%;
+    width: auto;
+    height: 3rem;
     text-align: center;
-    font-size: 2.3rem;
-    letter-spacing: 1.2rem;
+    font-size: 1.5rem;
     color: #5e5e61;
 }
+
+.msg span{
+    position:absolute;
+    text-transform: uppercase;
+}
+
+.emptyPageResponsive{
+    position: absolute;
+    width:100%;
+    bottom: 40%;
+    height: 3rem;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #5e5e61;
+    display: none;
+}
+
 /* End of v-if */ 
 
 
+
+/*  moving effect */
+
+@keyframes drop-letters {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(0);
+  }
+  15% {
+    transform: translateY(-100%);
+  }
+  20% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+/* End of text moving effect */
+
+
+
+@media (max-width:490px) {
+    .emptyPageResponsive{
+        display: unset;
+    }
+    .msg{
+        display: none;
+    }
+}
 </style>

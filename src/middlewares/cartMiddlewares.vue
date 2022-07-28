@@ -101,6 +101,8 @@ export default {
             try{
                 await this.$store.dispatch('cart/loadCartFromDB');
             } catch(err){
+                console.log(err)
+                console.log(err.statusCode)
                 const error = err;
                 throw error;
             }

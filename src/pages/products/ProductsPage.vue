@@ -5,9 +5,10 @@
         <!-- roll (left part) -->
         <div class="roll">
             <div v-if="!productIsSet">
-                <p class="loadingMsg">Loading..</p>
+                <!-- <p class="loadingMsg">Loading..</p> -->
+                <loader-component></loader-component>
             </div>
-            <ul ref="products">
+            <ul v-else ref="products">
                 <li v-for="(product,index) in products" :key="product._id" class="product"  @click="viewProduct(index, $event)"> <!--:ref="'li'+ index"> -->
                     <img :src="product.imageUrl1" alt="" /> 
                     <h3>{{ product.name }}</h3>
@@ -21,9 +22,7 @@
 
             <!-- v-if : display logo -->
             <div v-if="!productIsSet" >
-            <empty-page-component>
-                Loading Products
-            </empty-page-component>
+                <empty-page-component msg="Loading Products"></empty-page-component>
             </div>
             <!-- End of v-if -->
         
@@ -94,8 +93,9 @@
 import productMiddlewares from "../../middlewares/productMiddlewares.vue";
 import CartMiddlewares from "../../middlewares/cartMiddlewares.vue";
 import emptyPageComponent from '../../components/emptyPageComponent.vue';
+import loaderComponent from "../../components/loaderComponent.vue";
 export default {
-  components: { emptyPageComponent },
+  components: { emptyPageComponent,loaderComponent },
 
     mixins:[productMiddlewares,CartMiddlewares],
  
@@ -156,7 +156,6 @@ export default {
         if (!productsObj.error){                                 // If no error encounted in loading product data
             this.products =  await productsObj.products;         // assign the data into this component
             this.productIsSet = true;                            // Set it true otherwise error of failing loading appears
-
             this.clickedProduct = {                              // To assign the first image to display when landing
                 isSet:true,
                 name : this.products[0].name,
@@ -434,7 +433,7 @@ export default {
 /* Section 3 - Products */
 .section-3{
     width:calc( 100% - 8rem);
-    height:100vh;
+    height:100%;
     position: relative;
     display: flex;
     perspective: 100rem;
@@ -448,6 +447,7 @@ export default {
     position: relative;
     width:40rem;
     height:100%;
+    max-height: 1020px;
     background-color:rgba(125,146,155,.4) ;
     overflow: scroll;
 }
@@ -491,9 +491,10 @@ export default {
 .product {
     position: relative;
     width:90%;
-    height: 26vh;
-    background-color: white;
-    border-radius: 1rem;
+    height: 26rem;
+    max-height:245px;
+    background-color: #7D929B;
+    border-radius: 10px;
     margin-bottom:2rem;
     cursor: pointer;
     overflow: hidden;
@@ -502,8 +503,9 @@ export default {
 }
 
 .product.clicked{
-    border: solid 0.5rem rgba(106,106,106,.8);
-    transform:scale(1.05); 
+    border: 0.5rem solid #7D929B;
+    border-radius: 10px;
+    transform:scale(1.08); 
 }
 
 
@@ -515,7 +517,7 @@ export default {
     width: 100%;
     height: 2rem;
     background-color: rgba(255,255, 255, 0.6);
-    /* border-radius: 0 0 1rem 1rem; */
+    border-radius: 0 0 10px 10px;
     font-weight: 200;
     text-align: left;
     line-height: 2rem;
@@ -532,6 +534,7 @@ export default {
     width:100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 
@@ -727,7 +730,7 @@ export default {
 .display-product .images-wrapper{
     position: relative;
     width:100%;
-    height: 55rem;
+    height: 82rem
 }
 
 .display-product .images-wrapper .picture-frame{
@@ -1167,11 +1170,11 @@ position: absolute;
     .roll{
         width:18rem;
     }
+    .product{
+        height:10rem;
+    }
     .showcase {
         width: calc(100vw - 26rem);
-    }
-    .product {
-        height: 14vh;
     }
     .product h3 {
         color: rgb(75, 74, 74);
@@ -1191,37 +1194,41 @@ position: absolute;
         display: unset;
     }
     .product {
-        height: 33vh;
+        height: 38rem;
     }
     .product h3 {
-        height: 2rem;
-        line-height: 2.2rem;
-        font-size: 1.2rem;
-        color: rgb(75, 74, 74);
+        height: 1.4rem;
+        line-height: unset;
+        font-size: .8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .resize .display-product{
         justify-content: unset;
     }
     .display-product .images-wrapper .close-btn{
         display: flex;
+        top: 1rem;
+        right: 1rem;
+        width: 3rem;
+        height: 3rem;
     }
     .showcase.resize{
         position: fixed;
         left: -9rem;
-        width:103vw;
-        height: 100vh;
+        bottom: 0;
+        width: calc(100% + 9rem);
+        height: 100%;
         display: none;
         z-index: 100;
         transition: display .5s;
     }
-
-
-    .showcase.resize.showImg{
-        display: unset;
+    .showcase.resize .images-wrapper{
+        /* height:30rem; */
     }
 
-    .showcase.resize .images-wrapper{
-        height:30rem;
+    .showcase.resize .images-wrapper .price-tag-wrapper {
+        animation: none;
     }
 
     .showcase.resize .display-product .description{
@@ -1230,6 +1237,10 @@ position: absolute;
 
     .showcase.resize .display-product .images-wrapper .progress-wrapper{
         top: 0rem;
+    }
+
+    .showcase.resize.showImg{
+        display: unset;
     }
 
     .display-product .images-wrapper .cart-btn{
@@ -1244,12 +1255,24 @@ position: absolute;
         bottom: -9rem;
         right: 0;
     }
+
+    .display-product .images-wrapper .picture-frame{
+        /* height:unset; */
+    }
+
+}
+
+
+@media (max-width:500px){
+    .product {
+        height: 28vh;
+    }
 }
 
 
 @media (max-width:400px){
     .product {
-        height: 18vh;
+        height: 17rem;
     }
 
     .product h3{
@@ -1260,6 +1283,8 @@ position: absolute;
     text-overflow: ellipsis;
     }
 }
+
+
 /* End of Responsive */
 
 

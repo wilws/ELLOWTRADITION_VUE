@@ -21,10 +21,6 @@
             <h3>Total :</h3>
             <div class=total-amount>$ {{ invoice.total }}</div>
         </div>
-        <!-- <button class="checkout-btn"  @click="checkout"> -->
-            <!-- div<i class="fa-solid fa-money-check-dollar"></i> -->
-            <!-- <p>Checkout ></p>
-        </button> -->
     </div>
     <!-- End of cart-summary -->
 
@@ -114,7 +110,8 @@ export default {
 .cart-summary{
     position: relative;
     width:40rem;
-    height:95vh;
+    height:625px;
+    min-height: 625px;
     background-color: #7D929B;
     display: flex;
     flex-direction: column;
@@ -224,7 +221,6 @@ export default {
 
 .cart-summary .total-amount-wrapper .total-amount{
     position: relative;
-    padding-top: 5rem;
     width:100%;
     height: 100%;
     font-family: 'Srisakdi', cursive;
@@ -234,112 +230,6 @@ export default {
     color: azure;
 }
 
-/* .total-amount::after{
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:1rem;
-    z-index: 8;
-    background-color: rgba(255, 255, 255, 0.5);
-} */
-
-/* .total-amount::before{
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:1rem;
-    background-color: rgba(211, 81, 81, 0.5);
-} */
-
-/* .total-amount::before{} */
-
-/* .cart-summary .checkout-btn{
-    position: relative;
-    margin-top: 13rem;
-    width: 100%;
-    height: 6rem;
-    letter-spacing: 1rem;
-    font-weight: 300;
-    font-size: 1.8rem;
-    color: gray;
-      background-color: ivory;
-    box-shadow: 0.2rem 0.4rem 0.5rem rgb(106 106 106);
-    cursor: pointer;
-    border-radius: 1rem;
-    border: #868282 0.2rem solid;
-    transition: transform .5s;
-    overflow: hidden;
-    text-transform: uppercase;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-left: 2%;
-    transition: transform 1s;
-    
-} */
-
-/* .cart-summary .checkout-btn p{
-    position:absolute;
-    width:100%;
-    height: 100%;
-    text-align: left;  
-    z-index: 1;
-    background-color: ivory;
-} */
-/* 
-.cart-summary .checkout-btn i{
-    position:absolute;
-    width:100%;
-    height: 100%;
-    font-size: 5rem;
-    color: gray;
-    text-align: center;
-    z-index: 3;
-    background-color: ivory;
-   
-} */
-
-
-/* 
-.cart-summary .checkout-btn::before{
-    content:"";
-    width: 33rem;
-    height: 6rem;
-    position: absolute;
-    top:0;
-    left:-11%;
-        background: 
-  linear-gradient(
-        to right, 
-        rgba(255, 255, 255, 0.13) 0%,
-        rgba(255, 255, 255, 0.13) 77%,
-        rgba(255, 255, 255, 0.5) 92%,
-        rgba(255, 255, 255, 0.0) 100%
-    );
-    opacity: 0.6;
-    transform:skewX(20deg);
-}
-
-.checkout-btn:hover {
-    background-color: black;
-    color:ivory
-}
-
-.checkout-btn:hover:before {
-    animation:checkouthover 2s infinite;
-}
-
-@keyframes checkouthover {
-    0%{
-        transform:translateX(-15rem) skewX(20deg);
-    }
-    100%{
-        transform:translateX(100rem) skewX(20deg);
-    }
-} */
 
 
 
@@ -375,46 +265,7 @@ export default {
      /* overflow: hidden; */
 }
 
-/* .delete-btn{
-    position:absolute;
-    top:-0.4rem;
-    z-index: 3;
-    right:-0.6rem;
-    width:2rem;
-    height:2rem;
-    background:white;
-    border:thin solid rgba(0,0,0, .2);
-    border-radius: 50%;
-    box-shadow: rgba(0,0,0, .3);
-    cursor: pointer;
-   
-    opacity: .7;
-    transform:rotate(45deg);
-     transition: all .5s;
-}
 
-.delete-btn div{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50% ,-50%);
-    width:80%;
-    height:0.05rem;
-    border:#707070 0.01rem solid;
-    border-radius: 15rem;
-    background-color: rgba(0,0,0, rgba(0,0,0, .3));
-}
-
-.delete-btn .line1{
-    transform:rotate(90deg) translate(-50%);
-    transform-origin: left;
-}
-
-.delete-btn:hover{
-    opacity:1;
-    transform:scale(1.5);
-    background-color: rgb(245, 118, 118)
-} */
 
 
 .cart-item .img{
@@ -456,34 +307,7 @@ export default {
     text-overflow: ellipsis;
 }
 
-/* .cart-item .qtyController{
 
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    width:12.8rem;
-    height:2.8rem;
-    border: #707070 solid thin;
-    border-radius:1.5rem;
-    background-color: #797979;
-    color:white;
-    font-size:1.2rem;
-    transition: background-color .5s;
-} */
-
-/* .cart-item .qtyController:hover{
- background-color: #7D929B;
-} */
-
-/* .cart-item .qtyController .min{
-    width:2rem;
-    text-align: center;
-    cursor: pointer;
-} */
-
-/* .cart-item .qtyController .qty{
-    font-weight: 500;
-} */
 
 .cart-item .qty{
     text-align: center;
@@ -491,17 +315,7 @@ export default {
     width:9rem;
 }
 
-/* .cart-item .qtyController .add{
-    width:2rem;
-    text-align: center;
-    cursor: pointer;
-} */
 
-/* .cart-item .qtyController .add:hover,
-.cart-item .qtyController .min:hover {
-    font-size:2rem;
-    font-weight: 300;
-} */
 
 .cart-item .subtotal{
     width:14rem;
@@ -539,13 +353,14 @@ export default {
 
 @media(max-width: 900px){
     .section-4{
-        flex-direction: column-reverse;
+        flex-direction: column;
         overflow: scroll;
     }
     .cart-items {
-        width: 100%;
+        width: 95%;
         margin-left:0;
-        padding: 0.7rem 2rem 2rem 1rem;
+        /* padding: 0.7rem 2rem 2rem 1rem; */
+        padding: 0;
         overflow: unset;
         height: unset;
     }
@@ -563,12 +378,6 @@ export default {
 @media(max-width: 700px){
     .cart-item .name{
         width: 20rem;
-    }
-    .cart-item .subtotal{
-        /* position: absolute;
-        right: 0;
-        bottom: 0;
-        font-weight: bold; */
     }
 }
 

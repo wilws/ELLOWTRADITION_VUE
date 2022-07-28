@@ -2,10 +2,10 @@
 <section class="section-2">
 
     <div class="start">
-        <img class="logo" src="@/assets/black_logo.png" alt="logo">
+        <img class="front-logo" src="@/assets/black_logo.png" alt="logo">
     </div>
 
-    <img class="logo" src="@/assets/white_logo.png" alt="logo">
+    <img class="front-logo" src="@/assets/white_logo.png" alt="logo">
 
     
     <div class="img-wrapper">
@@ -41,7 +41,7 @@ export default {
 
 .section-1{
     width:100%;
-    height:100vh;
+    height:100%;
     position: relative;
     perspective: 100rem;
     overflow: hidden; 
@@ -57,7 +57,7 @@ export default {
     animation: startingScreenDisappear 3s 4s forwards;
 }
 
-.start .logo{
+.start .front-logo{
     position:absolute;
     opacity: 0;
     transform: translateX(-50%) translateY(-50%); 
@@ -123,7 +123,7 @@ export default {
 }
 
 
-.logo{
+.front-logo{
     position: absolute;
     width:30rem;
     top:2.5rem;
@@ -299,7 +299,7 @@ export default {
 
 /* Responsive */
 @media (max-width:860px){
-    img.logo{
+    img.front-logo{
         width: 16rem;
         top: 1.1rem;
     }
@@ -355,7 +355,7 @@ export default {
 
 
 @media (max-width:510px){
-    img.logo{
+    img.front-logo{
         width: 10rem;
         top: 1.1rem;
     }
@@ -402,7 +402,7 @@ export default {
 
 
 @media (max-height:550px){
-    img.logo{
+    img.front-logo{
         width: 10rem;
         top: 1.1rem;
     }

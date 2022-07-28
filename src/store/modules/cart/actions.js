@@ -25,9 +25,12 @@ export default {
             });
 
             const res = await resData.json();   
+           console.log(res)
+           console.log(resData)
+           
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
-                error.statusCode = res.status;
+                error.statusCode = resData.status;
                 throw error
             } 
 
@@ -206,7 +209,7 @@ export default {
 
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
-                error.statusCode = res.status;
+                error.statusCode = resData.status;
                 throw error
             } 
 
@@ -239,7 +242,7 @@ export default {
 
             if (resData.status !== 200) {                           // Check if return status 200
                 const error = new Error(res.message)
-                error.statusCode = res.status;
+                error.statusCode = resData.status;
                 throw error
             } 
    

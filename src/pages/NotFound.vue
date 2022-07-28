@@ -27,7 +27,7 @@ export default {
 .section{
   position: relative;
   width:calc( 100% - 8rem);
-  height:100vh;
+  height:100%;
   perspective: 100rem;
   margin-left:8rem;
 }

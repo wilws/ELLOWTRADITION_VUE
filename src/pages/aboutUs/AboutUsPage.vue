@@ -23,9 +23,9 @@
 /* Section 2 About Us */
 .section-2{
     width:100%;
-    height:100vh;
+    height:100%;
     position: relative;
-    perspective: 100rem;
+    /* perspective: 100rem; */
 }
 
 .section-2 div{

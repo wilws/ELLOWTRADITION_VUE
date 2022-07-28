@@ -1,6 +1,6 @@
 <template>
 
-    <alert-component v-show="msg">{{msg}}</alert-component>
+    <alert-component v-show="ErrorMsg">{{ErrorMsg}}</alert-component>
 
     <section class="section-5">
         <div class="left-area">
@@ -33,7 +33,7 @@
     <div class="invoices">
         <!-- v-if : display logo -->
         <div v-if="!invoiceIsSet" >
-            <empty-page-component>No Invoices Found</empty-page-component>
+            <empty-page-component :msg="msg"></empty-page-component>
         </div>
         <!-- End of v-if -->
 
@@ -89,11 +89,13 @@ export default {
             username:"",
             address:"",
             msg:"",
+            ErrorMsg:"",
         }
     },
 
     async created(){
         try{
+            this.msg = "loading Invoices"
             this.invoiceObj = await this.InvoiceHandler("Invoices");             // Use Invoice middlewares to handle this page. All invoices data will be store in invoiceObj
             this.invoices = this.invoiceObj.invoices.reverse(),                  // reverse the order so latest invoice come first
             this.totalNoInvoice = this.invoiceObj.totalNoInvoice,                // Calculate the no of invoice. If no invoice, give the "emptyPageComponent"
@@ -101,6 +103,8 @@ export default {
 
             if (this.invoices.length){                                            // If no invoice, start the "emptyPageComponent"
                 this.invoiceIsSet=true
+            } else {
+                this.msg = "No Invoice is Found"
             }
       
             this.userObj = await this.AccountHandler("User");   
@@ -110,7 +114,7 @@ export default {
                 
         } catch(error){                                                 // If error happened during fetching invoice / invoiceObj cannot be set.
             if (error.statusCode == 401){                               // If the error is 401, meaing that it is about authentication. (maybe token expired)
-                this.msg = `Error : ${error.message}. Maybe Token is expired. Please log in again`      
+                this.ErrorMsg = `Error : ${error.message}. Maybe Token is expired. Please log in again`      
                 await this.AuthHandler("LogOut"); 
                 await new Promise(resolve => {setTimeout(() => { resolve('') }, 2000)})   // wait 5000s to redirect website to products 
                 await this.$router.push({name:"products"});                               // after finished redirect
@@ -126,7 +130,7 @@ export default {
 /* Section 5 - Invoice */
 .section-5{
     width:calc( 100% - 6rem);
-    height:100vh;
+    height:100%;
     position: relative;
     display: flex;
     perspective: 100rem;
@@ -337,16 +341,16 @@ export default {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 300;
     color: black;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
 }
 
 .invoice .amount{
     position: absolute;
     top:50%;
     transform: translateY(-50%);
-    right:10rem;
+    right:5rem;
     border:#707070 thin solid;
-    border-radius: 3rem;
+    border-radius: 14px;
     width:10rem;
     height:3.5rem;
     display: flex;
@@ -360,8 +364,8 @@ export default {
 
 .invoice .amount p{
     font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 300;
-    font-size:2rem;
+    font-weight: 200;
+    font-size:1.6rem;
     color:black
 }
 
@@ -403,10 +407,11 @@ export default {
     }
     .invoices{
         overflow: unset;
-        margin-top: 3rem;
+        margin-top: 2rem;
         margin-left: 0;
-        width: 100%;
-        padding-right: 1rem;
+        width: 99%;
+        /* padding-right: 1rem; */
+        padding: 0rem 1rem 0rem 2.1rem;
     }
     .invoice{
         width:100%;
@@ -420,7 +425,7 @@ export default {
 
     .left-area .invoice_summary_wrapper{
         width:95%;
-        height:33vh;
+        height: auto;
         margin-bottom:2rem;
     }
 
@@ -429,7 +434,7 @@ export default {
     }
     .left-area .personal_info_wrapper{
         width:95%;
-         height:48vh;
+        height: auto;
     }
     .left-area .personal_info_wrapper h1{
          margin: 0rem 0 3rem 0;
@@ -446,13 +451,16 @@ export default {
 
 
 @media(max-width:600px){
+   
     .invoice .amount{
         display: none;
     }
+
 }
 
 @media(max-width:450px){
-    .invoice .amount{
+
+     .invoice .invoice_no{
         display: none;
     }
     .left-area .invoice_summary_wrapper{

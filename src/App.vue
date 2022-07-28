@@ -58,13 +58,16 @@
         <h3>REDISCOVER & SHARE</h3>
       </div>
 
+      
+
       <div class="short-cut" >
+        <div class="product-page-icon-wrapper"><router-link class="router-link" to="/products"><i class="product-page-icon fa-solid fa-gift"></i></router-link></div>
         <div v-if="isLogin" class="isAuth" >
             <div class="invoice-page-icon-wrapper"><router-link class="router-link" to="/invoices"><i class="invoice-page-icon fa-solid fa-chalkboard-user"></i></router-link></div>
             <div class="logout-icon-wrapper" @click="authAction('LogOut')"><i class="logout-icon fa-solid fa-arrow-right-from-bracket"></i></div>
         </div>
-        <div  class="login-icon-wrapper" v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
-        <router-link class="router-link cart-icon-wrapper" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link>
+        <div class="login-icon-wrapper" v-else @click="isSingUpPageOpen=true" id="login-btn" ><i class="login-icon fa-regular fa-circle-user"></i></div>
+        <div class="cart-icon-wrapper"><router-link class="router-link" to="/cart"><i class="cart-icon fa-solid fa-cart-shopping"></i></router-link></div>
       </div>
     </div>
     <!-- End of Left Bar -->
@@ -125,8 +128,8 @@ export default {
   },
   created(){
     //choose dev or live mode 
-    // this.$store.dispatch('setServerUrl',{mode:"dev"});
-    this.$store.dispatch('setServerUrl',{mode:"live"});
+    this.$store.dispatch('setServerUrl',{mode:"dev"});
+    // this.$store.dispatch('setServerUrl',{mode:"live"});
 
     this.setStatus();
   },
@@ -188,30 +191,34 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
 }
 
 .resposiveLimit{
       position:absolute;
       top:30%;
-      width:90%;
+      width:100%;
       text-align: center;
       font-size: 1rem;
       padding: 1rem;
-      border:thin solid #9e9b9b;
       margin: 1rem;
       color:#707070;
       display: none;
+      letter-spacing: 0.3rem;
 }
 
 .container{
-
   width:100%;
-  max-width: 1700px;
   height:100%;
-  /* max-height: 800px; */
+  max-width: 1716px;
+  max-height: 1020px;
   perspective: 100rem;
   overflow: hidden;
   box-shadow: 4.5rem 3.5rem 2rem #aaa;
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
 
 .routerView{
@@ -490,9 +497,12 @@ left:-100vw;
  color:black;
 }
 
-.short-cut .isAuth i:hover,
-.short-cut i:hover{
+.short-cut .isAuth .invoice-page-icon-wrapper:hover .invoice-page-icon,
+.short-cut .isAuth .logout-icon-wrapper:hover .logout-icon,
+.short-cut .product-page-icon-wrapper:hover .product-page-icon,
+.short-cut .cart-icon-wrapper:hover .cart-icon{
   opacity: 1;
+  /* color:#7D929B; */
 }
 
 .short-cut .isAuth {
@@ -507,7 +517,8 @@ left:-100vw;
 }
 
 .short-cut .isAuth .invoice-page-icon{
-  font-size: 3rem;
+    font-size: 2.8rem;
+    margin-left: -0.3rem;
 }
 
 .short-cut .login-icon{
@@ -515,9 +526,12 @@ left:-100vw;
 }
 
 .short-cut .cart-icon{
-
   font-size: 3rem;
   margin-left:-0.2rem;
+}
+
+.short-cut .product-page-icon{
+  font-size: 3rem;
 }
 
 .notIdx .left-bar .short-cut i.cart-icon.addCart,
@@ -531,10 +545,33 @@ left:-100vw;
 .short-cut .account-icon{
 
   font-size: 3.5rem;
-  margin-left:0.2rem;
+  margin-left:-0.3rem;
+  
 }
 
+.product-page-icon-wrapper::before{
+  content:"View Product";
+  position: absolute;
+  top:50%;
+  right:-2.5rem;
+  background-color: rgba(247, 217, 84, 0.904);
+  font-size:1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  color:#707070;
+  border:solid #707070 thin;
+  display:none;
+}
 
+@media (hover: hover){
+  .product-page-icon-wrapper:hover::before,
+  .invoice-page-icon-wrapper:hover:before,
+  .logout-icon-wrapper:hover:before,
+  .login-icon-wrapper:hover::before,
+  .cart-icon-wrapper:hover::before{
+    display:unset;
+  }
+}
 
 
 .invoice-page-icon-wrapper::before{
@@ -550,9 +587,7 @@ left:-100vw;
   border:solid #707070 thin;
   display:none;
 }
-.invoice-page-icon-wrapper:hover:before{
-  display:unset;
-}
+
 
 
 .logout-icon-wrapper::before{
@@ -568,9 +603,7 @@ left:-100vw;
   border:solid #707070 thin;
   display:none;
 }
-.logout-icon-wrapper:hover:before{
-  display:unset;
-}
+
 
 .login-icon-wrapper::before{
   content:"Log In";
@@ -586,14 +619,12 @@ left:-100vw;
   display:none;
 }
 
-.login-icon-wrapper:hover::before{
-  display:unset;
-}
 
-/* .cart-icon-wrapper::before{
-  content:"Cart";
+
+.cart-icon-wrapper::before{
+  content:"My Cart";
   position: absolute;
-  top:25%;
+  top:50%;
   right:0rem;
   background-color: rgba(247, 217, 84, 0.904);
   font-size:1rem;
@@ -601,7 +632,9 @@ left:-100vw;
   border-radius: 5px;
   color:707070;
   border:solid #707070 thin;
-} */
+  display:none;
+}
+
 
 
 /* End of left-bar */
@@ -713,6 +746,20 @@ left:-100vw;
     }
 }
 
+@media(max-height:800px){
+  .slogan{
+    display: none;
+  }
+}
+
+@media (max-height:500px){
+    .container{
+        display: none;
+    }
+    .resposiveLimit{
+      display:unset
+    }
+}
 
 /* 
 
