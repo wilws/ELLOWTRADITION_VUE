@@ -187,10 +187,12 @@ export default {
   top:50%;
   left:50%;
   transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
   width:34rem;
   height:70rem;
   perspective: 100rem;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform .5s 
 }
 
@@ -211,6 +213,7 @@ export default {
 
 .auth-card-wrapper.leftTurn{
   transform: translateX(-50%) translateY(-50%) rotateY(-180deg);
+  -webkit-transform: translateX(-50%) translateY(-50%) rotateY(-180deg);
 }
 
 
@@ -222,12 +225,14 @@ export default {
 .auth-card.sign-up-card{
     background-color:rgb(255, 255, 255);
     transform: translateZ(-.01rem) rotateY(180deg);
+    -webkit-transform: translateZ(-.01rem) rotateY(180deg);
 }
 
 
 .auth-card.log-in-card{
   background-color:rgb(255, 255, 255);
   transform: translateZ(0rem);
+  -webkit-transform: translateZ(0rem);
 }
 
 
@@ -236,6 +241,7 @@ export default {
   top:1rem;
   right:1rem;
   transform:scale(0.8) rotate(45deg); 
+  -webkit-transform:scale(0.8) rotate(45deg); 
   border: none;
 }
 

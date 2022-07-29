@@ -217,9 +217,10 @@ html {
   overflow: hidden;
   box-shadow: 4.5rem 3.5rem 2rem #aaa;
   position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
 }
 
 .routerView{
@@ -233,6 +234,7 @@ html {
 .change .routerView{
   left: 23vw;
   transform: rotateY(-40deg);
+  -webkit-transform: rotateY(-40deg);
 }
 
 /* End of Common Style */
@@ -254,6 +256,7 @@ html {
   justify-content: center;
   border-radius:  50% 50%;
   transform:rotate(45deg);
+  -webkit-transform:rotate(45deg);
   padding: .3rem;
   cursor: pointer;
 }
@@ -266,6 +269,7 @@ html {
 
 .close-menu-btn .cross-line-2{
   transform:translateY(-0.05rem) rotate(90deg);
+  -webkit-transform:translateY(-0.05rem) rotate(90deg);
 }
 
 
@@ -349,6 +353,7 @@ left:-100vw;
   opacity: .5;
   background-color: #7D929B;
   transform: rotate(-5deg);
+  -webkit-transform: rotate(-5deg);
   z-index:0;
   transition: width 1s;
 }
@@ -456,6 +461,7 @@ left:-100vw;
   width:auto;
   white-space: nowrap;
   transform: rotate(-90deg) translateY(-50%);
+  -webkit-transform: rotate(-90deg) translateY(-50%);
   margin-left: -8rem;
   opacity: 0;
 
@@ -647,6 +653,7 @@ left:-100vw;
   .change .routerView{
     left: 20vw;
     transform: translateX(15rem) rotateY(-40deg);
+    -webkit-transform: translateX(15rem) rotateY(-40deg);
   }
 }
 @media (max-width:1056px){
@@ -661,6 +668,7 @@ left:-100vw;
   .change .routerView{
     left: 23vw;
     transform: translateX(15rem) rotateY(-40deg);
+    -webkit-transform: translateX(15rem) rotateY(-40deg);
   }
 }
 
@@ -668,6 +676,7 @@ left:-100vw;
   .change .routerView{
     left: 23vw;
     transform: translateX(30rem) rotateY(0deg);
+    -webkit-transform: translateX(30rem) rotateY(0deg);
   }
     .close-menu-btn {
     top: 8rem;
@@ -682,6 +691,7 @@ left:-100vw;
     .change .routerView{
       left: 23vw;
       transform: translateX(30rem) rotateY(0deg);
+      -webkit-transform: translateX(30rem) rotateY(0deg);
     }
 
 

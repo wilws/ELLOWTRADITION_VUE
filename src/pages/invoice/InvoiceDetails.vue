@@ -261,7 +261,8 @@ export default {
     justify-content: space-around;
     color: #707070;
      /* animation:frontSwing 1s forwards; */
-     transform-style: preserve-3d;
+     /* transform-style: preserve-3d; */
+      /* transform-style: preserve-3d; */
      /* overflow: hidden; */
 }
 

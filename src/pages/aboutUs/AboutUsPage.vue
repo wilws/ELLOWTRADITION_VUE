@@ -76,8 +76,9 @@ font-weight: 100;
     right:0;
     top:0; 
     height: 100%;
-     transform: scaleX(-1);
-     opacity: .3;
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    opacity: .3;
 }
 
 

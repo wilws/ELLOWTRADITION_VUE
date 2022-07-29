@@ -60,7 +60,8 @@ export default {
 .start .front-logo{
     position:absolute;
     opacity: 0;
-    transform: translateX(-50%) translateY(-50%); 
+    -webkit-transform: translateX(-50%) translateY(-50%); 
+    transform: translateX(-50%) translateY(-50%);
     animation: startingLogoAnimation 4s forwards;
 }
 
@@ -72,38 +73,30 @@ export default {
         top:50%;
         right:50%;
         opacity: 0;
+        -webkit-transform: translateX(50%) translateY(-50%); 
         transform: translateX(50%) translateY(-50%); 
     }
     40%{
         opacity: 1;
         top:50%;
         right:50%;
+        -webkit-transform: translateX(50%) translateY(-50%); 
         transform: translateX(50%) translateY(-50%); 
     }
     45%{
         opacity: 1;
         top:50%;
         right:50%;
+        -webkit-transform: translateX(50%) translateY(-50%);
         transform: translateX(50%) translateY(-50%); 
-    }
-    /* 90%{
-        top:2.5rem;
-        right:2.5rem;
-        opacity: 1; 
-        transform: translateX(0) translateY(0); 
 
     }
-    100%{
-        top:2.5rem;
-        right:2.5rem;
-        opacity: 0; 
-        transform: translateX(0) translateY(0); 
-    } */
     100%{
         top:50%;
         right:50%;
         opacity: 0;
         transform: translateX(50%) translateY(-50%); 
+        -webkit-transform: translateX(50%) translateY(-50%);
     }
 }
 
@@ -192,21 +185,25 @@ export default {
 
 @keyframes scale{
     0%{
+        -webkit-transform: scale(1.3);
         transform: scale(1.3);
         visibility:hidden;
         opacity: 0;
     }
     25%{
+        -webkit-transform: scale(1);
         transform: scale(1);
         visibility:visible;
         opacity: 1;
     }
     35%{
-      transform: scale(1);
+        -webkit-transform: scale(1);
+        transform: scale(1);
         visibility:hidden;
         opacity: 0;
     }
     100%{
+        -webkit-transform: scale(1);
         transform: scale(1);
         visibility:hidden;
         opacity: 0;
@@ -269,10 +266,12 @@ export default {
     0%{
        bottom: -30rem;
        transform: rotateY(360deg);
+       -webkit-transform: rotateY(360deg);
     }
     100%{
         bottom: 10rem;
         transform: rotateY(0deg);
+        -webkit-transform: rotateY(0deg);
     }
 }
 
@@ -310,11 +309,13 @@ export default {
         bottom:-30rem; 
         left:50%;
         transform:translateX(-50%);
+        -webkit-transform:translateX(-50%);
         width: 42rem;
         height: 24.5rem;
         /* animation: BannerDisplay 2s 9s forwards; */
         animation: BannerDisplay 5s 9s forwards;
         transform-origin:left;
+        -webkit-transform-origin:left;
     }
 
     .banner h3{
@@ -341,14 +342,16 @@ export default {
 
     @keyframes BannerDisplay{
         0%{
-        bottom: -30rem;
-        left:50%;
-        transform: rotateY(360deg) translateX(-50%);
+            bottom: -30rem;
+            left:50%;
+            transform: rotateY(360deg) translateX(-50%);
+            -webkit-transform: rotateY(360deg) translateX(-50%);
         }
         100%{
             bottom: 50%;
             left:50%;
             transform: rotateY(0deg) translateX(-50%) translateY(50%);
+            -webkit-transform: rotateY(0deg) translateX(-50%) translateY(50%);
         }
     }
 }
@@ -413,10 +416,12 @@ export default {
         bottom:-30rem; 
         left:50%;
         transform:translateX(-50%);
+        -webkit-transform:translateX(-50%);
         width: 42rem;
         height: 24.5rem;
         animation: BannerDisplay 5s 9s forwards;
         transform-origin:left;
+        -webkit-transform-origin:left;
     }
 
     .banner h3{
@@ -443,14 +448,16 @@ export default {
 
     @keyframes BannerDisplay{
         0%{
-        bottom: -30rem;
-        left:50%;
-        transform: rotateY(360deg) translateX(-50%);
+            bottom: -30rem;
+            left:50%;
+            transform: rotateY(360deg) translateX(-50%);
+            -webkit-transform: rotateY(360deg) translateX(-50%);
         }
         100%{
             bottom: 50%;
             left:50%;
             transform: rotateY(0deg) translateX(-50%) translateY(50%);
+            -webkit-transform: rotateY(0deg) translateX(-50%) translateY(50%);
         }
     } 
 

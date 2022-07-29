@@ -318,6 +318,7 @@ export default {
     border-radius: 1rem;
     border: #868282 0.2rem solid;
     transition: transform .5s;
+    -webkit-transition: transform .5s;
     overflow: hidden;
     text-transform: uppercase;
     display: flex;
@@ -369,6 +370,7 @@ export default {
     );
     opacity: 0.6;
     transform:skewX(20deg);
+    -webkit-transform:skewX(20deg);
 }
 
 .checkout-btn:hover {
@@ -396,9 +398,11 @@ display: none;
 @keyframes checkouthover {
     0%{
         transform:translateX(-15rem) skewX(20deg);
+        -webkit-transform:translateX(-15rem) skewX(20deg);
     }
     100%{
         transform:translateX(100rem) skewX(20deg);
+        -webkit-transform:translateX(100rem) skewX(20deg);
     }
 }
 
@@ -433,6 +437,7 @@ display: none;
     color: #707070;
      /* animation:frontSwing 1s forwards; */
      transform-style: preserve-3d;
+     -webkit-transform-style: preserve-3d;
      /* overflow: hidden; */
 }
 
@@ -451,7 +456,8 @@ display: none;
    
     opacity: .7;
     transform:rotate(45deg);
-     transition: all .5s;
+    -webkit-transform:rotate(45deg);
+    transition: all .5s;
 }
 
 .delete-btn div{
@@ -459,6 +465,7 @@ display: none;
     top:50%;
     left:50%;
     transform:translate(-50% ,-50%);
+    -webkit-transform:translate(-50% ,-50%);
     width:80%;
     height:0.05rem;
     border:#707070 0.01rem solid;
@@ -469,6 +476,8 @@ display: none;
 .delete-btn .line1{
     transform:rotate(90deg) translate(-50%);
     transform-origin: left;
+    -webkit-transform:rotate(90deg) translate(-50%);
+    -webkit-transform-origin: left;
 }
 
 .delete-btn:hover{

@@ -348,6 +348,7 @@ export default {
     position: absolute;
     top:50%;
     transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
     right:5rem;
     border:#707070 thin solid;
     border-radius: 14px;
@@ -373,6 +374,7 @@ export default {
     position: absolute;
     top:50%;
     transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
     right:4rem;
 }
 
