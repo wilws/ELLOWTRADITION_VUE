@@ -225,16 +225,19 @@ html {
 
 .routerView{
   width:100%;
-  height: 100vh;
+  /* height: 100vh; */
+  height: 100%;
   background-color:white;
   transition: transform .6s;
   box-shadow: 4.5rem 3.5rem 2rem #aaa;
+  transform-origin: right;
 }
 
-.change .routerView{
+.change .routerView{             /* menu open */
   left: 23vw;
   transform: rotateY(-40deg);
   -webkit-transform: rotateY(-40deg);
+  transform-origin: right;
 }
 
 /* End of Common Style */
@@ -393,6 +396,8 @@ left:-100vw;
   transition: left .1s;
 }
 
+
+
 .indexAnimation .left-bar{
   left:-100rem;
   animation: leftBarMove 3s 10s forwards;
@@ -453,7 +458,9 @@ left:-100vw;
  margin-bottom: 1rem;
 }
 
-
+.left-bar .menu-btn .line-3{
+  height: 0.13rem;
+}
 
 .slogan {
   position:absolute;
@@ -530,6 +537,7 @@ left:-100vw;
 
 .short-cut .login-icon{
   font-size: 3.5rem;
+  margin-left: -0.2rem;
 }
 
 .short-cut .cart-icon{
@@ -687,17 +695,27 @@ left:-100vw;
   }
 }
 
-  @media (max-width:510px){
-    .change .routerView{
-      left: 23vw;
-      transform: translateX(30rem) rotateY(0deg);
-      -webkit-transform: translateX(30rem) rotateY(0deg);
-    }
 
 
-  .close-menu-btn {
-    top: 8rem;
-    right: -13rem;
+@media (max-width:420px){
+  .menu-btn {
+      width: 2.4rem;
+      height: 3.2rem;
+  }
+  .short-cut .product-page-icon {
+      font-size: 2.4rem;
+  }
+  .short-cut .isAuth .invoice-page-icon {
+    font-size: 2.3rem;
+  }
+  .short-cut .isAuth .logout-icon {
+      font-size: 2.7rem;
+  }
+  .short-cut .cart-icon {
+      font-size: 2.4rem;
+  }
+  .short-cut .login-icon {
+    font-size: 2.8rem;
   }
 }
 
@@ -736,6 +754,7 @@ left:-100vw;
     .header .line.line-1{
        width:0;
     }
+
 }
 
 @media (max-height:470PX){
@@ -760,6 +779,21 @@ left:-100vw;
 @media(max-height:800px){
   .slogan{
     display: none;
+  }
+}
+
+@media(max-height:700px){
+  .short-cut .product-page-icon {
+      font-size: 2.4rem;
+  }
+  .short-cut .isAuth .invoice-page-icon {
+    font-size: 2.3rem;
+  }
+  .short-cut .isAuth .logout-icon {
+      font-size: 2.7rem;
+  }
+  .short-cut .cart-icon {
+      font-size: 2.4rem;
   }
 }
 

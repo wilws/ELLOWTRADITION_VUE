@@ -249,6 +249,7 @@ export default {
 }
 
 .cart-item{
+    position: relative;
     width: 100%;
     background-color: #FAFAFA;
     box-shadow: 1rem 1rem 1rem rgba(0,0,0, .3);
@@ -386,7 +387,7 @@ export default {
     .cart-item .name{
         position: absolute;
         top: 1.5rem;
-        width: 98%;
+        width: 85%;
         font-size: 1.8rem;
         overflow: hidden;
         text-overflow: ellipsis;

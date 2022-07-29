@@ -1305,6 +1305,14 @@ position: absolute;
         /* height:unset; */
     }
 
+    .cart-btn:hover{
+        transform:none;
+        -webkit-transform:none;
+    }
+    .cart-btn:hover:before {
+        animation: none
+    }
+
 }
 
 
@@ -1315,17 +1323,21 @@ position: absolute;
 }
 
 
-@media (max-width:400px){
+@media (max-width:420px){
+    .section-3{
+        width:calc( 100% - 6rem);
+        margin-left:6rem;
+    }
     .product {
         height: 17rem;
     }
 
     .product h3{
-    height: 1.4rem;
-    line-height: unset;
-    font-size: .8rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+        height: 2.4rem;
+        line-height: 2.5rem;
+        font-size: 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
