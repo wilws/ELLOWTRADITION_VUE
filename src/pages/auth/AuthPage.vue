@@ -17,13 +17,6 @@
         <p class="auth-para1" >We are happy to have you to join us !</p>
         <p class="errorMsg">{{ error}}</p>
 
-        <!-- <form @submit.prevent="authAction('SignUp')">
-            <input class="auth-username" type="text" placeholder=" User Name"  v-model.trim="username.val">
-            <input class="auth-email" type="email" placeholder=" E-mail" v-model.trim="email.val">
-            <input class="auth-password" type="password" placeholder=" Password" v-model.trim="password.val">
-            <input class="auth-re-password" type="password" placeholder=" Password" v-model.trim="repassword.val">
-            <button class="auth-btn" type="submit">sign up</button>
-        </form> -->
   
       <Form ref="form1" @submit="authAction('SignUp')"  :validation-schema="schema2">
         <Field id="signUp_username" name="signUp_username" type="text"  class="auth-username" placeholder="User Name" v-model.trim="username"/>
@@ -74,6 +67,8 @@
         </div>
         </div>
         <!-- End of login -->
+
+        <div v-show="loading" class="auth-loading-screen"><loader-component></loader-component></div>
         
 <!-- end of login  -->
 </template>
@@ -82,6 +77,7 @@
 <script>
 
 import AuthMiddlewares from "../../middlewares/authMiddlewares.vue";
+import LoaderComponent from "../../components/loaderComponent.vue";
 
 import { Field, Form, ErrorMessage } from "vee-validate";
 import * as Yup from "yup";
@@ -91,6 +87,7 @@ export default {
     Field,
     Form,
     ErrorMessage,
+    LoaderComponent
   },
  
   mixins:[AuthMiddlewares],
@@ -118,7 +115,8 @@ export default {
         password:"",
         username:"",
         repassword:"",
-        address:""
+        address:"",
+        loading:false
       }
     },
 
@@ -146,10 +144,12 @@ export default {
 
         async authAction(action){
           try{  
+            this.loading = true
             await this.AuthHandler(action,this.email,this.password,this.username,this.address);
             this.$router.go();              // refresh after login / sign up
 
           } catch (error){
+            this.loading = false
             this.error = error.message;
           }
         },
@@ -166,6 +166,16 @@ export default {
 
 /* Sign Up / Login  */
 
+.auth-loading-screen{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 100%;;
+  z-index: 100000;
+  background-color: rgb(255 255 255 / 81%);
+}
+
 .alert{
   color:red;
   position: relative;
@@ -179,6 +189,7 @@ export default {
   background-color: rgba(0,0,0,0.5);
   width:100vw;
   height:100vh;
+  perspective: 100rem;
 
 }
 
@@ -349,9 +360,19 @@ export default {
 }
 
 /* responsive */
-@media (max-width:352px){
+@media (max-width:400px){
   .auth-wrapper .auth-card-wrapper{
-    width:90%;
+    width:100%;
+    height:100%;
+  }
+  .auth-card.sign-up-card .auth-img{
+    display: none;
+  }
+   .auth-card.sign-up-card .auth-para1{
+    display: none;
+  }
+  .auth-card{
+    border-radius:unset;
   }
 }
 /* End of responsive */

@@ -364,7 +364,7 @@ export default {
         /* padding: 0.7rem 2rem 2rem 1rem; */
         padding: 0;
         overflow: unset;
-        height: unset;
+        height: auto;
     }
     .cart-item .name{
         width: 33rem;

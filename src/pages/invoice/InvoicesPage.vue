@@ -410,6 +410,7 @@ export default {
     }
     .invoices{
         overflow: unset;
+        height: auto;
         margin-top: 2rem;
         margin-left: 0;
         width: 99%;
@@ -418,6 +419,7 @@ export default {
     }
     .invoice{
         width:100%;
+
     }
     .invoice .invoice_no p{
         font-size: 1.2rem;
