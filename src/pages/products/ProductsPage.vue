@@ -409,12 +409,6 @@ export default {
             }
         },
     },
-    // beforeRouteEnter(to,from) {
-
-    //     if (from.fullPath === "/auth"){
-    //        window.location.reload(); 
-    //     }
-    // }
 }
 </script>
 

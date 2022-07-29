@@ -212,7 +212,7 @@ html {
   width:100%;
   height:100%;
   max-width: 1716px;
-  max-height: 1020px;
+  max-height: 1073px;
   perspective: 100rem;
   overflow: hidden;
   box-shadow: 4.5rem 3.5rem 2rem #aaa;
