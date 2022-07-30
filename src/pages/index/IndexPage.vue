@@ -469,7 +469,7 @@ export default {
     .banner{
         width: 24rem;
         height: 14.14rem;
-        animation: BannerDisplay 5s 9s forwards;
+        /* animation: BannerDisplay 5s 9s forwards; */
     }
 
     .banner div{
@@ -495,7 +495,7 @@ export default {
         margin-top:-3.7rem;
     }
 
-        @keyframes BannerDisplay{
+        /* @keyframes BannerDisplay{
         0%{
             bottom: -100%;
             transform:translateZ(20rem) translateX(-50%) translateY(50%)  rotateY(360deg) ;
@@ -516,8 +516,8 @@ export default {
         100%{
             bottom:56%;
             -webkit-transform: translateZ(20rem) translateX(-50%) translateY(50%) rotateY(0deg);   
-        }
-    }
+        } 
+    }*/
 
 
 }

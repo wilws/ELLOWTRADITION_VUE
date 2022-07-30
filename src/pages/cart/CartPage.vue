@@ -196,7 +196,6 @@ export default {
 .cart-summary{
     position: relative;
     width:40rem;
-    /* height:95vh; */
     height:625px;
     background-color: #7D929B;
     display: flex;
@@ -218,9 +217,7 @@ export default {
     text-align: center;
 }
 
-/* .cart-summary ul{
-    
-} */
+
 
 .cart-summary ul li{
     width:100%;
@@ -237,7 +234,6 @@ export default {
     position: absolute;
     right:2rem;
     text-align: right;
-    /* letter-spacing: 0.5rem; */
 }
 
 .cart-summary .line{
@@ -265,10 +261,8 @@ export default {
 
 .cart-summary .total-amount-wrapper .total-amount{
     position: relative;
-    /* padding-top: 5rem; */
     width:100%;
     height: 100%;
-    /* font-family: 'Srisakdi', cursive; */
     font-weight:500;
     text-align: center;
     font-size: 4rem;
@@ -281,26 +275,8 @@ export default {
     justify-content: center;
 }
 
-/* .total-amount::after{
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:1rem;
-    z-index: 8;
-    background-color: rgba(255, 255, 255, 0.5);
-}
 
-.total-amount::before{
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:1rem;
-    background-color: rgba(211, 81, 81, 0.5);
-} */
 
-/* .total-amount::before{} */
 
 .cart-summary .checkout-btn{
     position: relative;
@@ -330,14 +306,6 @@ export default {
     
 }
 
-/* .cart-summary .checkout-btn p{
-    position:absolute;
-    width:100%;
-    height: 100%;
-    text-align: left;  
-    z-index: 1;
-    background-color: ivory;
-} */
 
 .cart-summary .checkout-btn i{
     position:absolute;
@@ -383,7 +351,7 @@ export default {
 }
 
 .checkout-btn.disabled{
-display: none;
+    display: none;
 }
 
 /* .checkout-btn.disabled:hover {
@@ -395,13 +363,20 @@ display: none;
     animation:unset
 } */
 
-@keyframes checkouthover {
+@-webkit-keyframes checkouthover {
     0%{
         transform:translateX(-15rem) skewX(20deg);
-        -webkit-transform:translateX(-15rem) skewX(20deg);
     }
     100%{
         transform:translateX(100rem) skewX(20deg);
+    }
+}
+
+@-webkit-keyframes checkouthover {
+    0%{
+        -webkit-transform:translateX(-15rem) skewX(20deg);
+    }
+    100%{
         -webkit-transform:translateX(100rem) skewX(20deg);
     }
 }
@@ -436,8 +411,8 @@ display: none;
     justify-content: space-around;
     color: #707070;
      /* animation:frontSwing 1s forwards; */
-     transform-style: preserve-3d;
-     -webkit-transform-style: preserve-3d;
+     /* transform-style: preserve-3d;
+     -webkit-transform-style: preserve-3d; */
      /* overflow: hidden; */
 }
 
@@ -453,7 +428,6 @@ display: none;
     border-radius: 50%;
     box-shadow: rgba(0,0,0, .3);
     cursor: pointer;
-   
     opacity: .7;
     transform:rotate(45deg);
     -webkit-transform:rotate(45deg);

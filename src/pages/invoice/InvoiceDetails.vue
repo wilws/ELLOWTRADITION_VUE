@@ -8,7 +8,7 @@
         <h1>Invoice</h1>
         <ul>
             <li class="date">Date: {{invoice.date.day}} {{invoice.date.mEng}} {{invoice.date.year}}</li>
-            <!-- <li class="date">{{invoice.ddate.day}}</li> -->
+
             <li class="invoiceId">Invoice No:<br> <span>{{ invoice._id }}</span></li>
             
             <li class="total-item">Total Item : <span>{{ invoice.noOfItem }}</span></li>
@@ -94,7 +94,7 @@ export default {
 <style scoped>
 /* Section 4 - Cart */
 .section-4{
-    width:calc( 100% - 8rem);
+    width:calc(100% - 6rem);
     height:100vh;
     position: relative;
     display: flex;
@@ -103,7 +103,7 @@ export default {
     align-items: center; */
     padding-top: 2rem;
     padding-left: 2rem;
-    margin-left:8rem;
+    margin-left:6rem;
 }
 
 /* cart-summary */
@@ -111,7 +111,6 @@ export default {
     position: relative;
     width:40rem;
     height:625px;
-    min-height: 625px;
     background-color: #7D929B;
     display: flex;
     flex-direction: column;
@@ -132,9 +131,6 @@ export default {
     text-align: center;
 }
 
-.cart-summary ul{
-    
-}
 
 .cart-summary ul li{
     width:100%;
@@ -151,7 +147,6 @@ export default {
     position: absolute;
     right:2rem;
     text-align: right;
-    /* letter-spacing: 0.5rem; */
 }
 
 
@@ -177,21 +172,7 @@ export default {
     font-size: 1.4rem;
         margin-bottom: 0rem;
 }
-.cart-summary .total-item{
-        /* font-weight: 400;
-    letter-spacing: .5rem;
-   */
-}
-.cart-summary .product-amount{
-      /* margin: 1.2rem 0rem; */
-}
-.cart-summary .vat{
-      /* margin: 1.2rem 0rem; */
-}
-.cart-summary .shipping{
-      /* margin-top: 1.2rem;
-      margin-bottom: 5rem; */
-}
+
 
 .cart-summary .line{
     width:80%;
@@ -223,11 +204,16 @@ export default {
     position: relative;
     width:100%;
     height: 100%;
-    font-family: 'Srisakdi', cursive;
     font-weight:500;
     text-align: center;
     font-size: 4rem;
     color: azure;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
 }
 
 
@@ -364,7 +350,7 @@ export default {
         /* padding: 0.7rem 2rem 2rem 1rem; */
         padding: 0;
         overflow: unset;
-        height: auto;
+       height: unset;
     }
     .cart-item .name{
         width: 33rem;

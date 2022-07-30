@@ -930,10 +930,17 @@ position: absolute;
 @keyframes diamondRotate {
     0%{
         transform:rotate(0) scale(1);
-        -webkit-transform:rotate(0) scale(1);
     }    
     100%{
          transform:rotate(720deg) scale(1);
+    }
+}
+
+@-webkit-keyframes diamondRotate {
+    0%{
+        -webkit-transform:rotate(0) scale(1);
+    }    
+    100%{
          -webkit-transform:rotate(720deg) scale(1);
     }
 }
@@ -959,18 +966,42 @@ position: absolute;
     }
 }
 
-@keyframes shinning {
+@-webkit-keyframes cartBtnRotate {
     0%{
-        transform:skewX(20deg) translate(-11rem);
-         -webkit-transform:skewX(20deg) translate(-11rem);
+        -webkit-transform:rotate(0) scale(1.2);
     }
-    90%{
-        transform:skewX(20deg) translate(200rem);
-        -webkit-transform:skewX(20deg) translate(200rem);
+    50%{
+        -webkit-transform:rotate(720deg) scale(1.2);
+    }
+    70%{
+        -webkit-transform:rotate(720deg) scale(1.2);
     }
     100%{
-        transform:skewX(20deg) translate(200rem);
-        -webkit-transform:skewX(20deg) translate(200rem);
+        -webkit-transform:rotate(720deg) scale(1.2);
+    }
+}
+
+@keyframes shinning {
+    0%{
+        transform:skewX(20deg) translateX(-11rem);
+    }
+    90%{
+        transform:skewX(20deg) translateX(200rem);
+    }
+    100%{
+        transform:skewX(20deg) translateX(200rem);
+    }
+}
+
+@-webkit-keyframes shinning {
+    0%{
+         -webkit-transform:skewX(20deg) translateX(-11rem);
+    }
+    90%{
+        -webkit-transform:skewX(20deg) translateX(200rem);
+    }
+    100%{
+        -webkit-transform:skewX(20deg) translateX(200rem);
     }
 }
 
