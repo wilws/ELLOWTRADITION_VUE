@@ -287,7 +287,7 @@ export default {
 .auth-card form{
   margin-top:-2rem;
   width:100%;
-  padding: 3rem;
+  padding: 3rem 3rem 0rem 3rem;
   display: flex;
   flex-direction: column;
 }
@@ -358,7 +358,7 @@ export default {
 }
 
 .auth-para2{
-  height:10rem;
+  height:15rem;
 }
 
 /* responsive */
