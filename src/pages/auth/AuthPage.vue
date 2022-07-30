@@ -388,7 +388,7 @@ export default {
 }
 
 .sign-up-card .auth-para2{
-  height:10rem;
+  height:8rem;
   margin-top:-2rem
 }
 }
