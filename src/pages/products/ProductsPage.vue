@@ -441,7 +441,7 @@ export default {
     position: relative;
     width:40rem;
     height:100%;
-    max-height: 1020px;
+    /* max-height: 1020px; */
     background-color:rgba(125,146,155,.4) ;
     overflow: scroll;
 }
@@ -643,8 +643,6 @@ export default {
     border: whitesmoke solid;
 }
 
-
-
 .logo .box .back{
     width:100%;
     height: 100%;
@@ -702,7 +700,7 @@ export default {
 .display-product{
     position: relative;
     width:100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1201,9 +1199,9 @@ position: absolute;
 
 .display-product .description{
     width:100%;
-    height:calc(100vh - 69rem);
+    height:calc(50% - 1rem);
     background-color: #FAFAFA;
-    padding: 2rem;
+    padding: 2rem 2rem 6rem 2rem;
     overflow: scroll;
     margin-top:1rem;
 }
@@ -1272,7 +1270,7 @@ position: absolute;
         text-overflow: ellipsis;
     }
     .resize .display-product{
-        justify-content: unset;
+        justify-content:start;
         padding: 0;
 
     }
@@ -1295,7 +1293,9 @@ position: absolute;
         transition: display .5s;
     }
     .showcase.resize .images-wrapper{
-        /* height:30rem; */
+        position: relative;
+        width: 100%;
+        height: 50%;
     }
 
     .showcase.resize .images-wrapper .price-tag-wrapper {
@@ -1331,6 +1331,16 @@ position: absolute;
         /* height:unset; */
     }
 
+    .display-product .description{
+        width:100%;
+        height: calc( 50% - 1rem);
+        overflow: scroll;
+    }
+
+    .display-product .description h2{
+        line-height: 3rem;
+    }
+
     .cart-btn:hover{
         transform:none;
         -webkit-transform:none;
@@ -1338,6 +1348,8 @@ position: absolute;
     .cart-btn:hover:before {
         animation: none
     }
+
+
 
 }
 

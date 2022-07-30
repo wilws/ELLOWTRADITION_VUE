@@ -148,10 +148,8 @@ export default {
     },
     setStatus(){
         this.isLogin = this.$store.getters['auth/isLogin'];
-        console.log('after setting login / logout')
-        console.log(this.$store.getters['auth/getUser']);
-        
     },
+
     async authAction(action){
           try{
              await this.AuthHandler(action);
