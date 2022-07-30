@@ -1307,7 +1307,9 @@ position: absolute;
     }
 
     .showcase.resize .display-product .images-wrapper .progress-wrapper{
-        top: 0rem;
+        top: 0.6rem;
+        left:1rem;
+        height: 8rem;
     }
 
     .showcase.resize.showImg{

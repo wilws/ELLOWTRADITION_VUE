@@ -24,6 +24,7 @@
 .section-2{
     width:100%;
     height:100%;
+    margin-left: 10rem;
     position: relative;
     /* perspective: 100rem; */
 }
@@ -31,14 +32,15 @@
 .section-2 div{
     position:absolute;
     top:0;
-    left:13rem;
-    width:50%;
-    height:100vh;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    height:100%;
     display: flex;
     flex-direction: column;
     z-index: 10;
     overflow: scroll;
-    padding-right: 4rem;
+    padding-right: 13rem;
     text-align: justify;
     scrollbar-width: none;
     -ms-overflow-style: none; 
@@ -89,10 +91,10 @@ font-weight: 100;
 
 /* responsive */
 @media (max-width: 900px){
-    .section-2 div{
-        width:100%;
-        padding-right: 17rem;
-    }
+    /* .section-2 div{
+    width: calc(100% - 6rem);
+    padding-right: 3rem;
+    } */
 }
 
 @media (max-width: 600px){
