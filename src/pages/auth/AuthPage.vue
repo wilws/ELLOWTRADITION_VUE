@@ -378,6 +378,9 @@ export default {
    .auth-card.sign-up-card .auth-para1{
     display: none;
   }
+  .auth-card.sign-up-card form{
+       margin-top:-6rem;
+    }
   .auth-card{
     border-radius:unset;
   }
@@ -388,7 +391,7 @@ export default {
 }
 
 .sign-up-card .auth-para2{
-  height:8rem;
+  height:10rem;
   margin-top:-2rem
 }
 }
