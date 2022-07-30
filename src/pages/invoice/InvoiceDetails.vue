@@ -8,7 +8,7 @@
         <h1>Invoice</h1>
         <ul>
             <li class="date">Date: {{invoice.date.day}} {{invoice.date.mEng}} {{invoice.date.year}}</li>
-
+            <!-- <li class="date">{{invoice.ddate.day}}</li> -->
             <li class="invoiceId">Invoice No:<br> <span>{{ invoice._id }}</span></li>
             
             <li class="total-item">Total Item : <span>{{ invoice.noOfItem }}</span></li>
@@ -208,12 +208,6 @@ export default {
     text-align: center;
     font-size: 4rem;
     color: azure;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    justify-content: center;
 }
 
 
@@ -229,7 +223,7 @@ export default {
     height:95vh;
     margin-left:1.5rem;
     overflow: scroll;
-    padding: .7rem 2rem 0rem 1rem;
+    padding: .7rem 2rem 2rem 1rem;
     perspective: 100rem;
 
 }
@@ -347,10 +341,10 @@ export default {
     .cart-items {
         width: 95%;
         margin-left:0;
-        /* padding: 0.7rem 2rem 2rem 1rem; */
-        padding: 0;
+        padding: 0rem 0rem 13rem 0rem;
+        /* padding: 0; */
         overflow: unset;
-       height: unset;
+        height: unset;
     }
     .cart-item .name{
         width: 33rem;
