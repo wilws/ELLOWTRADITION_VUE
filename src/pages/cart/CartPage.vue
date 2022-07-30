@@ -395,11 +395,13 @@ export default {
     overflow: scroll;
     padding: .7rem 2rem 0rem 1rem;
     perspective: 100rem;
+    position: relative;
 
 }
 
 .cart-item{
     width: 100%;
+    position: relative;
     background-color: #FAFAFA;
     box-shadow: 1rem 1rem 1rem rgba(0,0,0, .3);
     border: rgba(112,112,112,.2) 0.1rem solid;
@@ -579,7 +581,8 @@ export default {
     .cart-items {
         width: 95%;
         margin-left:0;
-        padding: 0;
+        position: relative;
+        padding: 0 0 13rem 0;
         overflow: unset;
         height: unset;
     }
