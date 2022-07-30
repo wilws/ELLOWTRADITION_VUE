@@ -37,8 +37,9 @@
         <button  class="auth-btn" >Singn Up</button>
       </Form>
 
-        <p class="auth-para2">Already has an account?</p>
-        <button class="auth-switch to-login" @click="switchBtn">log in</button>
+        <p class="auth-para2">Already has an account? <br>
+          <button class="auth-switch to-login" @click="switchBtn">log in</button>
+        </p>
         </div>
         <!-- End of Sign up -->
 
@@ -62,8 +63,9 @@
                 <ErrorMessage name="signIn_password" class="alert"/>
                 <button class="auth-btn">log in</button>
             </Form>
-            <p class="auth-para2">Not yet has an account?</p>
-            <button  class="auth-switch" @click="switchBtn">sign up</button>
+            <p class="auth-para2">Not yet has an account?<br>
+              <button  class="auth-switch" @click="switchBtn">sign up</button>
+            </p>
         </div>
         </div>
         <!-- End of login -->
@@ -355,8 +357,8 @@ export default {
   text-transform: uppercase;
 }
 
-.log-in-card .auth-para2{
-  margin-top:10rem;
+.auth-para2{
+  height:10rem;
 }
 
 /* responsive */
