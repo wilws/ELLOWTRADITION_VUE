@@ -357,8 +357,13 @@ export default {
   text-transform: uppercase;
 }
 
-.auth-para2{
-  height:15rem;
+.log-in-card .auth-para2{
+  height:10rem;
+}
+
+.sign-up-card .auth-para2{
+  height:7rem;
+  margin-top:3rem
 }
 
 /* responsive */
@@ -376,6 +381,16 @@ export default {
   .auth-card{
     border-radius:unset;
   }
+
+.log-in-card .auth-para2{
+      height: 14rem;
+    margin-top: 1rem;
+}
+
+.sign-up-card .auth-para2{
+  height:10rem;
+  margin-top:0rem
+}
 }
 /* End of responsive */
 </style>
