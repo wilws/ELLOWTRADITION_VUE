@@ -582,7 +582,7 @@ export default {
         width: 95%;
         margin-left:0;
         position: relative;
-        padding: 0 0 13rem 0;
+        padding: 0 0 6rem 0;
         overflow: unset;
         height: unset;
     }
