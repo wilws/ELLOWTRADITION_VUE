@@ -392,7 +392,7 @@ export default {
 
 .sign-up-card .auth-para2{
   height:10rem;
-  margin-top:-2rem
+  margin-top:-4rem
 }
 }
 /* End of responsive */

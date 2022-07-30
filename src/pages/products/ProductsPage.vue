@@ -1302,9 +1302,9 @@ position: absolute;
         animation: none;
     }
 
-    .showcase.resize .display-product .description{
+    /* .showcase.resize .display-product .description{
         height: 60rem;
-    }
+    } */
 
     .showcase.resize .display-product .images-wrapper .progress-wrapper{
         top: 0.6rem;
