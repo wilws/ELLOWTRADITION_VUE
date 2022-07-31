@@ -236,8 +236,8 @@ export default {
 
 .banner{
     position: absolute;
-    width: 60rem;
-    height: 34rem;
+    width: 45rem;
+    height: 26.5rem;
     border: rgb(255, 255, 255, 0.4) solid .4rem;
     padding: .5rem;
     z-index: 100;
@@ -277,11 +277,11 @@ export default {
     font-family: 'Mukta Vaani', sans-serif;
     width: 100%;
     font-weight: 200;
-    font-size: 5.3rem;
+    font-size: 3.5rem;
     letter-spacing: 0.5rem;
     text-align: justify;
     /* margin-bottom: 1rem; */
-    margin-top: 2rem;
+    margin-top: 2.3rem;
     /* margin-left: 0.5rem; */
 }
 
@@ -289,7 +289,7 @@ export default {
     font-family: 'Mukta Vaani', sans-serif;
     width: 100%;
     font-weight: 500;
-    font-size: 11.4rem;
+    font-size: 7.9rem;
     letter-spacing: 0.7rem;
     text-align: center;
     line-height: 7rem;
@@ -297,11 +297,11 @@ export default {
 }
 
 .banner p:nth-child(2) {
-    margin-top:1.1rem;
+    margin-top:0.1rem;
 }
 
 .banner p:nth-child(3) {
-    margin-top:2.3rem;
+    margin-top:-0.1rem;
 }
 
 @keyframes BannerDisplay{
